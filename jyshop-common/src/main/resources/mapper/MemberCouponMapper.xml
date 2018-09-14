@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.MemberCouponDao">
+	
+	<insert id="batchInsert">
+		insert into shop_member_coupon(`cpn_id`,
+			`cpn_sn`,
+			`sn`,
+			`cpn_name`,
+			`member_id`,
+			`is_use`,
+			`is_get`,
+			`get_time`,
+			`use_type`,
+			`cpn_type`,
+			`grant_type`,
+			`discount_price`,
+			`min_amount`,
+			`use_begin_time`,
+			`use_end_time`,
+			`effective_date`,
+			`use_time`,
+			`remark`,
+			`create_time`) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.cpnId},
+			#{item.cpnSn},
+			#{item.sn},
+			#{item.cpnName},
+			#{item.memberId},
+			#{item.isUse},
+			#{item.isGet},
+			#{item.getTime},
+			#{item.useType},
+			#{item.cpnType},
+			#{item.grantType},
+			#{item.discountPrice},
+			#{item.minAmount},
+			#{item.useBeginTime},
+			#{item.useEndTime},
+			#{item.effectiveDate},
+			#{item.useTime},
+			#{item.remark},
+			#{item.createTime})
+		</foreach>
+	</insert>
+	
+	<select id="selectMemberCouponList" resultType="map">
+		SELECT
+		  t1.`sn` AS sn,
+		  t1.`member_id` AS memberId,
+		  t3.`nickname`,
+		  t3.`weixin_face` AS memberImage,
+		  t1.`get_time` AS getTime,
+		  t1.`order_id` AS orderId,
+		  t1.`use_time` AS useTime,
+		  t1.`use_begin_time` AS useBeginTime,
+		  t1.`use_end_time` AS useEndTime,
+		  t1.`is_get` AS isGet,
+		  t1.`is_use` AS isUse,
+		  t1.`create_time` as createTime
+		FROM
+		  shop_member_coupon t1
+		  LEFT JOIN shop_coupon t2
+		    ON t1.`cpn_id` = t2.`cpn_id`
+		  LEFT JOIN shop_member t3 ON t3.`member_id`=t1.`member_id`
+		WHERE 1 = 1
+		  AND t1.`cpn_id` = #{cpnId}
+		ORDER BY t1.`create_time` DESC
+	</select>
+	
+	
+	<select id="getUsableCouponRecently" resultType="map">
+		SELECT
+		  cpn_id AS cpnId,
+		  cpn_sn AS cpnSn,
+		  cpn_name AS cpnName,
+		  sn AS sn,
+		  use_begin_time AS useBeginTime,
+		  use_end_time AS useEndTime
+		FROM
+		  shop_member_coupon
+		WHERE member_id = #{memberId}
+		  AND create_time >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+		  AND is_use = 0
+		ORDER BY create_time DESC
+	</select>
+	<select id="getMemberCouponList" resultType="map">
+		SELECT
+		  cpn_id AS cpnId,
+		  cpn_sn AS cpnSn,
+		  cpn_name AS cpnName,
+		  sn AS sn,
+		  discount_price as discountPrice,
+		  min_amount as minAmount,
+		  use_begin_time AS useBeginTime,
+		  use_end_time AS useEndTime
+		FROM
+		  shop_member_coupon
+		WHERE member_id = #{memberId}
+		  AND is_use = 0 AND is_get = #{getFlag}
+		ORDER BY create_time DESC
+	</select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.SpellRecomGoodsDao">
+
+    <!-- 查询推荐商品列表 -->
+    <select id="getGoodsList" resultType="map">
+        select
+        sg.goods_id as goodsId,
+        sg.name as goodsName,
+        sg.image as image,
+        sg.mktprice as goodsMktprice,
+        sg.price as goodsPrice
+        from shop_spell_recom_goods srg
+        left join shop_goods sg on srg.goods_id=sg.goods_id and sg.market_enable=1
+    </select>
+
+    <select id="pageList" resultType="map">
+        select
+        srg.recom_id as recomId,
+        sg.goods_id as goodsId,
+        sg.name as name,
+        sg.image as image,
+        sg.price as price,
+        sc.store_name as storeName,
+        sg.store as store,
+        sg.create_time as createTime,
+        sg.mktprice as mktprice
+        from shop_spell_recom_goods srg
+        left join shop_goods sg
+        on srg.goods_id=sg.goods_id
+        LEFT JOIN shop_company sc
+        on sg.com_id = sc.com_id
+        and sg.market_enable=1
+        where 1=1
+        <if test="name != null and name != ''">
+            and sg.name like '%${name}%'
+        </if>
+    </select>
+
+    <!-- 批量添加 -->
+    <insert id="batchInsert">
+        insert into shop_spell_recom_goods(recom_id, goods_id) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.recomId}, #{item.goodsId})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,39 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+    <div class="col-md-3" style="text-align: left;padding-bottom: unset">
+        <button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:showModal('添加物流', '/admin/logi/preAddLogi', 450);"><span class="btn-label icon fa fa-plus"></span>添加物流</button>
+    </div>
+  </div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"logiId",text:"物流ID", sortColumn:"logiId"},
+                {field:"logiCode", text:"物流编号"},
+                {field:"logiName", text:"物流名称"},
+                {field:"logiId", text:"操作", style:"text-align:center", formatter:function(index, content, data){
+
+                	var editUrl = "/admin/logi/preEditLogi/" + content;
+                    var delUrl = "/admin/logi/delLogi/" + content;
+                    return "<a href='javascript:showModal(\"更新物流\", \""+editUrl+"\");' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改</i></a>"
+                        + "&nbsp;<a href='javascript:showCfm(\"确定删除该记录\", \""+delUrl+"\");' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+                	
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/logi/pageLogiAjax",
+            sort:"logiId",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+    /*]]>*/
+</script>

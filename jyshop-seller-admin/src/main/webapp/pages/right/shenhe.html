@@ -1,0 +1,151 @@
+
+    <form id="submitForm" class="form-horizontal">
+        <input type="hidden" name="id" th:value="${rightOrder.id}"/>
+        <input type="hidden" name="agree" value="true"/>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">商品信息：</label>
+            <div class="col-sm-8" id="goodsImage"/>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">维权类型：</label>
+            <div class="col-sm-8">
+                <span th:text="${rightOrder.type}"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">维权编号：</label>
+            <div class="col-sm-8">
+                <span th:text="${rightOrder.serial}"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">维权时间：</label>
+            <div class="col-sm-8">
+                <span th:text="${rightOrder.createTime}"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">退款金额：</label>
+            <div class="col-sm-8">
+                <span th:text="${rightOrder.price}"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">退款原因：</label>
+            <div class="col-sm-8">
+                <span th:text="${rightOrder.reason}"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">退换状态：</label>
+            <div class="col-sm-8">
+                <span th:text="${rightOrder.sellerStatus}"></span>
+            </div>
+        </div>
+
+        <div class="form-group" id="jujue" style="display: none">
+            <label class="col-sm-3 control-label">拒绝理由：</label>
+            <div class="col-sm-8">
+            <textarea class="form-control" th:inline="text" id="rejectReason"
+                      name="rejectReason" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label"></label>
+            <div class="col-sm-8">
+                <input type="button" id="agree" onclick="deal(true)" class="btn btn-info"
+                       th:value="同意"></input>
+                <input type="button" id="reject" onclick="show()" class="btn btn-danger"
+                       th:value="拒绝"></input>
+            </div>
+        </div>
+    </form>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    function show(){
+        var hid = $("#jujue").is(":hidden");
+        if(hid){
+            $("[name='agree']").val("false");
+            $("#jujue").toggle();
+        }else{
+            deal();
+        }
+    }
+
+    function deal(flag){
+        if(!flag){
+            $('#submitForm').data('bootstrapValidator').validate();
+            if(!$('#submitForm').data('bootstrapValidator').isValid()){
+                return false;
+            }
+        }
+        $.Cfm("确定执行该操作?",function(){
+            var id = $("[name='id']").val();
+            $.ajax({
+                url:  "right/deal/"+id,
+                type:"post",
+                data:$("#submitForm").serialize(),
+                dataType:"json",
+                success: function (req){
+                    if (req.retcode == 0) {
+                        $(".closeBtn").click();
+                        goPage('/admin/right/main');
+                        $.Suc(req.retmsg);
+                    }else if (req.retcode == 1) {
+                        $(".closeBtn").click();
+                        $.Cfm("该订单直属店铺未添加退货地址，设置退货地址?",function(){
+                            goPage('/admin/goodsRejectedAds/main');
+                        });
+                    }
+                    else {
+                        $.Err(req.retmsg);
+                    }
+                }
+            });
+        });
+    }
+
+    $(function() {
+        $('.btn-primary').hide();
+
+        $('#submitForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                rejectReason: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入拒绝理由'
+                        },
+                        stringLength: {
+                            min: 3,
+                            max: 20,
+                            message: '拒绝理由在3-20个字'
+                        }
+                    }
+                }
+            }
+        });
+
+        var items = [[${rightOrder.items}]];
+        if(items != null){
+            $.each(items,function(index,value){
+                $("#goodsImage").append("<div class='example col-md-3 col-xs-3'><p><img src='"+ value.goodsImage +"' style='width:66px;float:left' class='img-rounded' alt=''/><span>"+value.goodsName+"</span><br/><span>"+value.productSpec+"</span><br/>" +
+                    "单价:<span>"+value.price+"</span><br/><span>数量:"+value.buyCount+"</span></p></div>");
+            });
+        }
+
+    });
+    /*]]>*/
+</script>

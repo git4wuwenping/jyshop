@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.ProfitParamDao">
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.ProfitParam">
+		<id column="profit_id" jdbcType="DECIMAL" property="profitId" />
+		<result column="tax" jdbcType="DECIMAL" property="tax" />
+		<result column="management" jdbcType="DECIMAL" property="management" />
+		<result column="operation" jdbcType="DECIMAL" property="operation" />
+		<result column="gain" jdbcType="DECIMAL" property="gain" />
+		<result column="presenter" jdbcType="DECIMAL" property="presenter" />
+		<result column="service_center" jdbcType="DECIMAL" property="serviceCenter" />
+		<result column="referee" jdbcType="DECIMAL" property="referee" />
+		<result column="operator" jdbcType="DECIMAL" property="operator" />
+		<result column="profit_member_first" jdbcType="DECIMAL" property="profitMemberFirst" />
+		<result column="profit_member_sec" jdbcType="DECIMAL" property="profitMemberSec" />
+		<result column="profit_shopowner_first" jdbcType="DECIMAL" property="profitShopownerFirst" />
+		<result column="profit_shopowner_sec" jdbcType="DECIMAL" property="profitShopownerSec" />
+	</resultMap>
+
+</mapper>

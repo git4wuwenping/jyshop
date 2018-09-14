@@ -1,0 +1,220 @@
+<div class="left-col col-md-3">
+	<div class="list-group" >
+		
+		<a th:attr="token=${user.key}" class="list-group-item" 
+		 	th:each="user:${userList}" th:if="${user.key!='administrator'}" >
+			<h4 class="list-group-item-heading" th:text="${user.value}"></h4>
+		</a>
+	
+	</div>
+</div>
+
+<div class="right-col col-md-9" style="width: 55%;">
+	<div class="profile-content">
+		<div class="tab-content tab-content-bordered panel panel-padding panel-body">
+			<div class="panel widget-chat">
+				<div class="panel-heading">
+					<span class="panel-title"><i class="panel-title-icon fa fa-comments-o"></i>咨询信息</span>
+				</div>
+				<div class="panel-body" style="height:555px;overflow:scroll">
+	
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="profile-content">
+		<div class="tab-content tab-content-bordered panel panel-padding panel-body" style="text-align:right;">
+			<form class="form-inline">
+				<div class="form-group" style="width:50%;">
+					<input type="text" id="sendMessage" class="form-control" style="width:100%;"/>
+				</div>
+				<button id="send" class="btn btn-default" type="submit">发送</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script th:src="@{/static/js/chat/sockjs.min.js}"></script>
+<script th:src="@{/static/js/chat/stomp.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	var stompClient = null;
+	
+	//传递用户key值
+	var login = "administrator";  
+	var login_id=[[${loginId}]];  
+	var login_uname=[[${loginUname}]];  
+	var login_name=[[${loginName}]];
+	var chat_url=[[${chatUrl}]];
+	var outId="";
+	function setConnected(connected) {
+		$("#connect").prop("disabled", connected);
+		$("#disconnect").prop("disabled", !connected);
+		if (connected) {
+			$("#conversation").show();
+		} else {
+			$("#conversation").hide();
+		}
+		$("#greetings").html("");
+	}
+
+	function connect() {
+		var socket = new SockJS('http://127.0.0.1:3200/ricky-websocket');
+		stompClient = Stomp.over(socket);
+		stompClient.connect({
+			login : login,
+			outId : 0
+		}, function(frame) {
+			setConnected(true);
+			console.log('Connected: ' + frame);
+			stompClient.subscribe('/user/topic/greetings', function(greeting) {
+				showGreeting(JSON.parse(greeting.body));
+			});
+		});
+	}
+	
+	//选择咨询用户
+	$("a[class='list-group-item']").click(function(){
+		
+		$(".list-group-item ").removeClass("active");
+        $(this).addClass("active");
+        outId=$(this).attr("token");
+        $("div[class='panel-body']").children("div").remove();
+        
+    	$.ajax({
+	        url: _urlPath +'admin/chat/queryMemberChatAjax',
+	        type: "post",
+	        data: "nickname="+$(this).text(),
+	        success: function (req){
+	            if(req.length>0){
+		            $.each(req,function(i,data){
+		            	var unixTimestamp = new Date(data.createTime);
+		            	var chat_div=$("div[class='panel-body']");
+		            	if(data.sendType==0){
+		            		chat_div.prepend(getSendInfo(data.message,data.memberFace,unixTimestamp.toLocaleString(),data.nickname));
+		            	}else{
+		            		chat_div.prepend(getSendInfo(data.message,"",unixTimestamp.toLocaleString(),""));
+		            	}
+		            	chat_div.scrollTop(chat_div[0].scrollHeight);
+		            })
+	            }
+	        }
+	    });
+//         console.log(outId)
+	})
+	function disconnect() {
+		if (stompClient != null) {
+			stompClient.disconnect();
+		}
+		setConnected(false);
+		console.log("Disconnected");
+	}
+	
+	function sendInfo() {
+		var send_message=$("#sendMessage").val();
+		var now_date=new Date().format('yyyy-MM-dd h:m:s');
+		if(typeof outId=='undefined' || outId==''){
+			$.Mod.Close("请选择咨询用户",'warning');
+			return ;
+		}
+		if(typeof send_message=='undefined' || send_message==''){
+			$.Mod.Close("请输入回复信息",'warning');
+			return ;
+		}else{
+			var url=chat_url+"/member/sendInfo";
+			var chat_div=$("div[class='panel-body']");
+			chat_div.append(getSendInfo(send_message,'',now_date,""));
+			chat_div.scrollTop(chat_div[0].scrollHeight);
+	 		$.ajax({
+		        url: url,
+		        type: "post",
+		        data: {
+		        	"token": "administrator",
+		        	"comId": 0,
+		        	"inId": login_id,
+		        	"username":login_uname,
+		        	"name":login_name,
+		        	"outId":outId,
+		        	"sendMessage":send_message
+		        },
+		        success: function (req){
+		            console.log(req);
+		        
+		        }
+		    });
+		}
+	}
+
+	function showGreeting(data) {
+		var chat_div=$("div[class='panel-body']");
+		chat_div.append(getSendInfo(data.content,data.face,data.sendDate,data.nickName));
+		chat_div.scrollTop(chat_div[0].scrollHeight);
+		//$("#greetings").append("<tr><td>" + message + "</td></tr>");
+	}
+	
+	function getSendInfo(send_message,face,now_date,nick_name){
+		
+		var message="<div class=\"message ";
+		if(typeof nick_name=='undefined' || nick_name==''){
+			message +="right";
+		}
+		message+="\"><img src=\"";
+		
+		if(typeof face!='undefined' && face!=''){
+			message+=face;
+		}else{
+			message+="/static/images/user-head-default.png";
+		}
+		message+="\" class=\"message-avatar\">";
+		message+="<div class=\"message-body\">";
+		message+="<div class=\"message-heading\">";
+		message+="<a href=\"#\">";
+		if(typeof nick_name!='undefined' && nick_name!=''){
+			message +=nick_name;
+		}else{
+			message+=login_name;
+		}
+		message+="</a> 说<span class=\"pull-right\">"+now_date+"</span>";
+		message+="</div><div class=\"message-text\">";
+		message+=send_message;
+		message+="</div></div></div>";
+		return message;
+	}
+	
+	$(function() {
+ 		connect();
+		$("form").on('submit', function(e) {
+			e.preventDefault();
+		});
+		$("#disconnect").click(function() {
+			disconnect();
+		});
+		$("#send").click(function() {
+			sendInfo();
+		});
+	});
+	
+	
+	Date.prototype.format = function(format) {
+	       var date = {
+	              "M+": this.getMonth() + 1,
+	              "d+": this.getDate(),
+	              "h+": this.getHours(),
+	              "m+": this.getMinutes(),
+	              "s+": this.getSeconds(),
+	              "q+": Math.floor((this.getMonth() + 3) / 3),
+	              "S+": this.getMilliseconds()
+	       };
+	       if (/(y+)/i.test(format)) {
+	              format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+	       }
+	       for (var k in date) {
+	              if (new RegExp("(" + k + ")").test(format)) {
+	                     format = format.replace(RegExp.$1, RegExp.$1.length == 1
+	                            ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+	              }
+	       }
+	       return format;
+	}
+	/*]]>*/
+</script>

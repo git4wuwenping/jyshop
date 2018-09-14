@@ -1,0 +1,75 @@
+<form id="submitForm" class="form-horizontal">
+	<input name="tagId" th:value="${tag.tagId}" type="hidden" />
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="tagName"><font
+			color="red">*</font>标签名称：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="tagName" name="tagName"
+				th:value="${tag.tagName}" />
+			<div id="validation-tagname" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="tagOrder">排序：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="tagOrder" name="tagOrder"
+				th:value="${tag.tagOrder}" />
+			<div id="validation-tagorder" class="validate-error help-block"></div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	submit = function() {
+		$('#submitForm').data('bootstrapValidator').validate();
+		if ($('#submitForm').data('bootstrapValidator').isValid()) {
+			$("#submitForm").attr("disabled", true);
+			var data = $("#submitForm").serialize();
+			ajaxRequest("/admin/tag/editTag", data);
+		}
+	}
+
+	$(function() {
+		$('#submitForm').bootstrapValidator({
+			message : 'This value is not valid',
+			feedbackIcons : {
+				valid : 'glyphicon glyphicon-ok',
+				invalid : 'glyphicon glyphicon-remove',
+				validating : 'glyphicon glyphicon-refresh'
+			},
+			fields : {
+				tagName : {
+					validators : {
+						notEmpty : {
+							message : '请输入标签名称'
+						},
+    					stringLength: {     //输入　长度限制　　校验
+    	                    min: 1,
+    	                    max: 4,
+    	                    message: '文字限制：4个字内'
+    	                }
+					}
+				},
+				tagOrder : {
+					validators : {
+						notEmpty : {
+							message : '请输入排序号'
+						},
+						numeric : {
+							message : '请输入整数'
+						},
+    					lessThan: {
+    						value : 999,
+    						message: '不能大于999'
+    					},
+    					greaterThan: {
+    						value : 0,
+    						message: '不能小于0'
+    					}
+					}
+				}
+			}
+		});
+	});
+	/*]]>*/
+</script>

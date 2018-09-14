@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.SpellOrderDao">
+
+    <select id="getSpellOrderByParams" resultType="map">
+        select
+          so.order_id as orderId,
+          m.face as face,
+          m.uname as uname,
+          m.nickname as nickname,
+          so.ship_mobile as moblie,
+          CONCAT(so.ship_province_name,so.ship_city_name,so.ship_district_name,so.ship_addr) as addr,
+          ss.spell_price as spellPrice,
+          so.create_date as createDate
+        from shop_spell_order so
+        left join shop_spell ss on ss.spell_id = so.spell_id
+        left join shop_spell_order_items i on so.order_sn = i.order_sn
+        left join shop_member m on m.member_id = so.member_id
+        where (so.order_status in (1,2,3,-8) or ss.originator_id = so.member_id)
+        order by so.create_date desc
+    </select>
+
+    <select id="getOrderDetail" resultType="map">
+        select
+          so.order_id as orderId,
+          so.order_sn as orderSn,
+          so.create_date as createDate,
+          so.spell_id as spellId,
+          so.order_status as orderStatus,
+          so.spell_status as spellStatus,
+          so.order_amount as orderAmount,
+          so.pay_amount as payAmount,
+          so.ship_amount as shipAmount,
+          so.ship_name as shipName,
+          so.ship_addr as shipAddr,
+          so.ship_mobile as shipMobile,
+          so.ship_province_name as shipProvinceName,
+          so.ship_city_name as shipCityName,
+          so.ship_district_name as shipDistrictName,
+          ss.participate_details as participateDetails,
+          so.remark as remark,
+          so.payment_date as paymentDate,
+          so.deliver_date as deliverDate,
+          ss.activity_id as activityId,
+          ss.com_id as comId,
+          sc.com_name as comName,
+          ss.shop_store_id as shopStoreId,
+          sc.store_name as shopStoreName,
+          ss.originator_id as originatorId,
+          ss.image2 as image,
+          ss.name as name,
+          ss.goods_id as goodsId,
+          ss.goods_name as goodsName,
+          ss.goods_title as goodsTitle,
+          i.product_specs as productSpecs,
+          ss.goods_price as goodsPrice,
+          ss.spell_price as spellPrice
+        from shop_spell_order so
+        left join shop_spell ss on ss.spell_id = so.spell_id
+        left join shop_company sc on sc.com_id = ss.com_id
+        left join shop_spell_order_items i on so.order_sn = i.order_sn
+        where (so.order_status in (1,2,3,-8) or ss.originator_id = #{memberId})
+        and so.spell_id = #{spellId}
+        and so.member_id =#{memberId}
+    </select>
+
+    <select id="getOrderByOrderSn" resultType="map">
+        select * from shop_spell_order where order_sn = #{orderSn}
+    </select>
+</mapper>

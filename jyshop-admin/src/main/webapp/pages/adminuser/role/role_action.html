@@ -1,0 +1,121 @@
+<div class="left-col col-md-3">
+	<div class="list-group">
+		<input type="hidden" th:value="${roleId}" id="curRoleId" />
+		<a th:each="role:${roleList}" th:if="${role.roleId!=99}" th:href="'javascript:loadOperations('+${role.roleId}+')'"
+				th:class="${role.roleId==roleId}?'list-group-item active':list-group-item" th:id="'role—item-'+${role.roleId}">
+			<h4 class="list-group-item-heading" th:text="${role.cname}"></h4> 
+		</a>
+	</div>
+</div>
+
+<div class="right-col col-md-9">
+	<div class="profile-content">
+		<ul id="profile-tabs" class="nav nav-tabs">
+			<li class="dropdown pull-right tabdrop hide"><a
+				class="dropdown-toggle" data-toggle="dropdown" href="#"><i
+					class="fa fa-bars"></i> <b class="caret"></b> </a>
+				<ul class="dropdown-menu"></ul></li>
+			<li id="hasOperationLi" class="active"><a
+				href="#profile-tabs-hasOperation" id="hasOperationHref"
+				data-toggle="tab">已有权限<span class="label label-success"
+					id="hasOpNum" th:text="${hasCount}"></span> </a>
+			</li>
+			<li id="noOperationLi" class=""><a
+				href="#profile-tabs-noOperation" id="noOperationHref"
+				data-toggle="tab">未有权限<span class="label label-danger"
+					id="noOpNum" th:text="${noCount}"></span> </a>
+			</li>
+			<li class=""><a href="#profile-tabs-allOperation"
+				data-toggle="tab">全部<span class="label label-pa-purple" id="allOpNum" 
+				th:text="${#lists.size(authActionList)}"></span>
+			</a>
+			</li>
+		</ul>
+
+		<div
+			class="tab-content tab-content-bordered panel panel-padding panel-body">
+			<div class="tab-pane panel no-padding no-border fade active widget-messages in"
+				id="profile-tabs-hasOperation"></div>
+			<div class="tab-pane panel no-padding no-border fade widget-messages"
+				id="profile-tabs-noOperation"></div>
+			<div class="tab-pane fade widget-followers"
+				id="profile-tabs-allOperation">
+				<div class="widget-support-tickets">
+
+						<div class="ticket" th:each="authAction,authActionStat : ${authActionList}">
+							<span class="info" th:if="${authAction!=null}" th:text="${authActionStat.index + 1}+'&nbsp;&nbsp;&nbsp;&nbsp;'+
+							${authAction.opName}+'('+${authAction.opCode}+')'+${authAction.opHref}">
+							</span>
+						</div>
+				</div>
+				<!-- / .tab-pane -->
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+        //点击角色加载权限
+        loadOperations = function(roleId){
+            $("#curRoleId").val(roleId);
+            $(".list-group-item ").removeClass("active");
+            $("#role—item-"+roleId).addClass("active");
+            if ($("#hasOperationLi").hasClass("active")){
+                loadHasOperation("");
+            }
+            if ($("#noOperationLi").hasClass("active")){
+                loadNoOperation("");
+            }
+        }
+        // 加载已有权限
+        loadHasOperation = function(searchNameValue){
+            var roleId =  $("#curRoleId").val();
+            if(roleId == 0){
+                $.Alt("请先选择一个角色");
+                return;
+            }								  
+            var url =  _urlPath + "admin/role/hasOperat/"+roleId;
+            getOperation(url, "profile-tabs-hasOperation","opName="+searchNameValue);
+        }
+        // 加载未有权限
+        loadNoOperation = function(searchNameValue){
+            var roleId = $("#curRoleId").val();
+            if(roleId == 0){
+                $.Alt("请先选择一个角色");
+                return;
+            }
+            var url =  _urlPath + "admin/role/noOperat/"+roleId;
+            getOperation(url, "profile-tabs-noOperation","opName="+searchNameValue);
+        }
+
+        getOperation = function(url, id, data) {
+            $.ajax({
+                url: url,
+                data:data,
+                type: "post",
+                dataType: 'html',
+                success: function (req) {
+                    try {
+                        $("#"+id).html(req);
+                    }
+                    catch (e) {
+                        console.log(e);
+                        $("#"+id).html("加载出错");
+                    }
+                },
+                error: function () {
+                    $("#"+id).html("加载出错");
+                }
+            });
+        }
+        $(function(){
+            $("#hasOperationHref").click(function(){
+                loadHasOperation("");
+            });
+            $("#noOperationHref").click(function(){
+                loadNoOperation("");
+            });
+            loadHasOperation("");
+        });
+	/*]]>*/
+</script>

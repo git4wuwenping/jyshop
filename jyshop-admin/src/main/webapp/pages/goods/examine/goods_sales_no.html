@@ -1,0 +1,36 @@
+<form id="submitForm" class="form-horizontal">
+	<input id="goodsInputId" hidden="true" name = "goodsId" th:value="${goodsId}"  />
+	<div class="form-group">
+	    <label class="col-sm-3 control-label" for="name">驳回原因：</label>
+		<div class="col-sm-8">
+			<!-- <input class="form-control" id="examineId" name = "dismissal" type="text" /> -->
+			<textarea class="form-control" name='dismissal' 
+			 id="licenseother" onkeypress="count()" onkeyup="count()"  onblur="count();" 
+			cols='100' rows='4' style=" height: 125px;resize: none;"></textarea> 
+            <div id="validation-shopStoreInformation" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="name">处理意见：</label>
+		<div class="col-sm-8">
+			<!-- <input class="form-control" id="examineId" name = "suggestion" type="text" /> -->
+			<!-- <input class="form-control" id="examineId" name = "suggestion" th:value="${examine.suggestion}" type="text" /> -->
+			<textarea class="form-control"  name='suggestion' 
+			 id="licenseother" onkeypress="count()" onkeyup="count()"  onblur="count();" 
+			cols='100' rows='4'  style=" height: 125px;resize: none;"></textarea> 
+            <div id="validation-shopStoreInformation" class="validate-error help-block"></div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		submit = function(){
+				var data = $("#submitForm").serialize();
+				ajaxRequest("/admin/goods/examineGoodsSalesNo", data);
+		    }
+		
+		
+/*]]>*/
+</script>
+
+

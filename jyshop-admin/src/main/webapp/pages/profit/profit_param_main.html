@@ -1,0 +1,121 @@
+<form id="submitForm" class="form-horizontal">
+	<div>
+		<input type="text" name="profitId" th:value="${profitParam.profitId}"
+			hidden="hidden" />
+		<table>
+			<thead>
+				<tr>
+					<td><font>分润角色</font></td>
+					<td><font>分润比例</font></td>
+				</tr>
+			</thead>
+			<tr>
+				<td>税收：</td>
+				<td><input type="text" name="tax" th:value="${profitParam.tax}" />%
+				</td>
+			</tr>
+			<tr>
+				<td>管理费：</td>
+				<td><input type="text" name="management"
+					th:value="${profitParam.management}" />%</td>
+			</tr>
+			<tr>
+				<td>运营费：</td>
+				<td><input type="text" name="operation"
+					th:value="${profitParam.operation}" />%</td>
+			</tr>
+			<tr>
+				<td>公司利润：</td>
+				<td><input type="text" name="gain" th:value="${profitParam.gain}" />%
+				</td>
+			</tr>
+			<tr>
+				<td>推荐人（供应商）</td>
+				<td><input type="text" name="referee"
+					th:value="${profitParam.referee}" />%</td>
+			</tr>
+			<tr>
+				<td>服务运营中心</td>
+				<td><input type="text" name="serviceCenter"
+					th:value="${profitParam.serviceCenter}" />%</td>
+			</tr>
+			<tr>
+				<td>经办人</td>
+				<td><input type="text" name="operator"
+					th:value="${profitParam.operator}" />%</td>
+			</tr>
+		</table>
+		<br /> 以上部分以系统毛利润为基础进行计算。<hr/><br />
+		<br />
+	</div>
+	<div>
+		<table>
+			<thead>
+				<tr>
+					<td><font>其他角色</font></td>
+					<td><font>首次购买分润比例</font></td>
+					<td><font>复购分润比例</font></td>
+				</tr>
+			</thead>
+			<tr>
+				<td>有分润会员：</td>
+				<td><input type="text" name="profitMemberFirst"
+					th:value="${profitParam.profitMemberFirst}" />%</td>
+				<td><input type="text" name="profitMemberSec"
+					th:value="${profitParam.profitMemberSec}" />%</td>
+			</tr>
+			<tr>
+				<td>店长推荐：</td>
+				<td><input type="text" name="profitShopownerFirst"
+					th:value="${profitParam.profitShopownerFirst}" />%</td>
+				<td><input type="text" name="profitShopownerSec"
+					th:value="${profitParam.profitShopownerSec}" />%</td>
+			</tr>
+		</table>
+		<br /> 以上部分以系统毛利润扣除第一部分相应角色的分润后为基础进行计算。<hr/><br />
+		<br />
+	</div>
+	
+	<div>
+		<table>
+			<thead>
+				<tr>
+					<td><font>分润角色</font></td>
+					<td><font>分润比例</font></td>
+				</tr>
+			</thead>
+			<tr>
+				<td>店长下级分润：</td>
+				<td><input type="text" name="profitShopownerSub"
+					th:value="${profitParam.profitShopownerSub}" />%</td>
+			</tr>
+		</table>
+		<br /> 以上部分以系统毛利润扣除第一部分相应角色的分润后为基础进行计算。<br />
+		<br />
+	</div>
+	<hr/>
+	<input type="button" value="保存" onclick="saveParams()" /> 
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	function saveParams(){
+		
+		frmValidate();
+		$.ajax({
+            url: _urlPath +'admin/profit/editProfitParam',
+            method: "POST",
+            data:$('#submitForm').serialize(),
+            dataType:"json",
+            success:function(reslut) {
+                if (reslut.retcode == 0) {
+                    $.growl.notice({title:'修改成功', message: reslut.retmsg });
+                }else {
+                    $("#sumbitBtn").attr("disabled",false);
+                    $.Err(reslut.retmsg);
+                }
+            }
+        });
+	}
+	
+	/*]]>*/
+</script>

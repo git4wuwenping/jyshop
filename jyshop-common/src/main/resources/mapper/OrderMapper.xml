@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.OrderDao">
+	
+	<!-- 根据memberId获取各类订单数量 -->
+	<select id="orderCount" resultType="map">
+		SELECT
+			t.orderStatus,
+			count(*) AS count
+		FROM
+			(
+				SELECT
+					CASE
+				WHEN so.ORDER_STATUS IN (-8 ,-7 ,-6 ,-5 ,-4 ,-3 ,-2 ,-1) THEN
+					"WQZ"
+				WHEN so.ORDER_STATUS = 0 THEN
+					"DFK"
+				WHEN so.ORDER_STATUS IN (1, 2, 3, 4) THEN
+					"DFH"
+				WHEN so.ORDER_STATUS = 5 THEN
+					"DSH"
+				WHEN so.ORDER_STATUS IN (6, 7) and so.EVALUATE_STATUS = 0 THEN
+					"DPJ"
+				WHEN so.ORDER_STATUS IN (6, 7) and so.EVALUATE_STATUS = 1 THEN
+					"YPJ"
+				ELSE
+					"QT"
+				END AS orderStatus
+				FROM
+					shop_order so
+				WHERE 
+					so.member_id = #{memberId} and so.delete_flag=0 and so.split_order=0 
+			) t
+		GROUP BY
+			t.orderStatus
+	</select>
+
+	<!-- 根据会员ID查询订单统计 -->
+	<select id="getOrderCountByMemberId" resultType="map" >
+		SELECT
+			count(*) AS order_count,
+			IFNULL(sum(ORDER_AMOUNT),0) AS order_amount_sum,
+			IFNULL(sum(GOODS_COUNT),0) AS goods_count_sum,
+			IFNULL(sum(ORDER_AMOUNT) / count(*),0) AS order_amount_avg
+		FROM
+			shop_order
+		WHERE
+			MEMBER_ID = #{memberId};
+	</select>
+	
+	<!-- 查询上级分润订单 -->
+	<select id="selectShopownerSubProfitOrder" resultType="map">
+		SELECT 
+			so.order_Id AS orderId,
+			so.order_sn as orderSn,
+			so.payment_time AS paymentTime,
+			so.goods_amount as goodsAmount,
+			so.ship_amount as shipAmount,
+			so.order_amount as orderAmount,
+			so.pay_money as payMoney,
+			so.create_time as createTime,
+			so.member_id AS memberId,
+			sm.parent_id as parentId 
+		FROM (
+			SELECT
+				order_id,
+				order_sn,
+				payment_time,
+				goods_amount,
+				ship_amount,
+				order_amount,
+				pay_money,
+				create_time,
+				member_id 
+			FROM shop_order 
+			WHERE order_status=#{orderStatus} AND sub_profit_status=#{profitStatus}
+			ORDER BY payment_time ASC ) so 
+		INNER JOIN  shop_member sm ON so.member_id=sm.member_id
+		where 1=1 
+			and sm.parent_id > 0
+			and so.payment_time>=sm.become_lower_time
+	</select>
+
+
+	<!-- 根据条件查询订单列表  -->
+	<select id="queryExportOrderData" resultType="map">
+		SELECT
+		so.order_id AS orderId,
+		so.member_id AS memberId,
+		so.order_sn AS orderSn,
+		so.order_status AS orderStatus,
+		so.pay_status AS payStatus,
+		so.goods_count AS goodsCount,
+		smi.buy_count AS buyCount,
+		smi.buy_count * smi.goods_price AS goodsAmount,
+		so.ship_amount AS shipAmount,
+		smi.weight,
+		so.discount AS discount,
+		so.order_amount AS orderAmount,
+		so.create_time AS createTime,
+		so.ship_type AS shipType,
+		so.payment_name AS paymentName,
+		so.pay_money AS payMoney,
+		so.payment_time AS paymentTime,
+		so.is_receipt AS isReceipt,
+		so.ship_name AS shipName,
+		so.ship_mobile AS shipMobile,
+		so.ship_tel AS shipTel,
+		so.SHIP_ADDRESS AS shipAddress,
+		so.ship_zip AS shipZip,
+		IFNULL(sc.com_name,'巨柚自营') AS comName,
+		sm.nickname,
+		smi.goods_name AS goodsName,
+		smi.goods_price AS goodsPrice,
+		smi.product_sn AS productSn
+		FROM shop_order_items smi
+		LEFT JOIN shop_order so ON smi.order_id=so.order_id
+		LEFT JOIN shop_company sc ON so.com_id=sc.com_id
+		LEFT JOIN shop_member sm ON so.member_id=sm.member_id
+		WHERE so.order_id IS NOT NULL and so.delete_flag=0
+		<if test="comId != null">
+			and so.com_id=#{comId}
+		</if>
+		<if test="comIds != null">
+			and so.com_id!=#{comIds}
+		</if>
+		<if test="orderSn != null and orderSn != ''">
+			and so.order_sn like '%${orderSn}%'
+		</if>
+		<if test="orderStatus != null and orderStatus != ''">
+			and so.order_status=#{orderStatus}
+		</if>
+		<if test="shipName != null and shipName != ''">
+			and so.SHIP_NAME=#{shipName}
+		</if>
+		<if test="shipMobile != null and shipMobile != ''">
+			and so.SHIP_MOBILE=#{shipMobile}
+		</if>
+		<if test="orderType != null and orderType != ''">
+				and so.order_type=#{orderType}
+		</if>
+		<if test="comName != null and comName != ''">
+			and sc.com_name like '%${comName}%'
+		</if>
+		<if test="createStartTime!=null and createStartTime!=''">
+			<![CDATA[ and so.create_time>=#{createStartTime} ]]>
+		</if>
+		<if test="createEndTime!=null and createEndTime!=''">
+			<![CDATA[ and so.create_time<#{createEndTime} ]]>
+		</if>
+		<if test="payStartTime!=null and payStartTime!=''">
+			<![CDATA[ and so.PAYMENT_TIME>=#{payStartTime} ]]>
+		</if>
+		<if test="payEndTime!=null and payEndTime!=''">
+			<![CDATA[ and so.PAYMENT_TIME<#{payEndTime} ]]>
+		</if>
+		<if test="paymentId!=null ">
+			and so.payment_id=#{paymentId} 
+		</if>
+		order by so.order_id desc
+	</select>
+	
+	<!-- 获取用户订单 -->
+	<select id="selectMemberOrder" resultMap="baseResultModel">
+		SELECT  
+        	*
+     	FROM shop_order so 
+       	where so.order_id=#{orderId}
+              and so.member_id=#{memberId}
+              and so.delete_flag=0
+	</select>
+	
+	<!-- 根据订单Id查询没拆过单的订单 -->
+	<select id="selectByOrderIdNoSplit" resultMap="baseResultModel">
+		SELECT * FROM shop_order so 
+       	where so.order_id=#{orderId} and split_order=0
+	</select>
+
+	<!-- 根据订单Id查询订单 -->
+	<select id="selectByOrderId" resultMap="baseResultModel">
+		SELECT *,c.`com_name`
+		FROM shop_order so
+		LEFT JOIN shop_company c
+		ON so.`COM_ID` = c.`com_id`
+		where so.order_id=#{orderId} and split_order=0
+	</select>
+
+	<!-- 根据订单Id查询没拆过单的订单 -->
+	<select id="selectByOrderSnAndStatus" resultMap="baseResultModel">
+		SELECT * FROM shop_order so 
+		<trim prefix="where" prefixOverrides="and">
+			so.order_sn=#{orderSn} and split_order=0 
+			<if test="orderStatus != null ">
+				and order_status=#{orderStatus} 
+			</if>
+			<if test="payStatus != null ">
+				and pay_status=#{payStatus} 
+			</if>
+			<if test="shipStatus != null ">
+				and ship_status=#{shipStatus} 
+			</if>
+		</trim>
+	</select>
+	
+	<!-- 查询已支付待分配订单 -->
+	<select id="selectPayOrderId" resultType="long">
+		SELECT  
+        	order_id
+     	FROM shop_order 
+       	where order_status=1 and pay_status=1 and ship_status=0 
+       			and split_order=0 and delete_flag=0
+       	order by order_id desc
+       	limit 0,30
+	</select>
+	
+	<!-- 根据条件查询用户订单列表 -->
+	<select id="selectMemberOrderList" parameterType="map" resultMap="baseResultMap">
+		select 
+			so.order_id,
+			so.order_sn,
+			so.order_status,
+			CONCAT(so.order_status) AS order_status1,
+			so.goods_count,
+			so.buy_count,
+			so.goods_amount,
+			so.ship_amount,
+			so.discount,
+			so.order_amount,
+			<!-- sc.store_name as comName, -->
+			so.right_close_status as rightCloseStatus
+		from shop_order so
+		left join shop_company sc on so.com_id=sc.com_id
+		where so.member_id=#{memberId} and so.split_order=0 and so.delete_flag=0
+		<if test="orderStatus != null and orderStatus != ''">
+			and so.order_status=#{orderStatus}
+		</if>
+		<if test="evaluateStatus != null">
+			and so.evaluate_status=#{evaluateStatus}
+		</if>
+		<if test="orderStatusArray != null and orderStatusArray != ''">
+			and so.order_status in (${orderStatusArray})
+		</if>
+		 order by so.order_id desc	
+	</select>
+
+	<!-- 根据条件查询订单列表  -->
+	<select id="selectOrderByParams" resultMap="baseResultMap">
+		select 
+			so.*,
+			sc.store_name as comName
+		from shop_order so
+		left join shop_company sc on so.com_id=sc.com_id
+		<trim prefix="where" prefixOverrides="and">
+			so.delete_flag=0 and so.split_order=0 
+			<if test="goodsName != null and goodsName != ''">
+				and so.order_id in (SELECT order_id FROM shop_order_items 
+					WHERE goods_name LIKE '%${goodsName}%' GROUP BY order_id  )
+			</if>
+			<if test="comId != null">
+				and so.com_id=#{comId}
+			</if>
+			<if test="comIds != null">
+				and so.com_id!=#{comIds}
+			</if>
+			<if test="orderIds != null and orderIds != ''">
+				and so.order_id in (${orderIds})
+			</if>
+			<if test="orderSn != null and orderSn != ''">
+				and so.order_sn like '%${orderSn}%' 
+			</if>
+			<if test="orderStatus != null and orderStatus != ''">
+				and so.order_status=#{orderStatus}
+			</if>
+			<if test="orderType != null and orderType != ''">
+				and so.order_type=#{orderType}
+			</if>
+			<if test="comName != null and comName != ''">
+				and sc.com_name like '%${comName}%'
+			</if>
+			<if test="shipName != null and shipName != ''">
+				and so.SHIP_NAME=#{shipName}
+			</if>
+			<if test="shipMobile != null and shipMobile != ''">
+				and so.SHIP_MOBILE=#{shipMobile}
+			</if>
+			<if test="createStartTime!=null and createStartTime!=''">
+				<![CDATA[ and so.create_time>=#{createStartTime} ]]>
+			</if>
+			<if test="createEndTime!=null and createEndTime!=''">
+				<![CDATA[ and so.create_time<#{createEndTime} ]]>
+			</if>
+			<if test="payStartTime!=null and payStartTime!=''">
+				<![CDATA[ and so.PAYMENT_TIME>=#{payStartTime} ]]>
+			</if>
+			<if test="payEndTime!=null and payEndTime!=''">
+				<![CDATA[ and so.PAYMENT_TIME<#{payEndTime} ]]>
+			</if>
+			<if test="paymentId!=null ">
+				and so.payment_id=#{paymentId} 
+			</if>
+			<if test="shipName!=null ">
+				and so.ship_name like '%${shipName}%'
+			</if>
+			<if test="shipMobile!=null ">
+				and so.ship_mobile like '%${shipMobile}%'
+			</if>
+		</trim>
+		order by so.create_time desc
+	</select>
+	
+	<!-- 查询分润订单 -->
+	<select id="selectProfitOrder" resultType="map">
+		
+		SELECT 
+			so.order_Id AS orderId,
+			so.order_sn as orderSn,
+			so.payment_time AS paymentTime,
+			so.goods_amount as goodsAmount,
+			so.ship_amount as shipAmount,
+			so.order_amount as orderAmount,
+			so.pay_money as payMoney,
+			so.create_time as createTime,
+			so.member_id AS memberId,
+			sm.profit_time as profitTime 
+		FROM (
+			SELECT
+				order_id,
+				order_sn,
+				payment_time,
+				goods_amount,
+				ship_amount,
+				order_amount,
+				pay_money,
+				create_time,
+				member_id 
+			FROM shop_order 
+			WHERE order_status=#{orderStatus} AND profit_status=#{profitStatus} AND order_amount>=#{orderAmount}
+			<if test="isProfit !=null and isProfit==0">
+				GROUP BY member_id 
+			</if>
+			ORDER BY payment_time ASC ) so 
+		INNER JOIN  shop_member sm ON so.member_id=sm.member_id AND sm.is_profit=#{isProfit}
+		where 1=1
+		<if test="isProfit !=null and isProfit==1">
+			and so.payment_time>=sm.profit_time
+		</if>
+	</select>
+	
+	<!-- 根据会员id查询订单记录 -->
+	<select id="findOrderByMemId" resultMap="baseResultModel" >
+		select a.ORDER_SN,a.CREATE_TIME 
+		from shop_order a 
+		where a.MEMBER_ID = #{memberId}
+	</select>
+	<!-- 查询代发货订单 -->
+	<select id="selectConsignmentOrders" resultType="map" >
+		select 
+			so.order_id as orderId,
+			so.order_sn as orderSn,
+			so.order_status as orderStatus,
+			so.goods_count as goodsCount,
+			so.buy_count as buyCount,
+			so.goods_amount as goodsAmount,
+			so.ship_amount as shipAmount,
+			so.discount as discount,
+			so.order_amount as orderAmount,
+			so.create_time as createTime,
+			so.ship_type as shipType,
+			so.payment_name as paymentName,
+			so.is_receipt as isReceipt,
+			sc.store_name as comName
+		from shop_order so
+		left join shop_company sc on so.com_id=sc.com_id
+		where so.delete_flag=0
+			and so.com_id=#{comId}
+			and so.order_status in (1,2,3)
+			order by so.create_time desc 
+	</select>
+	<!-- 查询昨日订单 -->
+	<select id="selectYesterdayOrders" resultType="map">
+	<![CDATA[
+		select 
+			so.order_id as orderId,
+			so.order_sn as orderSn,
+			so.order_status as orderStatus,
+			so.goods_count as goodsCount,
+			so.buy_count as buyCount,
+			so.goods_amount as goodsAmount,
+			so.ship_amount as shipAmount,
+			so.discount as discount,
+			so.order_amount as orderAmount,
+			so.create_time as createTime,
+			so.ship_type as shipType,
+			so.payment_name as paymentName,
+			so.is_receipt as isReceipt
+		from shop_order so
+		where so.delete_flag=0
+			and so.com_id=#{comId}
+			and DATEDIFF(date_format(NOW( ),'%Y-%m-%d'),date_format(so.CREATE_TIME,'%Y-%m-%d'))=1
+			order by so.create_time desc 
+			]]>
+	</select>
+	<!-- 查询自营首页统计数据 -->
+	<select id="selectStatisticsCount" resultType="map" >
+	
+		(select 'consignmentOrdersCount' as type, count(1) as count2 from shop_order so 
+				where so.delete_flag=0 
+				<if test="comId != null ">
+				  and so.com_id = #{comId}
+				</if>
+				<if test="comIds != null ">
+				  and so.com_id = #{comIds}
+				</if>
+				  and so.order_status in (1,2,3))
+		UNION ALL(
+				select 'yesterdayOrdersCount' as type, count(1) 
+				  from shop_order so 
+				 where so.delete_flag=0
+				<if test="comId != null ">
+				  and so.com_id = #{comId}
+				</if>
+				<if test="comIds != null ">
+				  and so.com_id = #{comIds}
+				</if>
+				   <![CDATA[
+				   and DATEDIFF(date_format(NOW( ),'%Y-%m-%d'),date_format(so.CREATE_TIME,'%Y-%m-%d'))=1
+				   ]]> 
+		)UNION ALL(
+				 select 'newUserYesterdayCount' as type, count(1)  from shop_member a 
+ 	            where 
+ 	             <![CDATA[
+ 	            DATEDIFF(date_format(NOW( ),'%Y-%m-%d'),date_format(a.regtime,'%Y-%m-%d'))=1  
+ 	            ]]> 
+ 	            order by regtime DESC
+		)UNION ALL(
+				select 'yesterdayTradingVolumeCount' as type , IFNULL(SUM(b.ORDER_AMOUNT),0)
+				  from shop_member a,shop_order b, shop_company c
+			   where a.member_id = b.MEMBER_ID 
+			     and b.COM_ID = c.COM_ID
+			 <if test="comId != null ">
+				 and c.com_id = #{comId}
+		    </if>
+			<if test="comIds != null ">
+				 and c.com_id = #{comIds}
+			</if>
+				 and b.ORDER_STATUS = 1 
+				   <![CDATA[
+				   and DATEDIFF(date_format(NOW( ),'%Y-%m-%d'),date_format(b.PAYMENT_TIME,'%Y-%m-%d'))=1
+				   ]]> 
+		)UNION ALL(
+			select 'yesterdayRechargeCount'as type, IFNULL(SUM(c.pay_amount),0) 
+		      from shop_member a,shop_order b, shop_pay_order c, shop_company d
+			   where a.member_id = b.MEMBER_ID 
+			     and b.MEMBER_ID = c.member_id 
+			     and b.COM_ID = d.COM_ID
+			 <if test="comId != null ">
+				 and d.com_id = #{comId}
+		    </if>
+			<if test="comIds != null ">
+				 and d.com_id = #{comIds}
+			</if>
+				 and c.pay_status = 1 
+				 and b.ORDER_STATUS = 1 
+		       <![CDATA[
+		       and DATEDIFF(date_format(NOW( ),'%Y-%m-%d'),date_format(c.pay_time,'%Y-%m-%d'))=1
+		       ]]>  
+		)UNION ALL(
+			   select 'newShopkeeperYesterdayCount'as type,COUNT(1) from shop_member 
+		        where identity_id = 1 and
+		        <![CDATA[
+		        DATEDIFF(date_format(NOW( ),'%Y-%m-%d'),date_format(become_shopowner_time,'%Y-%m-%d'))=1
+		        ]]> 
+		)UNION ALL(
+			   select 'reviewSalesYesGoodsCount' as type,COUNT(1) 
+			     from shop_goods sg 
+			     left join shop_company sc on sg.com_id=sc.com_id
+                where 1=1 AND sg.market_enable =0  
+                <if test="comId != null ">
+				  and sc.com_id != #{comId}
+				</if>
+				<if test="comIds != null ">
+				  and sc.com_id = #{comIds}
+				</if>
+		)UNION ALL(
+			   select 'saleingGoodsCount' as type, COUNT(1) 
+			     from shop_goods sg 
+			     left join shop_company sc on sg.com_id=sc.com_id
+                where 1=1 AND market_enable =1   				
+                <if test="comId != null ">
+				  and sg.com_id != 0 
+				</if>
+				<if test="comIds != null ">
+				  and sg.com_id = #{comIds}
+				</if>
+		)UNION ALL(
+			   select 'zReviewSalesYesGoodsCount' as type ,COUNT(1) 
+			     from shop_goods sg 
+			     left join shop_company sc on sg.com_id=sc.com_id
+                where 1=1 AND market_enable =0  and sg.com_id = 0
+		)UNION ALL(
+			   select 'zSaleingGoodsCount' as type ,COUNT(1) 
+			     from shop_goods sg 
+			     left join shop_company sc on sg.com_id=sc.com_id
+                where 1=1 AND market_enable =1  and sg.com_id = 0
+	    )
+	</select>
+	<!-- 根据订单ID修改供应商Id -->
+	<update id="updateComIdByOrderId">
+		update shop_order set com_id=#{comId},order_status=#{orderStatus} where order_id=#{orderId}
+	</update>
+	
+	<!-- 修改订单支付成功状态 -->
+	<update id="updateOrderPayStatus">
+		update shop_order set
+			order_status=#{orderStatus},
+			pay_status=#{payStatus},
+			ship_status=#{shipStatus},
+			payment_id=#{paymentId},
+			payment_name=#{paymentName},
+			payment_type=#{paymentType},
+			pay_money=#{payMoney},
+			payment_time=#{paymentTime}
+		where order_id=#{orderId} or parent_id=#{orderId}	
+	</update>
+	
+	<!-- 修改订单状态 -->
+	<update id="updateOrderStatus">
+		update shop_order set 
+			order_status=#{orderStatus} 
+			<if test="payStatus != null ">
+				,pay_status=#{payStatus} 
+			</if>
+			<if test="shipStatus != null ">
+				,ship_status=#{shipStatus} 
+			</if>
+		where order_id=#{orderId}
+	</update>
+
+	<!-- 根据订单号修改订单状态 -->
+	<update id="updateOrderStatusByOrderSn">
+		update shop_order set 
+			order_status=#{orderStatus} 
+			<if test="payStatus != null ">
+				,pay_status=#{payStatus} 
+			</if>
+			<if test="shipStatus != null ">
+				,ship_status=#{shipStatus} 
+			</if>
+		where order_sn=#{orderSn}
+	</update>
+
+	<!-- 订单伪删除 -->
+	<update id="updateDeleteFlag">
+		update shop_order set delete_flag=1 where order_id=#{orderId}
+	</update>
+	
+	<!-- 修改订单分润状态 -->
+	<update id="updateOfProfitStatus">
+		update shop_order set profit_status=#{profitStatus} where order_id=#{orderId}
+	</update>
+	
+	<!-- 自动收货 -->
+	<update id="updateOfReceipt">
+		update shop_order SET signing_time=NOW(),order_status=#{newOrderStatus} 
+		WHERE TO_DAYS( NOW( ) ) - TO_DAYS( DELIVER_TIME) >= #{day} and order_status=#{orderStatus}
+	</update>
+	
+	<!-- 自动完成订单 -->
+	<update id="updateOfComplete">
+		UPDATE shop_order SET order_status=#{newOrderStatus}  
+		WHERE TO_DAYS( NOW( ) ) - TO_DAYS( signing_time) >= #{day} and order_status=#{orderStatus}
+	</update>
+	
+	<!-- 修改订单上级分润状态 -->
+	<update id="updateSubProfitStatus">
+		update shop_order set sub_profit_status=#{profitStatus} where order_id=#{orderId}
+	</update>
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.Order">
+		<id column="order_id" jdbcType="BIGINT" property="orderId" />
+		<result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+		<result column="parent_id" jdbcType="BIGINT" property="parentId" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="order_status" jdbcType="TINYINT" property="orderStatus" />
+		<result column="pay_status" jdbcType="TINYINT" property="payStatus" />
+		<result column="ship_status" jdbcType="TINYINT" property="shipStatus" />
+		<result column="payment_id" jdbcType="INTEGER" property="paymentId" />
+		<result column="payment_name" jdbcType="VARCHAR" property="paymentName" />
+		<result column="payment_type" jdbcType="VARCHAR" property="paymentType" />
+		<result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime" />
+		<result column="ship_id" jdbcType="INTEGER" property="shipId" />
+		<result column="ship_type" jdbcType="VARCHAR" property="shipType" />
+		<result column="ship_address" jdbcType="VARCHAR" property="shipAddress" />
+		<result column="pay_money" jdbcType="DECIMAL" property="payMoney" />
+		<result column="ship_name" jdbcType="VARCHAR" property="shipName" />
+		<result column="ship_addr" jdbcType="VARCHAR" property="shipAddr" />
+		<result column="ship_zip" jdbcType="VARCHAR" property="shipZip" />
+		<result column="ship_email" jdbcType="VARCHAR" property="shipEmail" />
+		<result column="ship_mobile" jdbcType="VARCHAR" property="shipMobile" />
+		<result column="ship_tel" jdbcType="VARCHAR" property="shipTel" />
+		<result column="ship_day" jdbcType="VARCHAR" property="shipDay" />
+		<result column="goods_amount" jdbcType="DECIMAL" property="goodsAmount" />
+		<result column="ship_amount" jdbcType="DECIMAL" property="shipAmount" />
+		<result column="discount" jdbcType="DECIMAL" property="discount" />
+		<result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+		<result column="weight" jdbcType="DECIMAL" property="weight" />
+		<result column="goods_count" jdbcType="INTEGER" property="goodsCount" />
+		<result column="remarks" jdbcType="CLOB" property="remarks" />
+		<result column="complete_time" jdbcType="TIMESTAMP" property="completeTime" />
+		<result column="ship_province_id" jdbcType="VARCHAR" property="shipProvinceId" />
+		<result column="ship_city_id" jdbcType="VARCHAR" property="shipCityId" />
+		<result column="ship_district_id" jdbcType="VARCHAR" property="shipDistrictId" />
+		<result column="ship_province_name" jdbcType="VARCHAR" property="shipProvinceName" />
+		<result column="ship_city_name" jdbcType="VARCHAR" property="shipCityName" />
+		<result column="ship_district_name" jdbcType="VARCHAR" property="shipDistrictName" />
+		<result column="the_sign" jdbcType="VARCHAR" property="theSign" />
+		<result column="signing_time" jdbcType="TIMESTAMP" property="signingTime" />
+		<result column="allocation_time" jdbcType="TIMESTAMP" property="allocationTime" />
+		<result column="coupon_id" jdbcType="BIGINT" property="couponId" />
+		<result column="source" jdbcType="INTEGER" property="source" />
+		<result column="order_type" jdbcType="INTEGER" property="orderType" />
+		<result column="is_receipt" jdbcType="INTEGER" property="isReceipt" />
+		<result column="deliver_time" jdbcType="TIMESTAMP" property="deliverTime" />
+		<result column="buy_count" jdbcType="INTEGER" property="buyCount" />
+		<result column="member_remarks" jdbcType="VARCHAR" property="memberRemarks" />
+		<result column="receipt_head" jdbcType="VARCHAR" property="receiptHead" />	
+		<result column="receipt_content" jdbcType="VARCHAR" property="receiptContent" />
+		<result column="receipt_mobile" jdbcType="VARCHAR" property="receiptMobile" />
+		<result column="receipt_email" jdbcType="VARCHAR" property="receiptEmail" />
+		<result column="checkout_status" jdbcType="TINYINT" property="checkoutStatus" />
+		<result column="com_id" jdbcType="INTEGER" property="comId" />
+		<result column="com_name" jdbcType="VARCHAR" property="comName" />
+		<result column="evaluate_status" jdbcType="TINYINT" property="evaluateStatus" />
+		<result column="split_order" jdbcType="TINYINT" property="splitOrder" />
+		<result column="top_order_status" jdbcType="TINYINT" property="topOrderStatus" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="delete_flag" jdbcType="SMALLINT" property="deleteFlag" />
+		<result column="IS_SHOPKEEPER_ORDER" jdbcType="SMALLINT" property="isShopkeeperOrder" />
+		<result column="right_close_status" jdbcType="SMALLINT" property="rightCloseStatus" />
+	</resultMap>
+	
+	<resultMap id="baseResultMap" type="map">
+		<id column="order_id"   property="orderId" />
+		<result column="order_sn" property="orderSn" />
+		<result column="order_status" property="orderStatus" />
+		<result column="order_status1" property="orderStatus1" />
+		<result column="goods_count" property="goodsCount" />
+		<result column="buy_count" property="buyCount" />
+		<result column="goods_amount" property="goodsAmount" />
+		<result column="ship_amount" property="shipAmount" />
+		<result column="discount" property="discount" />
+		<result column="order_amount" property="orderAmount" />
+		<result column="create_time" property="createTime" />
+		<result column="ship_type" property="shipType" />
+		<result column="payment_name" property="paymentName" />
+		<result column="payment_time" property="paymentTime" />
+		<result column="is_receipt" property="isReceipt" />
+		<result column="ship_name" property="shipName" />
+		<result column="ship_mobile" property="shipMobile" />
+		<result column="ship_tel" property="shipTel" />
+		<result column="ship_province_name" property="shipProvinceName" />
+		<result column="ship_city_name" property="shipCityName" />
+		<result column="ship_district_name" property="shipDistrictName" />
+		<result column="ship_addr" property="shipAddr" />
+		<result column="store_name" property="comName" />
+		<collection property="goodsList" column="order_id" javaType="ArrayList" select="com.qyy.jyshop.dao.OrderItemsDao.selectProductListByOrderId" />
+	</resultMap>
+	
+</mapper>

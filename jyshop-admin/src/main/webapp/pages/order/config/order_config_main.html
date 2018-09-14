@@ -1,0 +1,348 @@
+<form id="submitForm" class="form-horizontal">
+    <input name="id" th:value="${config.id}" hidden="hidden" />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel">
+                
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ul class="nav nav-pills bs-tabdrop-example">
+                                <li class="active"><a href="#bs-tabdrop-pill1" data-toggle="tab">订单流程设置</a></li>
+                                <li><a href="#bs-tabdrop-pill2" data-toggle="tab">维权流程设置</a></li>
+                                <li><a href="#bs-tabdrop-pill3" data-toggle="tab">自动好评内容设置</a></li>
+                            </ul>
+                            <div class="tab-content">
+                            	<!-- 订单流程设置 -->
+                            	<div id="bs-tabdrop-pill1" class="tab-pane active">
+                            		<table>
+										<tr>
+											<td>在线支付未支付订单</td>
+											<td><input type="text" name="hourOrderAutoClose" th:value="${config.hourOrderAutoClose}" />
+											</td>
+											<td>小时后自动关闭</td>
+										</tr>
+										<tr>
+											<td>普通商品，发货后</td>
+											<td><input type="text" name="dayCommonAutoConfirm" th:value="${config.dayCommonAutoConfirm}" />
+											</td>
+											<td>天后买家未操作，系统自动确认收货（请考虑物流运输时间）</td>
+										</tr>
+										<tr>
+											<td>已收货订单</td>
+											<td><input type="text" name="dayLegalAutoClose" th:value="${config.dayLegalAutoClose}" />
+											</td>
+											<td>天后不发起维权，则关闭维权功能</td>
+										</tr>
+										<tr>
+											<td>海外商品</td>
+											<td><input type="text" name="dayOverseaAutoConfirm" th:value="${config.dayOverseaAutoConfirm}" />
+											</td>
+											<td>天后买家未操作，系统自动确认收货（请考虑物流运输时间）</td>
+										</tr>
+									</table>
+                            	</div>
+
+                                <!-- 维权流程设置 -->
+                                <div id="bs-tabdrop-pill2" class="tab-pane">
+                                	<table>
+										<tr>
+											<td>买家发起退款申请</td>
+											<td><input type="text" name="dayRefundAutoAgree" th:value="${config.dayRefundAutoAgree}" />
+											</td>
+											<td>天后未处理，系统将自动同意维权</td>
+										</tr>
+										<tr>
+											<td>买家发起退货退款申请</td>
+											<td><input type="text" name="dayBackAutoAgree" th:value="${config.dayBackAutoAgree}" />
+											</td>
+											<td>天后未处理，系统将自动同意维权(不生效)</td>
+										</tr>
+										<tr>
+											<td>买家维权退货</td>
+											<td><input type="text" name="dayReturnAutoAgree" th:value="${config.dayReturnAutoAgree}" />
+											</td>
+											<td>天后未处理，系统将自动同意退款(不生效)</td>
+										</tr>
+										<tr>
+											<td>卖家同意退货</td>
+											<td><input type="text" name="dayDealLegalLimit" th:value="${config.dayDealLegalLimit}" />
+											</td>
+											<td>天后买家未处理，系统自动关闭维权，不可再次发起(不生效)</td>
+										</tr>
+									</table>
+                                </div>
+                                <!-- 自动好评内容设置 -->
+                                <div id="bs-tabdrop-pill3" class="tab-pane">
+                                	<table>
+										<tr>
+											<td>已收货订单</td>
+											<td><input type="text" name="dayAutoComment" th:value="${config.dayAutoComment}" />
+											</td>
+											<td>天后自动评价，默认为好评，随机上传某条好评内容。</td>
+										</tr>
+									</table>
+                                
+                                	<br/>
+                                	<br/>
+                                	<!-- <div class="col-md-3" style="text-align: left;padding-bottom: unset">
+								        <button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:showModal('添加自动评论', 'admin/orderConfig/preAddContent', 450);"><span class="btn-label icon fa fa-plus"></span>添加</button>
+								    </div> -->
+								    <input type="button" class="btn btn-labeled btn-primary" id="addBtn"  onclick="javascript:showModal('添加自动评论', '/admin/orderConfig/preAddContent', 450);" value="添加"></input>
+								    <br/>
+								    <div style="width:800px">
+	                                	<div class="openAppGrid">
+											<div id="openAppGrid"></div>
+										</div>
+									</div>
+									
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="button" value="保存" onclick="saveParams()" /> 
+</form>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	
+	function saveParams(){
+		$('#submitForm').data('bootstrapValidator').validate();
+        if($('#submitForm').data('bootstrapValidator').isValid()){
+			$.ajax({
+	            url: _urlPath +'admin/orderConfig/editOrderConfig',
+	            method: "POST",
+	            data:$('#submitForm').serialize(),
+	            dataType:"json",
+	            success:function(reslut) {
+	                if (reslut.retcode == 0) {
+	                    $.growl.notice({title:'修改成功', message: reslut.retmsg });
+	                    goPage(_urlPath +'admin/orderConfig/orderConfigMain');
+	                }else {
+	                    $("#sumbitBtn").attr("disabled",false);
+	                    $.Err(reslut.retmsg);
+	                }
+	            }
+	        });
+        }
+	}
+	
+	$(function(){
+		
+		$('#submitForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+            	hourOrderAutoClose: {
+                    validators: {
+                        notEmpty: {
+                            message: '在线支付未支付订单时间x小时后自动关闭,不能为空'
+    					},
+						regexp : {
+							regexp : /^([1-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9](\d*[0])*)$/,
+							message : '请输入不小于0的数字~'
+						},
+						greaterThan : {
+    						message: '不能小于0.01',
+    			            value: 0.01
+    					},
+    					lessThan : {
+    						message: '不能大于9999',
+    			            value: 9999
+    					}
+    					
+                    }
+                },
+                dayCommonAutoConfirm: {
+                    validators: {
+                        notEmpty: {
+                            message: '普通商品，发货后x天后买家未操作，系统自动确认收货,不能为空'
+    					},
+    					regexp : {
+							regexp : /^([1-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9](\d*[0])*)$/,
+							message : '请输入不小于0的数字~'
+						},
+						greaterThan : {
+    						message: '不能小于0.01',
+    			            value: 0.01
+    					},
+    					lessThan : {
+    						message: '不能大于9999',
+    			            value: 9999
+    					}
+    					
+                    }
+                },
+                dayLegalAutoClose: {
+                    validators: {
+                        notEmpty: {
+                            message: '已收货订单x天后不发起维权，则关闭维权功能,不能为空'
+    					},
+    					regexp : {
+							regexp : /^([1-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9](\d*[0])*)$/,
+							message : '请输入不小于0的数字~'
+						},
+						greaterThan : {
+    						message: '不能小于0.01',
+    			            value: 0.01
+    					},
+    					lessThan : {
+    						message: '不能大于9999',
+    			            value: 9999
+    					}
+                    }
+                },
+                dayOverseaAutoConfirm: {
+                    validators: {
+                        notEmpty: {
+                            message: '海外商品x天后买家未操作，系统自动确认收货,不能为空'
+    					},
+    					regexp : {
+							regexp : /^([1-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9](\d*[0])*)$/,
+							message : '请输入不小于0的数字~'
+						},
+						greaterThan : {
+    						message: '不能小于0.01',
+    			            value: 0.01
+    					},
+    					lessThan : {
+    						message: '不能大于9999',
+    			            value: 9999
+    					}
+    					
+                    }
+                },
+                dayRefundAutoAgree: {
+                    validators: {
+                        notEmpty: {
+                            message: '买家发起退款申请x天后未处理，系统将自动同意维权,不能为空'
+    					},
+    					regexp : {
+							regexp : /^([1-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9](\d*[0])*)$/,
+							message : '请输入不小于0的数字~'
+						},
+						greaterThan : {
+    						message: '不能小于0.01',
+    			            value: 0.01
+    					},
+    					lessThan : {
+    						message: '不能大于9999',
+    			            value: 9999
+    					}
+    					
+                    }
+                },
+                dayBackAutoAgree: {
+                    validators: {
+                        notEmpty: {
+                            message: '买家发起退货退款申请x天后未处理，系统将自动同意维权,不能为空'
+    					},
+						regexp : {
+							regexp : /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/,
+							message : '请输入不小于0的数字~'
+						},
+						greaterThan : {
+    						message: '不能小于0.01',
+    			            value: 0.01
+    					},
+    					lessThan : {
+    						message: '不能大于9999',
+    			            value: 9999
+    					}
+    					
+                    }
+                },
+                dayReturnAutoAgree: {
+                    validators: {
+                        notEmpty: {
+                            message: '买家维权退货x天后未处理，系统将自动同意退款,不能为空'
+    					},
+    					regexp : {
+							regexp : /^([1-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9](\d*[0])*)$/,
+							message : '请输入不小于0的数字~'
+						},
+						greaterThan : {
+    						message: '不能小于0.01',
+    			            value: 0.01
+    					},
+    					lessThan : {
+    						message: '不能大于9999',
+    			            value: 9999
+    					}
+    					
+                    }
+                },
+                dayDealLegalLimit: {
+                    validators: {
+                        notEmpty: {
+                            message: '卖家同意退货x天后买家未处理，系统自动关闭维权，不可再次发起,不能为空'
+    					},
+    					regexp : {
+							regexp : /^([1-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9](\d*[0])*)$/,
+							message : '请输入不小于0的数字~'
+						},
+						greaterThan : {
+    						message: '不能小于0.01',
+    			            value: 0.01
+    					},
+    					lessThan : {
+    						message: '不能大于9999',
+    			            value: 9999
+    					}
+                    }
+                },
+                dayAutoComment: {
+                    validators: {
+                        notEmpty: {
+                            message: '已收货订单x天后自动评价，默认为好评，随机上传某条好评内容,不能为空'
+    					},
+    					regexp : {
+							regexp : /^([1-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9](\d*[0])*)$/,
+							message : '请输入不小于0的数字~'
+						},
+						greaterThan : {
+    						message: '不能小于0.01',
+    			            value: 0.01
+    					},
+    					lessThan : {
+    						message: '不能大于9999',
+    			            value: 9999
+    					}
+                    }
+                },
+            }
+        });
+		
+		
+		$("#openAppGrid").sgrid({
+            columns:[
+                {field:"content", text:"好评内容",style:"text-align:center"},
+                {field:"id", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                	var editUrl = "/admin/orderConfig/preEditContent/" + content;
+                	var delUrl = "/admin/orderConfig/delContent/" + content;
+	                return "&nbsp;<a href='javascript:showModal(\"设置好评内容\", \""+editUrl+"\");' data-original-title='修改' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改</i></a>"
+	                +"&nbsp;<a href='javascript:showCfm(\"确定删除该条评论\", \""+delUrl+"\");'  data-original-title='删除' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/orderConfig/pageContentAjax",
+            sort:"id",
+            order:"desc",
+            pagination:false,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+	});
+	
+	/*]]>*/
+</script>

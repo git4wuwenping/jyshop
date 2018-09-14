@@ -1,0 +1,28 @@
+<div th:fragment="order_log" class="tab-pane" id="bs-tabdrop-pill2" style="width: 100%">
+	<div class="table-info">
+    	<table class="table table-bordered">
+        	<thead>
+            	<tr style="text-align:center">
+                	<th class="text-center">序号</th>
+                    <th class="text-center">操作者id</th>
+                    <th class="text-center">操作者用户名</th>
+                    <th class="text-center">操作时间</th>
+                    <th class="text-center">操作内容</th>
+                    <th class="text-center">支付方式</th>
+                    <th class="text-center">操作用户类型</th>
+                </tr>
+            </thead>
+            <tbody>
+            	 <tr th:if="${orderLogList!=null}" th:each="orderLog:${orderLogList}" style="text-align:center">
+                 	<td th:text="${orderLog.logId}"></td>
+                    <td th:text="${orderLog.opId}"></td>
+                    <td th:text="${orderLog.opUser}"></td>
+                    <td th:text="${#dates.format(orderLog.creationTime, 'yyyy-MM-dd hh:mm:ss')}"></td>
+                    <td th:text="${orderLog.message}"></td>
+                    <td th:text="${orderLog.paymentName}"></td>  
+                    <td th:text="${orderLog.userType}"></td>
+                 </tr>
+            </tbody>
+    	</table>
+	</div>
+</div>

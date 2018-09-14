@@ -1,0 +1,42 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+    <div class="col-md-3" style="text-align: left;padding-bottom: unset">
+        <button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:showModal('添加类型', '/admin/goodstype/preAddGoodsType', 450);"><span class="btn-label icon fa fa-plus"></span>添加类型</button>
+    </div>
+  </div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"typeId",text:"类型ID", sortColumn:"typeId"},
+                {field:"typeName", text:"类型名称"},
+                {field:"typeId", text:"关联规格",style:"text-align:center",formatter:function(index, content, data){
+                	var editUrl = "/admin/goodstype/prePutSpec/" + content;
+                    return "<a href='javascript:showModal(\"关联规格\", \""+editUrl+"\");' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改</i></a>";
+                }},
+                {field:"typeId", text:"操作", style:"text-align:center", formatter:function(index, content, data){
+
+                	var editUrl = "/admin/goodstype/preEditGoodsType/" + content;
+                	var delUrl = "/admin/goodstype/delGoodsType/" + content;
+                    return "<a href='javascript:showModal(\"更新类型\", \""+editUrl+"\");' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改</i></a>"+
+                    	   "&nbsp;<a href='javascript:showCfm(\"确定删除该类型\", \""+delUrl+"\");'  data-original-title='删除' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+                	
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/goodstype/pageGoodsTypeAjax",
+            sort:"typeId",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+    /*]]>*/
+</script>

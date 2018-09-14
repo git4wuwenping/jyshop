@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<data-dictionary>
+	
+	<group name="datadict_validation" description="数据字典校验属性">
+		<option label="强制校验" name="force_option" value="N" /><!-- Y or N -->
+	</group>
+	
+	<group name="order_status" description="订单状态">
+		<option label="己取消" name="order_cancel" value="-9" />
+		<option label="己退款" name="order_return_pay" value="-8" />
+		<option label="己退货" name="order_return_ship" value="-7" />
+		<option label="已换货" name="order_changed" value="-6" />
+		<option label="退货被拒绝" name="order_return_refuse" value="-5" />
+		<option label="换货被拒绝" name="order_change_refuse" value="-4" />
+		<option label="申请退款" name="order_refund_apply" value="-3" />
+		<option label="申请退货" name="order_return_apply" value="-2" />
+		<option label="申请换货" name="order_change_apply" value="-1" />
+		<option label="未付款/新订单" name="order_not_pay" value="0" /> 
+		<option label="已付款,待分配" name="order_pay" value="1" />
+		<option label="已分配,待确定" name="order_confirm" value="2" />
+		<option label="配货中" name="order_allocation" value="3" />
+		<option label="部分发货" name="order_partial_shiped" value="4" />
+		<option label="已发货,待收货" name="order_ship" value="5" />
+		<option label="已收货" name="order_rog" value="6" />
+		<option label="已完成" name="order_complete" value="7" />
+		<option label="作废" name="order_returnlation" value="8" />
+	</group>
+
+	<group name="bargain_order_status" description="砍价订单状态">
+		<option label="作废" name="order_returnlation" value="-9" />
+		<option label="新订单" name="order_new" value="0" />
+		<option label="己完成标靶订单" name="order_not_pay" value="1" />
+		<option label="已付款,待分配" name="order_pay" value="2" />
+		<option label="已分配,待确定" name="order_confirm" value="3" />
+		<option label="配货中" name="order_allocation" value="4" />
+		<option label="部分发货" name="order_partial_shiped" value="5" />
+		<option label="已发货,待收货" name="order_ship" value="6" />
+		<option label="已收货" name="order_rog" value="7" />
+		<option label="已完成" name="order_complete" value="8" />
+	</group>
+
+	<group name="spell_order_status" description="拼团订单状态">
+		<option label="己取消" name="order_cancel" value="-9" />
+		<option label="己退款" name="order_return_pay" value="-8" />
+		<option label="作废" name="order_returnlation" value="-7" />
+		<option label="待支付" name="order_not_pay" value="0" />
+		<option label="已支付" name="order_pay" value="1" />
+		<option label="已发货" name="order_ship" value="2" />
+		<option label="已完成" name="order_complete" value="3" />
+	</group>
+
+	<group name="pay_status" description="订单付款状态">
+		<option label="未付款" name="pay_no" value="0" />
+		<option label="已付款" name="pay_yes" value="1" />
+		<option label="已退款" name="pay_return" value="2" />
+		<option label="部分退款" name="pay_partial_return" value="3" />
+	</group>
+
+	<group name="ship_status" description="订单货运状态">
+		<option label="未配货" name="ship_allocation_no" value="0" />
+		<option label="配货中" name="ship_allocation_yes" value="1" />
+		<option label="部分发货" name="ship_partial_shiped" value="2" />
+		<option label="已发货,待收货" name="ship_yes" value="3" />
+		<option label="已收货" name="ship_receipt" value="4" />
+		<option label="已换货" name="ship_chaned" value="5" />
+		<option label="已退货" name="ship_return" value="6" />
+		<option label="部分换货" name="ship_partial_change" value="7" />
+		<option label="部分退货" name="ship_partial_return" value="8" />
+	</group>
+
+	<group name="order_items_status" description="子订单状态">
+		<option label="正常" name="items_normal" value="0" />
+		<option label="售后处理中" name="items_handle" value="1" />
+		<option label="已换货" name="items_chaned" value="2" />
+		<option label="已退货" name="items_refund" value="3" />
+		<option label="退款中" name="items_tuikuan" value="4" />
+		<option label="请退货" name="items_tuihuo" value="5" />
+		<option label="待卖家收货" name="items_shouhuo" value="6" />
+		<option label="已拒绝" name="items_jujue" value="7" />
+		<option label="退款成功" name="items_tuikuansuccess" value="8" />
+		<option label="待审核" name="items_daishenhe" value="9" />
+		<option label="已取消" name="items_quxiao" value="10" />
+		<option label="退款关闭" name="items_tuikuanclose" value="11" />
+		<option label="退款失败" name="items_tuikuanfail" value="12" />
+		<option label="待退货" name="items_daituihuo" value="13" />
+		<option label="待收货" name="items_daishouhuo" value="14" />
+		<option label="待退款" name="items_daituikuan" value="15" />
+	</group>
+   
+   <group name="allocation_status" description="配货单状态">
+		<option label="未配货" name="allocation_no" value="0" />
+		<option label="己配货" name="allocation_already" value="1" />
+		<option label="撤消配货" name="allocation_cancel" value="2" />
+	</group>
+	
+	<group name="right_type" description="维权类型">
+		<option label="仅退款" name="tuikuan" value="0" />
+		<option label="退货退款" name="tuihuotuikuan" value="1" />
+	</group>
+
+	<group name="delivery_type" description="发货类型">
+		<option label="发货" name="delivery" value="0" />
+		<option label="换货" name="changed" value="1" />
+		<option label="退货" name="return_ship" value="2" />
+	</group>
+	
+	<group name="is_usable" description="是否可用">
+		<option label="不可用" name="no" value="0" />
+		<option label="可用" name="yes" value="1" />
+	</group>
+	
+	<group name="goods_market_enable" description="商品是否上架">
+		<option label="审核未通过" name="examine_no" value="-2"></option>
+		<option label="下架" name="sales_no" value="-1"></option>
+		<option label="上架未审核" name="sales_apply" value="0"></option>
+		<option label="上架" name="sales_yes" value="1"></option>
+	</group>
+	
+	<group name="order_checkout_type" description="订单结算类型">
+		<option label="RMB" name="rmb" value="0"></option>
+		<option label="优惠券" name="coupon" value="1"></option>
+		<option label="活动" name="activity" value="2"></option>
+		<option label="红积分" name="red_point" value="3"></option>
+		<option label="运费" name="ship_amount" value="4"></option>
+		<option label="商品金额" name="goods_amount" value="5"></option>
+	</group>
+	
+		<group name="pay_type" description="支付类型">
+		<option label="预存款支付" name="advancepay" value="0" />
+		<option label="微信支付" name="wxpay" value="1" />
+		<option label="支付宝" name="alipay" value="2" />
+	</group>
+	
+	<group name="order_type" description="订单类型">
+		<option label="普通订单" name="order" value="0" />
+		<option label="支付订单" name="pay_order" value="1" />
+		<option label="礼包订单" name="gift_order" value="2" />
+		<option label="退货订单" name="right_order" value="3" />
+		<option label="砍价订单" name="bargain_order" value="4" />
+		<option label="拼团订单" name="spell_order" value="5" />
+	</group>
+	
+	<group name="req_type" description="请求类型">
+		<option label="H5请求" name="h5" value="0" />
+		<option label="IOS请求" name="ios_app" value="1" />
+	</group>
+	
+	<group name="user_type" description="用户类型">
+		<option label="用户" name="user" value="0" />
+		<option label="管理员" name="administrator" value="1" />
+		<option label="系统" name="system" value="99" />
+	</group>
+	
+	<group name="profit_status" description="分润状态">
+		<option label="待分润" name="profit_no" value="0" />
+		<option label="己分润" name="profit_yes" value="1" />
+	</group>
+	
+	<group name="point_type" description="积分类型">
+		<option label="云积分" name="cloud_point" value="0" />
+		<option label="黄积分" name="yellow_point" value="1" />
+		<option label="红积分" name="red_point" value="2" />
+	</group>
+	
+	<group name="use_type" description="使用类型">
+		<option label="获取" name="gain" value="0" />
+		<option label="消费" name="consume" value="1" />
+		<option label="提现" name="withdraw" value="2" />
+	</group>  
+	
+	 <group name="examine_status" description="审核状态">
+		<option label="审核失败" name="fail" value="-1" />
+		<option label="待审核" name="wait_examine" value="0" />
+		<option label="审核成功" name="success" value="1" />
+	</group>
+	
+	<group name="goods_type" description="商品类型">
+		<option label="普通商品" name="ordinary_goods" value="0" />
+		<option label="海外商品" name="overseas_goods" value="1" />
+	</group>
+	
+<!-- 	<group name="open_bank" description="开户行">
+		<option label="中国建设银行" name="CCB" value="1" />
+		<option label="中国农业银行" name="ABC" value="2" />
+		<option label="中国工商银行" name="ICBC" value="3" />
+		<option label="中国银行" name="BOC" value="4" />
+		<option label="中国民生银行" name="CMBC" value="5" />
+		<option label="招商银行 " name="CMB" value="6" />
+		<option label="兴业银行 " name="CIB" value="7" />
+		<option label="交通银行 " name="BCM" value="8" />
+		<option label="中国光大银行 " name="CEB" value="9" />
+		<option label="广东发展银行 " name="GDB" value="10" />
+	</group> -->
+	
+	<group name="open_bank" description="开户行">
+		<option label="中国建设银行" name="CCB" value="ccb.png" />
+		<option label="中国农业银行" name="ABC" value="abc.png" />
+		<option label="中国工商银行" name="ICBC" value="icbc.png" />
+		<option label="中国银行" name="BOC" value="boc.png" />
+		<option label="中国民生银行" name="CMBC" value="cmbc.png" />
+		<option label="招商银行 " name="CMB" value="cmb.png" />
+		<option label="兴业银行 " name="CIB" value="cib.png" />
+		<option label="交通银行 " name="BCM" value="bcm.png" />
+		<option label="中国光大银行 " name="CEB" value="ceb.png" />
+		<option label="广东发展银行 " name="GDB" value="gdb.png" />
+		<option label="中信银行 " name="chinaciticbank" value="chinaciticbank.png" />
+		<option label="平安银行 " name="Ping An Bank Co., Ltd." value="Ltd.png" />
+		<option label="中国邮政储蓄银行 " name="PSBC" value="psbc.png" />
+		<option label="华夏银行 " name="HXB" value="hxb.png" />
+		<option label="浦发银行 " name="SPDB" value="spdb.png" />
+		<option label="恒丰银行 " name=" EVERGROWINGBANK" value="evergrowing.png" />
+	</group>
+</data-dictionary>

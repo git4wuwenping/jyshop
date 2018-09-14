@@ -1,0 +1,76 @@
+<form id="submitDelivery" class="form-horizontal">
+<div th:fragment="order_log" class="tab-pane" id="bs-tabdrop-pill2" style="width: 100%">
+	<div class="table-info">
+    	<table id="batch_delivery_table" class="table table-bordered">
+        	<thead>
+            	<tr style="text-align:center">
+                	<th class="text-center">序号</th>
+                    <th class="text-center">订单号</th>
+                    <th class="text-center">订单金额</th>
+                    <th class="text-center">配送费用 </th>
+                    <th class="text-center">收货人</th>
+                    <th class="text-center">收货人手机号</th>
+                    <th class="text-center">收货人电话</th>
+                    <th class="text-center">地区</th>
+                    <th class="text-center">详细地址</th>
+                    <th class="text-center">快递公司</th>
+                    <th class="text-center">快递单号</th>
+                </tr>
+            </thead>
+            <tbody>
+            	 <tr th:if="${orderList!=null}" th:each="order:${orderList}" style="text-align:center">
+            	 <input  name="orderId" th:value="${order.orderId}" type="text" hidden="hidden" />
+                 	<td th:text="${orderStat.count}"></td>
+                    <td th:text="${order.orderSn}"></td>
+                    <td th:text="${order.orderAmount}"></td>
+                    <td th:text="${order.shipAmount}"></td>
+                    <td th:text="${order.shipName}"></td>
+                    <td th:text="${order.shipMobile}"></td>
+                    <td th:text="${order.shipTel}"></td>
+                    <td th:text="${order.shipProvinceName}+'-'+${order.shipCityName}+'-'+${order.shipDistrictName}"></td>
+                    <td th:text="${order.shipAddr}"></td>
+                    <td>
+                    	<select class="form-control span2" name="logiId">
+							<option th:each="logi:${logiList}" th:value="${logi.logiId}" th:text="${logi.logiName}" />
+						</select>
+					</td>
+                    <td>
+                    	<input class="form-control" type="text"  name="logiNo" placeholder="快递单号"/>
+                    </td>
+                 </tr>
+                 <tr th:if="${orderList==null}" style="text-align:center">
+                 	<td>
+                 		请选择待发货订单进行操作...
+                 	</td>
+                 </tr>
+            </tbody>
+    	</table>
+	</div>
+</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	submit = function(){
+		var delivery=true;
+		$.each($("table[id='batch_delivery_table'] tbody tr"),function(i,item){
+			var logiName=$(item).children("td").children("select").children("option:selected").val();
+			if(typeof logiName=='undefined' || logiName==null || logiName==''){
+				modalErr("请选择第"+(i+1)+"行的快递公司",'warning');
+				delivery=false;
+				return false;
+			}
+			var logiNo=$(item).children("td").children("input[name='logiNo']").val();
+			if(typeof logiNo=='undefined' || logiNo==null || logiNo.trim()==''){
+				modalErr("请输入第"+(i+1)+"行的快递单号",'warning');
+				delivery=false;
+				return false;
+			}
+		});
+		if(delivery){
+			var data = $("#submitDelivery").serialize();
+			ajaxRequest("/admin/order/batchDelivery", data);
+		}
+		
+	}
+	/*]]>*/
+</script>

@@ -1,0 +1,304 @@
+<form id="submitForm" class="form-horizontal">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel">
+				<div class="panel-heading">
+					<span class="panel-title">发送微信模版消息</span>
+				</div>
+				<div class="panel-body">
+					<ul class="nav nav-pills bs-tabdrop-example">
+						<li class="active"><a href="#bs-tabdrop-pill1"
+							data-toggle="tab">填写模版消息</a></li>
+						<li id="memberTab"><a href="#bs-tabdrop-pill2" data-toggle="tab">选择指定发送会员</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="col-sm-12 tab-pane active" id="bs-tabdrop-pill1">
+							<div class="panel">
+								<div class="panel-heading">
+									<span class="panel-title">消息模版内容</span>
+								</div>
+								<div class="panel-body">
+									<div th:each="dtl:${detail}">
+										<div class="form-group">
+											<label class="col-sm-3 control-label" th:for="${dtl.colKey}"><font
+												color="red">*</font><span th:text="${dtl.colText}"></span></label>
+											<div class="col-sm-8">
+												<input class="form-control some-change" type="text" th:id="${dtl.colKey}"
+													th:name="${dtl.colKey}" placeholder="请填写内容" />
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="col-sm-3 control-label"><font
+											color="red">*</font>发送范围：</label>
+										<div class="col-sm-8">
+											<div class="radio">
+												<label style="display: inline-block; width: 100px;">
+													<input th:checked="true" value="0" name="sendType"
+													type="radio" class="ace" onclick="javascript:clickSendTypeRadio(0);" />发送全站
+												</label> <label style="display: inline-block; width: 100px;">
+													<input value="1" name="sendType" type="radio" class="ace" onclick="javascript:clickSendTypeRadio(1);"
+													/>发送指定会员
+												</label>
+											</div>
+										</div>
+									</div>
+									
+								</div>
+							</div>
+							<div class="panel">
+								<div class="panel-heading">
+									<span class="panel-title">消息模版结果预览</span>
+								</div>
+								<div class="panel-body">
+									<div class="form-group" id="_content">
+										<!-- <label class="col-sm-3 control-label">预览：</label> -->
+										<div class="col-sm-8" th:each="dtl:${detail}">
+											<span th:id="e_ + ${dtl.colKey}" th:text="${dtl.colText}" class="effective_span"></span><br/>
+											<div style="display: none;" ><span th:id="t_ + ${dtl.colKey}" th:text="${dtl.colText}"></span><br/></div>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+
+							
+
+						</div>
+
+
+						<div class="col-sm-12 tab-pane" id="bs-tabdrop-pill2">
+							<div class="panel">
+								<div class="panel-heading">
+									<span class="panel-title">选择指定发送会员
+									</span>
+								</div>
+								<div class="panel-body">
+										<div class="col-md-3" style="text-align: left; padding-bottom: unset">
+											 <a href="javascript:selectMemberPage();" class="btn btn-info">点击添加发送会员</a>
+											 <a href="javascript:delAllRel();" class="btn btn-danger add-tooltip"><i class="fa fa-times">清除所有发送会员</i></a>
+										</div>
+										
+										
+										<div class="openAppGrid">
+											<div id="openAppGrid"></div>
+										</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div align="center">
+					<a href="javascript:sendMsg();" class="btn btn-info">发送</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+
+	function clickSendTypeRadio(data) {
+		if (data == 0) {
+			$("#memberTab").hide();
+		} else if (data == 1) {
+			$("#memberTab").show();
+		}
+	}
+
+	function selectMemberPage(){
+		var url = '/admin/wechat/msgTemplate/selectMember/'+[[${tplId}]] ;
+		showModal('选择会员', url ,'1200px');
+		
+	}
+	
+	function delAllRel(){
+		url = "/admin/wechat/msgTemplate/delAllRel/" + [[${tplId}]] ;
+		if(_urlPath!="/")
+			url=_urlPath+url;
+		$.Cfm("确认清除所有要发送的会员吗？",function(){
+	        $.ajax({
+	            url:  url,
+	            type:"post",
+	            dataType:"json",
+	            success: function (req){
+	                if (req.retcode == 0) {
+	                    $("#openAppGrid").sgrid("refresh");
+	                    $.Suc(req.retmsg);
+	                } else {
+	                    $.Err(req.retmsg);
+	                }
+	            }
+	        });
+	    });
+	}
+	
+	function sendMsg(){
+		var content = "";
+		var isTrue = 0;
+		var isValid = 0;
+		$(".some-change").each(function(){
+			if($(this).val() == undefined || $(this).val() == ""){
+				isTrue = isTrue + 1;
+			}else if($(this).val().length > 50){
+				isValid = isValid + 1;
+			}
+		});
+		
+		$("#_content").find("span").each(function(){
+			if($(this).attr("class") == "effective_span"){
+				content = $(this).text() + "<br/>" + content;
+			}
+		});
+		
+		if(isTrue == 0 && isValid == 0){
+			url = "/admin/wechat/msgTemplate/sendMsg" ;
+			if(_urlPath!="/")
+				url=_urlPath+url;
+			$.ajax({
+				url : url,
+				method : "POST",
+				data : $('#submitForm').serialize() + "&tplId=" + [[${tplId}]] + "&templateId=" + [[${templateId}]] + "&_content=" + content ,
+				dataType : "json",
+				success : function(result) {
+					if (result.retcode == 1) {
+						$.growl.notice({
+							title : '操作成功',
+							message : result.retmsg
+						});
+						goPage('/admin/wechat/msgTemplate/wxMsgTemplateMain');
+					} else {
+						$.Err(result.retmsg);
+					}
+				}
+			});
+		}else if(isTrue == 1 && isValid == 0){
+			alert("内容未填写完整");
+		}else if(isTrue == 0 && isValid == 1){
+			alert("内容长度不能超过50");
+		}else if(isTrue == 1 && isValid == 1){
+			alert("内容未填写完整,内容长度不能超过50");
+		}
+	}
+	
+	
+
+	$(function() {
+		$("#openAppGrid")
+		.sgrid(
+				{
+					columns : [
+							{
+								field : "memberId",
+								text : "会员id",
+								style : "text-align:center"
+							},
+							{
+								field : "weixinFace",
+								text : "头像",
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									return "<img src='"+content+"' width='50' height='50' >";
+								}
+							},
+							{
+								field : "nickname",
+								text : "昵称",
+								style : "text-align:center"
+							},
+							{
+								field : "identityId",
+								text : "身份",
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									if(content == 0){
+			                    		return "<font color='black'>代理</font>";
+			                    	}
+			                    	if(content == 1){
+			                    		return "<font color='black'>店长</font>";
+			                    	}
+			                    	if(content == 2){
+			                    		return "<font color='black'>普通客户</font>";
+			                    	}
+								}
+							},
+							{
+								field : "mobile",
+								text : "手机号",
+								style : "text-align:center"
+							},
+							{
+								field : "subscribe",
+								text : "是否订阅",
+								style : "text-align:center",
+								formatter : function(index, content,data) {
+									return content == 0 ? "<font color='blue'>已关注</font>" : "<font color='red'>未关注</font>";
+								}
+							},
+							{
+								field : "id",
+								text : "操作",
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									var delUrl = "/admin/wechat/msgTemplate/delMemberRel/"
+											+ content;
+									return "<a href='javascript:showCfm(\"确定删除该记录\", \""
+											+ delUrl
+											+ "\");' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+								}
+							} ],
+					cls : "",
+					url : _urlPath
+							+ "admin/wechat/msgTemplate/pageMemberRelAjax/"+ [[${tplId}]] ,
+					sort : "id",
+					order : "desc",
+					pagination : true,
+					onLoad : function() {
+						$(".add-tooltip").tooltip();
+					}
+				});
+
+		$("#memberTab").hide();
+		
+		$(".some-change").change(function(){
+			var t_id = "#t_" + $(this).attr("id");
+			var e_id = "#e_" + $(this).attr("id");
+			//{{first.DATA}}
+			$(e_id).text($(t_id).text().replace("{{"+$(this).attr("id")+".DATA}}",$(this).val()));
+			//alert($(t_id).text());
+			
+		});
+
+		
+
+		
+		
+		
+
+		$('.date').datetimepicker({
+			language : 'zh-CN',
+			monthsShort : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			forceParse : 0,
+			showMeridian : 0, //是否显示上下午
+			initialDate : new Date()
+		});
+
+		/* $("[class='couponGoodsRemove']").click(function(){
+			alert("123");
+			//$(this).parent().parent().parent().remove();
+		}); */
+
+	});
+	/*]]>*/
+</script>

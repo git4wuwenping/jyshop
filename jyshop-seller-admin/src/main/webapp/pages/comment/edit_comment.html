@@ -1,0 +1,78 @@
+<form id="submitForm" class="form-horizontal">
+	<input type="hidden" id="commentId" th:value="${comment.commentId}" />
+	<div class="form-group">
+		<label class="col-sm-3 control-label">状态：</label>
+		<div class="col-sm-8">
+			<span th:if="${comment.status == 0}" th:text="隐藏"></span>
+			<span th:if="${comment.status == 1}" th:text="显示"></span>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="col-sm-3 control-label">订单编号：</label>
+		<div class="col-sm-8">
+			<span th:text="${comment.orderId}"></span>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label">商品信息：</label>
+		<div class="col-sm-8">
+			<img th:src="${comment.image}" width="50" height="50" />
+			<span th:text="${comment.goodsId}"></span>
+			<span th:text="${comment.name}"></span>
+			
+
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label">评论时间：</label>
+		<div class="col-sm-8">
+			<span th:text="${comment.commentTime}"></span>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label">客户ID：</label>
+		<div class="col-sm-8">
+			<span th:text="${comment.memberId}"></span>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label">评价等级：</label>
+		<div class="col-sm-8">
+			<span th:if="${comment.score == 0}" th:text="好评"></span> <span
+				th:if="${comment.score == 1}" th:text="中评"></span> <span
+				th:if="${comment.score == 2}" th:text="差评"></span>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label">评价内容：</label>
+		<div class="col-sm-8">
+			<span th:text="${comment.content}"></span>
+			<!-- <textarea class="form-control" th:inline="text" id="content"
+				name="content" rows="3">[[${comment.content}]]</textarea> -->
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label">是否匿名：</label>
+		<div class="col-sm-8">
+			<span th:if="${comment.anonFlag == 0}" th:text="否"></span> <span
+				th:if="${comment.anonFlag == 1}" th:text="匿名"></span>
+		</div>
+	</div>
+	
+
+
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$(function() {
+		
+	});
+	/*]]>*/
+</script>

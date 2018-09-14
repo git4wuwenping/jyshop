@@ -1,0 +1,77 @@
+<form id="editSubmitForm" class="form-horizontal">
+	<input type="hidden" name="id" th:value="${ensureTemplate.id}"/>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="templateName"><font color="red">*</font>模板名称：</label>
+        <div class="col-sm-8">
+            <input class="form-control" id="templateName" name="templateName" th:value="${ensureTemplate.templateName}"/>
+            <div id="validation-templateName" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="tagOrder"><font color="red">*</font>标签内容：</label>
+        <div class="col-sm-8">
+            <div class="checkbox" style="display: inline-block" th:each="tag:${allTagList}">
+				<label>
+					<input type="checkbox" th:data="${tag.id}" class="px"/>
+					<span class="lbl" th:text="${tag.tagName}"></span>
+				</label>
+			</div>
+        </div>
+    </div> 
+    <input name="tagIds" id="tagIds" type="hidden" th:value="${tagIds}"/>
+    <input name="oldTagIds" id="oldTagIds" type="hidden" th:value="${tagIds}"/>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	submit = function(){
+		//frmValidate();
+		var tagIds = [];
+		$(".px").each(function(){
+			if($(this).is(':checked')){
+				tagIds.push($(this).attr('data'));
+			}
+			
+		});
+		$("#tagIds").val(tagIds.join(","));
+			
+		$('#editSubmitForm').data('bootstrapValidator').validate();
+        if($('#editSubmitForm').data('bootstrapValidator').isValid()){
+        	$("#editSubmitForm").attr("disabled", true);
+			var data = $("#editSubmitForm").serialize();
+			ajaxRequest("/admin/ensureTemplate/editEnsureTemplate", data);
+        }
+	}
+	
+	$(function(){
+		var tagIdsVal = $("#tagIds").val();
+		var tagIdArray = tagIdsVal.split(",");
+		tagIdArray.forEach(function(e){  
+			$(".px").each(function(){
+				if($(this).attr('data') == e){
+					$(this).attr("checked","checked");
+				}
+				
+			});
+		});
+		//if()
+		$('#editSubmitForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+            	templateName: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入保障模板名称'
+    					}
+                    }
+                }
+            }
+        });
+		
+	});
+	/*]]>*/
+</script>

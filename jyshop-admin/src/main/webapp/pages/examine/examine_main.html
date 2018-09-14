@@ -1,0 +1,130 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+ 	<div class="col-md-2" style="padding-bottom: 0px;width: 200px;"> 
+ 		<select class="form-control" id='paramSelect' style="width: 90%;display: inline;float:left;" onchange="paramSelect();" > 
+			<option value='' text="查询条件" >==查询条件==</option> 
+			<option value='1' text="商品名称">商品名称</option> 
+			<option value='0' text="经办人" >经办人</option> 
+	</select>
+ 	</div> 
+ 	<div class="col-md-2" style="padding-bottom: 0px;width: 200px;"> 
+ 		<select class="form-control" id='paramSelect2'
+ 		name='state' style="width: 90%;display: inline;float:left;" onchange="javascript:formSubmit();" > 
+			<option value='' text="查询条件" >==审核状态==</option> 
+			<option value='1' text="商品名称">驳回</option> 
+			<option value='0' text="经办人" >通过</option> 
+	</select>
+ 	</div> 
+  	<div class="col-md-2" style="width: 200px">
+		<input type="text" class="form-control search-query"  placeholder="查询条件" />
+	</div>
+    <div class="col-md-1" style="width: 105px;">
+        <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+    </div>
+    <div class="col-md-12" style="text-align: left;padding-bottom: unset;display:flex">
+		<div class='input-group date' style="width: 20%;">
+					<input type='text' class="form-control" name="minAddTime"
+						 placeholder="开始时间" />
+					 <span class="input-group-addon"> <span
+						class="glyphicon glyphicon-calendar"></span>
+					</span>
+					 
+		</div>
+		<span style="vertical-align: middle;font-size:20px">--</span>
+		<div class='input-group date' style="width: 20%;">
+					<input type='text' class="form-control" name="maxAddTime"
+						placeholder="结束时间" />  <span
+						class="input-group-addon">  <span
+						class="glyphicon glyphicon-calendar"></span>
+					</span> 
+				</div>
+    </div>
+  </div> 
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"examineId",text:"审核ID", sortColumn:"id",hidden:'hidden'},
+                {field:"goodsName", text:"审核商品"},
+                {field:"username", text:"经办人"},
+                {field:"marketEnable", text:"商品状态",formatter:function(index, content, data){
+                	if( content == 0 ){
+                    	return "<font color='blue'>待审核</font>";
+                	}
+                	if( content == -2 ){
+                    	return "<font color='blue'>未通过</font>";
+                	}
+                }},
+                {field:"state", text:"审核状态",formatter:function(index, content, data){
+                	if( content == 0 ){
+                    	return "<font color='blue'>待审核</font>";
+                	}
+                	if( content == 1 ){
+                    	return "<font color='blue'>审核通过</font>";
+                	}
+                	if( content == -1 ){
+                    	return "<font color='blue'>审核失败</font>";
+                	}
+                }},
+                {field:"operateTime", text:"经办时间",formatter:function(index, content, data){
+                	if(typeof content!='undefined' && content!=null&&content!='')
+                		return new Date(content).toLocaleString();
+                	else
+                		return '';
+                }},
+                {field:"remark", text:"备注"},
+                {field:"examineId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                	if(99 == data.roleId){
+                		return "禁止操作超级管理员";
+                	}else{
+	                    var checkUrl = "/admin/examine/preExamineDetials/" + content;
+	                    var staYesUrl = "/admin/examine/examineYes/" + content;
+	                    var staNoUrl = "/admin/examine/preExamineNo/" + content;
+	                    var opDiv = "&nbsp;<a href='javascript:goPage(\""+checkUrl+"\");' data-original-title='查看' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>查看</i></a>";
+						if(data.state==-1){
+							opDiv += "&nbsp;<a href='javascript:showCfm(\"通过\", \""+staYesUrl+"\");' data-original-title='通过' class='btn btn-xs btn-success add-tooltip><i class='fa fa-times'>通过</i></a>";
+						}else{
+							opDiv += "&nbsp;<a href='javascript:showCfm(\"通过\", \""+staYesUrl+"\");' data-original-title='通过' class='btn btn-xs btn-success add-tooltip><i class='fa fa-times'>通过</i></a>"
+							 + "&nbsp;<a href='javascript:showModal(\"您将驳回该商品，请填写审核失败原因，以便商家进行商品的修改\", \""+staNoUrl+"\");'  data-original-title='驳回' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>驳回</i></a>";
+						}
+						return opDiv;
+	                }
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/examine/pageExamineAjax",
+            sort:"id",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+        
+        $('.date').datetimepicker({
+			language : 'zh-CN',
+			monthsShort : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			forceParse : 0,
+			showMeridian : 0, //是否显示上下午
+			initialDate : new Date()
+		});
+    });
+    function paramSelect(){
+		var param = $('#paramSelect').val();
+		if(param==1){
+			$('.search-query').attr('name','goodsName');
+		}else if(param==0){
+			$('.search-query').attr('name','username');
+		}
+	}
+    /*]]>*/
+</script>

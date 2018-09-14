@@ -1,0 +1,82 @@
+<div th:fragment="content-wrapper" id="content-wrapper" style="padding-top:1px">
+<div th:if="${consignmentOrdersCount!=null}">
+ 	<div class="col-md-2" style="width: 100%;padding-top:1px"> 
+ 	
+ 	<div style="float: left;width: 50%;line-height:2.5em"> 
+ 		<label  style="text-align: left;padding-bottom:10px">订单统计</label><br/>
+ 		<div style="width: 35%;display: inline-block;background-color: white;border-radius:5px;padding:10px;margin-right: 50px" onclick="javascript:goPage('/admin/statistics/consignmentOrdersMain');" >
+	 		<span class="panel-title"  >待发货订单</span><br/>
+	 		<span th:text="${consignmentOrdersCount+'&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;'}" style="font-size: large;color: blue;" />单
+ 		</div>
+ 		<div style="width: 35%;display: inline-block;background-color: white;border-radius:5px;padding:10px;" onclick="javascript:goPage('/admin/statistics/yesterdayOrdersMain');" >
+	 		<span class="panel-title" >昨日订单</span><br/>
+	 		<span th:text="${yesterdayOrdersCount+'&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; '}" style="font-size: large;color: red;" />单
+ 		</div>
+ 	</div>
+ 	<div style="float: right;width: 50%;line-height:2.5em">	
+ 		 <label style="text-align: left;padding-bottom:10px">用户统计</label><br/>
+ 		 <div style="width: 35%;display: inline-block;background-color: white;border-radius:5px;padding:10px;margin-right: 50px" onclick="javascript:goPage('/admin/statistics/newUserYesterdayMain');">
+ 				<span class="panel-title" >昨日新增用户</span><br/>
+ 				<span th:text="${newUserYesterdayCount+'&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;'}" style="font-size: large;color: Darkorange  "/> 个
+ 		</div>
+ 		<div style="width: 35%;display: inline-block;background-color: white;border-radius:5px;padding:10px;" onclick="javascript:goPage('/admin/statistics/newShopkeeperYesterdayMain');" >
+ 				<span class="panel-title" >昨日新增店长</span><br/>
+ 				<span th:text="${newShopkeeperYesterdayCount+'&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; '}" style="font-size: large;color: green;"/>个
+ 		</div>
+ 	</div> 
+ </div>
+ 	
+ <div class="col-md-2" style="width: 100%;">
+ 	<div style="width: 100%;line-height:2.5em"> 
+ 		<label  style="text-align: left;padding-bottom:10px">交易统计</label><br/>
+ 		<div style="width: 30%;display: inline-block;background-color: white;border-radius:5px;padding:10px;"  >
+ 			<label  style="text-align: center;padding-bottom:10px">昨日订单交易总额</label><br/>
+	 		<span th:text="${'￥'+yesterdayTradingVolumeCount}" style="font-size: large;border-top:1px solid #ccc;width:100%;display: inline-block;" />
+ 		</div>
+ 		<div style="width: 30%;display: inline-block;background-color: white;border-radius:5px;padding:10px;"  >
+	 		<label style="text-align: center;padding-bottom:10px">昨日充值总额</label><br/>
+	 		<span th:text="${'￥'+yesterdayRechargeCount}" style="font-size: large;border-top:1px solid #ccc;width:100%;display: inline-block;" />
+ 		</div>
+ 		<div style="width: 30%;display: inline-block;background-color: white;border-radius:5px;padding:10px;"  >
+	 		<label style="text-align: center;padding-bottom:10px">昨日开店礼包总额</label><br/>
+	 		<span th:text="￥0.00" style="font-size: large;border-top:1px solid #ccc;width:100%;display: inline-block;" />
+ 		</div>
+ 	</div>
+ </div>
+ 
+ <div class="col-md-2" style="width: 100%;">
+ 	<label  style="text-align: left;padding-bottom:10px">商品统计</label><br/>
+ 	<div style="width: 45%;display: inline-block;background-color: white;border-radius:5px;padding:10px;margin-right: 10px"  >
+		 	<label  style="text-align: left;padding-bottom:10px;">商户</label><br/><br/>
+ 			<div style="display: inline-block;margin-right: 50px;margin-left: 20px;border-radius:5px;" onclick="javascript:goPage('/admin/goods/comGoodsMain?state=0');">
+ 			<!-- <div style="display: inline-block;margin-right: 50px;margin-left: 20px;border-radius:5px;" onclick="javascript:goPage('/admin/statistics/reviewSalesYesGoodsMain');"> -->
+	 			<label  style="text-align: center;padding-bottom:10px;">待审核商品</label><br/>
+		 		<span th:text="${reviewSalesYesGoodsCount}+'&nbsp;&nbsp;'" style="font-size: x-large;color: Cyan;" />款
+ 			</div>
+ 			<!-- <div style="display: inline-block;border: 1px solid #FF8C00; padding:10px;border-radius:5px;" onclick="javascript:goPage('/admin/statistics/saleingGoodsMain');"> -->
+ 			<div style="display: inline-block;text-align:center; ;border: 1px solid #FF8C00;margin-left: 40px;padding:10px;border-radius:5px" onclick="javascript:goPage('/admin/goods/comGoodsMain?state=1');">
+ 				<label  style="text-align: center;padding-bottom:10px">正售商品数量</label><br/>
+		 		<span th:text="${saleingGoodsCount}+'&nbsp;&nbsp;'" style="font-size: x-large;color: Darkorange" />款
+ 			</div>
+ 	</div>
+ 	
+ 	<div style="width: 45%;display: inline-block;background-color: white;border-radius:5px;padding:10px;"  >
+		 	<label  style="text-align: left;padding-bottom:10px;">直营</label><br/><br/>
+ 			<!-- <div style="display: inline-block;margin-right: 70px;border: 1px solid #B0C4DE;margin-left: 40px;padding:10px;border-radius:5px;width: 20%;text-align: center;" onclick="javascript:goPage('/admin/goods/dirGoodsMain?state=0');">
+	 			<label  style="text-align: center;padding-bottom:10px;">待审核商品</label><br/>
+		 		<span th:text="${zReviewSalesYesGoodsCount}+'&nbsp;&nbsp;'" style="font-size: x-large;color: Cyan;" />款
+ 			</div> -->
+ 			<div style="display: inline-block;margin-right: 70px;border: 1px solid #FF8C00; padding:10px;border-radius:5px;width: 20%;text-align: center;" onclick="javascript:goPage('/admin/goods/dirGoodsMain?state=1');">
+ 				<label  style="text-align: center;padding-bottom:10px">正售商品数量</label><br/>
+		 		<span th:text="${zSaleingGoodsCount}+'&nbsp;&nbsp;'" style="font-size: x-large;color: Darkorange" />款
+ 			</div>
+ 			<div style="display: inline-block;border: 1px solid #DC143C; padding:10px;border-radius:5px;width: 20%;text-align: center;">
+ 				<label  style="text-align: center;padding-bottom:10px">库存警报商品</label><br/>
+		 		<span th:text="0+'&nbsp;&nbsp;'" style="font-size: x-large;color: red" />款
+ 			</div>
+ 			<!-- zStockAlarmGoodsCount -->
+ 	</div>
+ </div>
+</div>
+</div>
+<div th:fragment="main-menu-bg" id="main-menu-bg"></div>

@@ -1,0 +1,133 @@
+<form id="submitForm" class="form-horizontal">
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="floorName"><font
+			color="red">*</font>专题标题：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="floorName"
+				name="floorName" placeholder="请填写专题标题" />
+		</div>
+	</div>
+	
+	<!-- <div class="form-group">
+		<label class="col-sm-3 control-label" for="floorSize"><font
+			color="red">*</font>楼层横向尺寸：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="floorSize"
+				name="floorSize" placeholder="请填写尺寸" />
+		</div>
+	</div>
+
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="disable">是否可用：</label>
+		<div class="col-sm-8">
+			<div class="radio">
+				<label style="display: inline-block; width: 50px;"> <input
+					th:checked="true" value="0" name="disable" type="radio" class="ace" />是
+				</label> <label style="display: inline-block; width: 50px;"> <input
+					value="1" name="disable" type="radio" class="ace" />否
+				</label>
+			</div>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="floorType">楼层类型：</label>
+		<div class="col-sm-8">
+			<div class="radio">
+				<label style="display: inline-block; width: 100px;"> <input
+					th:checked="true" value="1" name="floorType" type="radio" class="ace" />分类楼层
+				</label> <label style="display: inline-block; width: 100px;"> <input
+					value="2" name="floorType" type="radio" class="ace" />商品楼层 
+				</label> <label style="display: inline-block; width: 100px;"> <input
+					value="3" name="floorType" type="radio" class="ace" />品牌楼层  
+				</label>
+			</div>
+		</div>
+	</div> -->
+	
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="floorDesc">专题描述：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="floorDesc"
+				name="floorDesc" placeholder="请填写专题描述" />
+		</div>
+	</div>
+	
+	<!-- <div class="form-group">
+		<label class="col-sm-3 control-label" for="floorOrder">排序：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="floorOrder"
+				name="floorOrder" />
+			<div id="validation-floorOrder" class="validate-error help-block"></div>
+		</div>
+	</div> -->
+
+
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	submit = function() {
+		$('#submitForm').data('bootstrapValidator').validate();
+		if ($('#submitForm').data('bootstrapValidator').isValid()) {
+			$("button[class='btn btn-primary']").attr("disabled", true);
+			var data = $("#submitForm").serialize();
+			ajaxRequest("/admin/floor/addFloor", data)
+		}
+	}
+
+	$(function() {
+
+		$('#submitForm').bootstrapValidator({
+			message : 'This value is not valid',
+			feedbackIcons : {
+				valid : 'glyphicon glyphicon-ok',
+				invalid : 'glyphicon glyphicon-remove',
+				validating : 'glyphicon glyphicon-refresh'
+			},
+			fields : {
+				floorName : {
+					validators : {
+						notEmpty : {
+							message : '请输入楼层名称'
+						}
+					}
+				}/* ,
+				floorOrder: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入排序号'
+    					},
+    					numeric: {
+                            message: '请输入整数'
+    					},
+    					lessThan : {
+    						message: '排序不大于128',
+    			            value: 127
+    					}
+                    }
+                },
+				floorSize: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入尺寸'
+    					},
+    					numeric: {
+                            message: '请输入整数'
+    					},
+    					lessThan : {
+    						message: '排序不大于6',
+    			            value: 6
+    					},
+    					greaterThan : {
+    						message: '排序不小于1',
+    			            value: 1
+    					}
+                    }
+                } */
+			}
+		});
+	});
+
+	/*]]>*/
+</script>

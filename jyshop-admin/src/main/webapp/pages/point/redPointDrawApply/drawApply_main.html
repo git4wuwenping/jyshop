@@ -1,0 +1,126 @@
+<div class="page-header"
+	style="padding: 10px 20px; margin: -18px 0px 0px">
+	<div id="searchForm">
+		<div class="col-md-2" style="padding-bottom: 0px; width: 200px;">
+			<select class="form-control" name="conditionType">
+				<option value="1" text="提现单号" selected="selected">提现单号</option>
+				<option value="2" text="用户ID">用户ID</option>
+				<option value="3" text="手机号">手机号</option>
+			</select>
+		</div>
+		<div class="col-md-2" style="width: 200px">
+			<input type="text" class="form-control search-query"
+				name="conditionVal" placeholder="查询条件" />
+		</div>
+		<div class="col-md-1" style="width: 105px;">
+			<button id="searchBtn" class="btn btn-labeled btn-info"
+				onclick="javascript:formSubmit();">
+				<span class="btn-label icon fa fa-search"></span>搜索
+			</button>
+		</div>
+
+		<div class="col-md-11"
+			style="padding-bottom: 0px; width: 200px; display: flex">
+			<select class="form-control" name="status"
+				onchange="javascript:formSubmit();">
+				<option value="">==提现状态筛选==</option>
+				<option value="0" text="待审核">待审核</option>
+				<option value="1" text="待打款">待打款</option>
+				<option value="2" text="已打款">已打款</option>
+				<option value="3" text="已到账">已到账</option>
+				<option value="4" text="已拒绝">已拒绝</option>
+			</select>
+		</div>
+		<div class="col-md-11"
+			style="padding-bottom: 0px; width: 200px; display: flex">
+			<select class="form-control" name="style"
+				onchange="javascript:formSubmit();">
+				<option value="">==提现方式筛选==</option>
+				<option value="0" text="支付宝">支付宝</option>
+				<option value="1" text="微信">微信</option>
+				<option value="2" text="银行卡">银行卡</option>
+			</select>
+		</div>
+	</div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid" style="text-align: center;"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+            	{field:"billNo", text:"提现单号"},
+            	{field:"identityId", text:"申请人身份",formatter:function(index, content, data){
+                	if(data.identityId == 0){
+                		return "<font color='black'>代理</font>";
+                	}
+                	if(data.identityId == 1){
+                		return "<font color='black'>店长</font>";
+                	}
+                	if(data.identityId == 2){
+                		return "<font color='black'>普通客户</font>";
+                	}
+               	}},
+               	{field:"weixinFace", text:"申请人信息",formatter:function(index, content, data){
+               		if(data.nickname == null){
+               			return "<img src='"+data.weixinFace+"' width='50' height='50' >"+"ID:"+data.memberId;
+            		}
+               		else{
+               			return "<img src='"+data.weixinFace+"' width='50' height='50' >"+data.nickname+"ID:"+data.memberId;
+               		}
+            }},
+            {field:"cardNo", text:"收款帐号"},
+            {field:"name", text:"真实姓名"},
+            {field:"amount", text:"申请金额",formatter:function(index, content, data){
+        		return "￥"+data.amount;
+	        }},
+	        {field:"createTime", text:"申请时间",style: "text-align:center",
+	            formatter: function (index, content, data) {
+	                if (typeof content != 'undefined' && content != null)
+	                    return new Date(content).toLocaleString('chinese',{hour12:false});
+	            }
+	        },
+	        {field:"status", text:"提现状态",style: "text-align:center",
+	            formatter: function (index, content, data) {
+	                if (content == 0){
+	                	return "<font color='black'>待审核</font>";
+	                }else if (content == 1){
+	                	return "<font color='black'>待打款</font>";
+	                }else if (content == 2){
+	                	return "<font color='black'>已打款</font>";
+	                }else if (content == 3){
+	                	return "<font color='blue'>已到账</font>";
+	                }else if (content == 4){
+	                	return "<font color='red'>已拒绝</font>";
+	                }
+	            }
+	        },
+            {field:"id", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                var auditUrl = "/admin/financialMgr/point/preAuditRedPointDrawApply/" + content;
+                var accUrl = "/admin/financialMgr/point/remitRedPointDrawApply/" + content;
+                var detailUrl = "/admin/financialMgr/point/preDetailRedPointDrawApply/" + content;
+                var opDiv = "";	
+                if(data.status == 0){
+                	return opDiv + "&nbsp;<a href='javascript:showModal(\"审核\", \""+auditUrl+"\");' data-original-title='审核' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>审核</i></a>";
+                }else if(data.status == 1){
+                	return opDiv + "&nbsp;<a href='javascript:showCfm(\"确认已完成该笔提现申请的打款?	\", \""+accUrl+"\");'  data-original-title='打款' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>打款</i></a>"
+                	+"&nbsp;<a href='javascript:goPage(\""+detailUrl+"\");' data-original-title='详情' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>详情</i></a>";
+                }else{
+                	return opDiv + "&nbsp;<a href='javascript:goPage(\""+detailUrl+"\");' data-original-title='详情' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>详情</i></a>";
+                }
+            }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/financialMgr/point/pageRedPointDrawApplyAjax",
+            sort:"id",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+    /*]]>*/
+</script>

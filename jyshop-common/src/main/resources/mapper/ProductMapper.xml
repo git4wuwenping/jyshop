@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.ProductDao">
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.Product">
+		<id column="product_id" jdbcType="BIGINT" property="productId" />
+		<result column="goods_id" jdbcType="BIGINT" property="goodsId" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="sn" jdbcType="VARCHAR" property="sn" />
+		<result column="store" jdbcType="INTEGER" property="store" />
+		<result column="price" jdbcType="DECIMAL" property="price" />
+		<result column="specs" jdbcType="CLOB" property="specs" />
+		<result column="cost" jdbcType="DECIMAL" property="cost" />
+		<result column="weight" jdbcType="DECIMAL" property="weight" />
+		<result column="alarm_num" jdbcType="INTEGER" property="alarmNum" />
+		<result column="is_usable" jdbcType="INTEGER" property="isUsable" />
+	</resultMap>
+
+	<!-- 获取某个货品信息 -->
+	<select id="selectByProductId" resultType="map">
+		SELECT  
+        	sp.goods_id AS goodsId, 
+            sp.product_id AS productId, 
+            sp.sn, 
+            sp.name,
+            sp.cost, 
+            sp.price, 
+            sp.store, 
+            sp.specs, 
+            sp.weight,
+            sg.image,
+            sg.goods_type as goodsType,
+            sg.dly_type_id as dlyTypeId,
+            sg.com_id as comId,
+            sg.unit as unit 
+     	FROM shop_goods sg 
+     	INNER JOIN shop_product sp ON sg.goods_id=sp.goods_id 
+       	where sg.market_enable=#{marketEnable}
+              and sp.is_usable=1
+              and sp.product_id=#{productId}
+	</select>
+	
+	<!-- 根据商品ID获取货品列表 -->
+	<select id="selectByGoodsId" resultType="map">
+		select 
+			 a.product_id as productId,
+			 a.goods_id as goodsId,
+			 a.name ,
+			 a.sn ,
+			 b.store ,
+			 a.price ,
+			 a.specs ,
+			 a.cost ,
+			 a.weight ,
+			 a.alarm_num as alarmNum,
+			 a.is_usable as isUsable,
+			 a.spec_ids as specIds,
+			 a.spec_value_ids as specValueIds
+		from shop_product a
+		LEFT JOIN shop_product_store b on a.product_id = b.PRODUCT_ID
+		where a.goods_Id=#{goodsId}
+	</select>
+	
+	<!-- 根据商品ID获取货品Id列表 -->
+	<select id="selectOfProductId" resultType="long">
+		select 
+			 product_id 
+		from shop_product 
+		where goods_Id=#{goodsId}
+	</select>
+	
+	<!-- 减少货品库存 -->
+	<update id="updateStoreOfCut">
+		update shop_product set store=store-#{store} where product_id=#{productId}
+	</update>
+	
+	<!-- 根据商品Id删除货品 -->
+	<delete id="deleteByGoodsId">
+		delete from shop_product where goods_id=#{goodsId}
+	</delete>
+	
+	<!-- 根据货品IDS删除货品 -->
+	<delete id="deleteByProductIds" >
+		delete from shop_product where product_id in  
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+		 	#{item}  
+		</foreach>  
+	</delete>
+	
+</mapper>

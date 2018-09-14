@@ -1,0 +1,388 @@
+<div class="panel">
+	<div class="panel-heading">
+		<span class="panel-title">提现信息</span>
+	</div>
+	<!-- 提现信息 -->
+	<div class="col-sm-3" >
+		<div class="panel-group panel-group-info"
+			id="accordion-danger-example">
+			<div class="panel" >
+				<div class="panel-heading">
+					<a class="accordion-toggle" data-toggle="collapse"
+						data-parent="#accordion-info-example" href="#div1">
+						提现信息 </a>
+				</div>
+				<div id="div1" class="panel-collapse in">
+					<div class="panel-body">
+						<table class="table-condensed"
+							style="padding: unset; margin: unset">
+							<tr class="active">
+								<td class="text-right">提现单号：</td>
+								<td th:text="${memberPointExt.billNo}"></td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">申请人头像：</td>
+								<td><img alt="图片" th:src="${member.weixinFace}"
+									width='50px' height='50px' /></td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">申请人昵称：</td>
+								<td th:text="${member.nickname}"></td>
+							</tr>
+							<tr>
+								<td class="text-right">用户ID:</td>
+								<td th:text="${member.memberId}"></td>
+							</tr>
+							<tr>
+								<td class="text-right">提现金额:</td>
+								<td th:text="${memberPointExt.amount}"></td>
+							</tr>
+
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 操作时间 -->
+	<div class="col-sm-3">
+		<div class="panel-group panel-group-info"
+			id="accordion-danger-example">
+			<div class="panel">
+				<div class="panel-heading">
+					<a class="accordion-toggle" data-toggle="collapse"
+						data-parent="#accordion-info-example" href="#div2">
+						操作时间 </a>
+				</div>
+				<div id="div2" class="panel-collapse in">
+					<div class="panel-body">
+						<table class="table-condensed"
+							style="padding: unset; margin: unset">
+							<tr>
+								<td class="text-right">申请时间：</td>
+								<td
+									th:text="${#dates.format(memberPointExt.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+							</tr>
+							<tr th:if="${memberPointExt.status!=0}">
+								<td class="text-right">审核时间：</td>
+								<td
+									th:text="${#dates.format(memberPointExt.auditTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+							</tr>
+							<tr th:if="${memberPointExt.status==2||memberPointExt.status==3}">
+								<td class="text-right">打款时间：</td>
+								<td
+									th:text="${#dates.format(memberPointExt.remitTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+							</tr>
+							<tr th:if="${memberPointExt.status==3}">
+								<td class="text-right">打款时间：</td>
+								<td
+									th:text="${#dates.format(memberPointExt.accountTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 提现方式 -->
+	<div class="col-sm-3">
+		<div class="panel-group panel-group-info"
+			id="accordion-danger-example">
+			<div class="panel">
+				<div class="panel-heading">
+					<a class="accordion-toggle" data-toggle="collapse"
+						data-parent="#accordion-info-example" href="#div3">
+						提现方式 </a>
+				</div>
+				<div id="div3" class="panel-collapse in">
+					<div class="panel-body" th:if="${memberPointExt.style==0}">
+						<table class="table-condensed"
+							style="padding: unset; margin: unset">
+							<tr class="active">
+								<td class="text-right">提现方式：</td>
+								<td>支付宝</td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">支付宝名称：</td>
+								<td th:text="${memberPointExt.accountName}"></td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">支付宝帐号：</td>
+								<td th:text="${memberPointExt.accountNo}"></td>
+							</tr>
+						</table>
+					</div>
+					<div class="panel-body" th:if="${memberPointExt.style==1}">
+						<table class="table-condensed"
+							style="padding: unset; margin: unset">
+							<tr class="active">
+								<td class="text-right">提现方式：</td>
+								<td>微信</td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">微信名：</td>
+								<td th:text="${memberPointExt.accountName}"></td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">微信昵称：</td>
+								<td th:text="${memberPointExt.accountNo}"></td>
+							</tr>
+						</table>
+					</div>
+					<div class="panel-body" th:if="${memberPointExt.style==2}">
+						<table class="table-condensed"
+							style="padding: unset; margin: unset">
+							<tr class="active">
+								<td class="text-right">提现方式：</td>
+								<td>银行卡</td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">开户行：</td>
+								<td th:text="${memberPointExt.openBank}"></td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">开户行省市：</td>
+								<td th:text="${memberPointExt.openBankCity}"></td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">支行名称：</td>
+								<td th:text="${memberPointExt.openBank}"></td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">开户名：</td>
+								<td th:text="${memberPointExt.accountName}"></td>
+							</tr>
+							<tr class="active">
+								<td class="text-right">卡号：</td>
+								<td th:text="${memberPointExt.accountNo}"></td>
+							</tr>
+						</table>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+
+	<!-- 提现日志 -->
+	<div class="col-sm-10">
+		<div class="table-info">
+			<div class="table-header">
+				<div class="table-caption">提现日志</div>
+			</div>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>操作ID</th>
+						<th>操作用户</th>
+						<th>积分类型</th>
+						<th>提现积分</th>
+						<th>操作前会员积分</th>
+						<th>操作后会员积分</th>
+						<th>操作内容</th>
+						<th>日志时间</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${logList!=null}" th:each="log:${logList}">
+						<td th:text="${log.opId}"></td>
+						<td th:text="${log.opUser}"></td>
+						<td th:if="${log.pointType == 0}">云积分</td>
+						<td th:if="${log.pointType == 1}">黄积分</td>
+						<td th:if="${log.pointType == 2}">红积分</td>
+						<td th:text="${log.point}"></td>
+						<td th:text="${log.pointBefore}"></td>
+						<td th:text="${log.pointAfter}"></td>
+						<td th:text="${log.message}"></td>
+						<td th:text="${#dates.format(log.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+
+
+<!-- <form id="submitForm" class="form-horizontal">
+	<input name="id" th:value="${memberPointExt.id}" type="text"
+		hidden="hidden" />
+
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label">状态：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" readonly="readonly"
+				th:if="${memberPointExt.status==0}" th:value="待审核" /> <input
+				class="form-control" type="text" th:if="${memberPointExt.status==1}"
+				readonly="readonly" th:value="待打款" /> <input class="form-control"
+				type="text" readonly="readonly" th:if="${memberPointExt.status==2}"
+				th:value="已打款" /> <input class="form-control" type="text"
+				th:if="${memberPointExt.status==3}" readonly="readonly"
+				th:value="已到账" /> <input class="form-control" type="text"
+				readonly="readonly" th:if="${memberPointExt.status==4}"
+				th:value="已拒绝" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label">提现单号：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" readonly="readonly"
+				th:value="${memberPointExt.billNo}" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label">申请人信息：</label>
+		<div class="col-sm-8">
+			<img alt="图片" th:src="${member.weixinFace}" width='50px'
+				height='50px' />
+			<p th:text="${member.nickname}"
+				style="white-space: nowrap; display: inline;"></p>
+			用户ID:
+			<p th:text="${member.memberId}"
+				style="white-space: nowrap; display: inline;"></p>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label">提现方式：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" readonly="readonly"
+				th:if="${memberPointExt.style==0}" th:value="支付宝" /> <input
+				class="form-control" type="text" th:if="${memberPointExt.style==1}"
+				readonly="readonly" th:value="微信" /> <input class="form-control"
+				type="text" readonly="readonly" th:if="${memberPointExt.style==2}"
+				th:value="银行卡" />
+		</div>
+	</div>
+	<div th:if="${memberPointExt.style==0}">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">支付宝名称：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" readonly="readonly"
+					th:value="${memberPointExt.accountName}" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">支付宝帐号：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" readonly="readonly"
+					th:value="${memberPointExt.accountNo}" />
+			</div>
+		</div>
+	</div>
+	<div th:if="${memberPointExt.style==1}">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">微信名：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" readonly="readonly"
+					th:value="${memberPointExt.accountName}" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">微信昵称：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" readonly="readonly"
+					th:value="${memberPointExt.accountNo}" />
+			</div>
+		</div>
+	</div>
+
+	<div th:if="${memberPointExt.style==2}">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">开户行：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" readonly="readonly"
+					th:value="${memberPointExt.openBank}" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">开户行省市：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" readonly="readonly"
+					th:value="${memberPointExt.openBankCity}" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">支行名称：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" readonly="readonly"
+					th:value="${memberPointExt.branchName}" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">开户名：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" readonly="readonly"
+					th:value="${memberPointExt.accountName}" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">卡号：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" readonly="readonly"
+					th:value="${memberPointExt.accountNo}" />
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label">提现金额：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" readonly="readonly"
+				th:value="${memberPointExt.amount}" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label">审核备注：</label>
+		<div class="col-sm-8">
+			<input class="form-control" name="mark" type="text"
+				readonly="readonly" th:value="${memberPointExt.mark}" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label">申请时间：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" readonly="readonly"
+				th:value="${#dates.format(memberPointExt.createTime, 'yyyy-MM-dd HH:mm:ss')}" />
+		</div>
+	</div>
+
+	<div th:if="${memberPointExt.status!=0}" class="form-group">
+		<label class="col-sm-3 control-label">审核时间：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" readonly="readonly"
+				th:value="${#dates.format(memberPointExt.auditTime, 'yyyy-MM-dd HH:mm:ss')}" />
+		</div>
+	</div>
+
+	<div th:if="${memberPointExt.status==2||memberPointExt.status==3}"
+		class="form-group">
+		<label class="col-sm-3 control-label">打款时间：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" readonly="readonly"
+				th:value="${#dates.format(memberPointExt.remitTime, 'yyyy-MM-dd HH:mm:ss')}" />
+		</div>
+	</div>
+
+	<div th:if="${memberPointExt.status==3}" class="form-group">
+		<label class="col-sm-3 control-label">到账时间：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" readonly="readonly"
+				th:value="${#dates.format(memberPointExt.accountTime, 'yyyy-MM-dd HH:mm:ss')}" />
+		</div>
+	</div>
+
+
+
+
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$(function() {
+		$(".btn-primary").hide();
+	});
+	/*]]>*/
+</script> -->

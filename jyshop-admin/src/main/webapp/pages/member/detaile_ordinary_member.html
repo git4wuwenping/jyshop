@@ -1,0 +1,43 @@
+<form id="submitForm" class="form-horizontal">
+    <div class="form-group">
+        <table border="2 !important" >
+        	<tr id="tr1">
+        	<td rowspan="5"><img type="text" name="weixinFace" th:src="${member.weixinFace}" width='50' height='50' readonly="readonly" style="border:none"/></td>
+        	</tr>
+        	<tr id="tr2">
+        	<td>昵称&nbsp;&nbsp;:&nbsp;&nbsp;<input name="nickname" th:value="${member.nickname}" readonly="readonly" style="border:none"/></td>
+        	<input id="identityId"  th:value="${member.identityId}" hidden="hidden"/>
+        	<td>身份&nbsp;&nbsp;:&nbsp;&nbsp;<input id="identity" name="identityId"  readonly="readonly" value="普通客户" style="border:none"/></td>
+        	<td><!-- 推荐码&nbsp;&nbsp;:&nbsp;&nbsp;<input name="parentId" th:value="${member.parentId}" readonly="readonly" style="border:none"/> --></td>
+        	</tr>
+        	<tr id="tr3">
+        	<td>客户编号&nbsp;&nbsp;:&nbsp;&nbsp;<input name="memberId" th:value="${member.memberId}" readonly="readonly" style="border:none"/></td>
+        	<td></td>
+        	<td rowspan="5"></td>
+        	</tr>
+        	<tr id="tr4">
+        	<td>余额&nbsp;&nbsp;:&nbsp;&nbsp;<input name="balance" th:value="${member.balance}" readonly="readonly" style="border:none"/></td>
+        	<td></td>
+        	</tr>
+        	<tr id="tr5">
+        	<td>下级数量&nbsp;&nbsp;:&nbsp;&nbsp;<input name="lowerCount" th:value="${member.lowerCount}" readonly="readonly" style="border:none"/></td>
+        	<td></td>
+        	</tr>
+        	<tr id="tr6">
+        	<td></td>
+        	<td>注册时间&nbsp;&nbsp;:&nbsp;&nbsp;<input name="regtime" th:value="${member.regtime}" readonly="readonly" style="border:none"/></td>
+        	</tr>
+        </table>
+    </div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+  /*   var identityId =  $("#identityId").val();
+		alert(identityId);
+		if(identityId == 1 ){
+			$("#identity").value = "店长";
+		}else if(identityId == 2){
+			$("#identity").value = "普通用户";
+		} */
+		    /*]]>*/
+</script>

@@ -1,0 +1,50 @@
+<form id="submitForm" class="form-horizontal" >
+	<input id="goodsInputId" hidden="true"  name = "goodsId" th:value="${goodsId}"  />
+	<div class="form-group" >
+		<label class="col-sm-3 control-label" for="username">经办人：</label>
+		<div class="col-sm-8">
+			<input class="form-control" readonly="readonly"  id="examineId" name = "username" th:value="${examine.username}" type="text" />
+		</div>
+	</div>
+	<div class="form-group">
+	    <label class="col-sm-3 control-label" for="dismissal">驳回原因：</label>
+		<div class="col-sm-8">
+			<!-- <input id="examineId" name = "dismissal" th:value = "${examine.dismissal}" type="text" /> -->
+			<textarea class="form-control" id="examineId" name='dismissal' readonly="readonly" 
+			cols='100' rows='4' th:text = "${examine.dismissal}"
+            style=" height: 125px;resize: none;"></textarea> 
+            <div id="validation-shopStoreInformation" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="suggestion">处理意见：</label>
+		<div class="col-sm-8">
+			<!-- <input class="form-control" id="examineId" name = "suggestion" th:value="${examine.suggestion}" type="text" /> -->
+			<textarea class="form-control" id="examineId" name='suggestion' readonly="readonly" 
+			cols='100' rows='4' th:text = "${examine.suggestion}"
+            style=" height: 125px;resize: none;"></textarea> 
+            <div id="validation-shopStoreInformation" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="remarks">备注：</label>
+		<div class="col-sm-8">
+			<input class="form-control" id="examineId" name = "remarks" th:value="${examine.remarks}" type="text" readonly="readonly"  />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="operateTime">受理时间：</label>
+		<div class="col-sm-8">
+			<input class="form-control" id="examineId" name = "operateTime" th:value="${examine.operateTime}" type="text" readonly="readonly"  />
+		</div>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		submit = function(){
+			$(".closeBtn").click();
+		    }
+/*]]>*/
+</script>
+
+

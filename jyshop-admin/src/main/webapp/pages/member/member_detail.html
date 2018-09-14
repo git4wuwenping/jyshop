@@ -1,0 +1,564 @@
+<div class="row">
+	<div class="col-sm-12">
+		<div class="panel">
+			<div class="panel-heading">
+				<span class="panel-title">会员信息</span>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-6">
+						<ul class="nav nav-pills bs-tabdrop-example">
+							<li class="active"><a href="#bs-tabdrop-pill1"
+								data-toggle="tab">基本信息</a></li>
+							<li><a href="#bs-tabdrop-pill2" data-toggle="tab">收货地址</a></li>
+							<li><a href="#bs-tabdrop-pill3" data-toggle="tab">他的下级</a></li>	
+							<li><a href="#bs-tabdrop-pill4" data-toggle="tab">提现方式</a></li>	
+							<li><a href="#bs-tabdrop-pill5" data-toggle="tab">他的订单</a></li>
+							<li><a href="#bs-tabdrop-pill6" data-toggle="tab">积分流水</a></li>
+							<li><a href="#bs-tabdrop-pill7" data-toggle="tab">待确认积分</a></li>
+						</ul>
+						<div class="tab-content">
+							<div class="col-sm-12 tab-pane active" id="bs-tabdrop-pill1">
+								<form id="baseForm">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">用户头像：</label>
+										<div class="col-sm-8">
+											<img type="text" name="weixinFace" th:src="${member.weixinFace}" width='50' height='50' readonly="readonly" style="border:none"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label">是否冻结：</label>
+										<div class="col-sm-4">
+											<input class="form-control" type="text" readonly="readonly" th:if="${member.state == 1}" value="正常"/>
+											<input class="form-control" type="text" readonly="readonly" th:if="${member.state != 1}" value="冻结"/>
+										</div>
+										<input th:if="${member.state == 1}" type="button" class="btn btn-danger" value="冻结" onclick="javascript:freezeMember(0);"></input>
+										<input th:if="${member.state != 1}" type="button" class="btn btn-info" value="解冻" onclick="javascript:freezeMember(1);"></input>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="memberId">用户ID：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="memberId"
+												readonly="readonly" name="memberId" th:value="${member.memberId}" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="uname"><font
+											color="red">*</font>用户名：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="uname"
+												readonly="readonly" name="uname" th:value="${member.uname}" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="name"><font
+											color="red">*</font>真实姓名：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="name" name="name"
+												th:value="${member.name}" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="nickname"><font
+											color="red">*</font>昵称：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="nickname"
+												name="nickname" th:value="${member.nickname}" />
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="identityId">身份：</label>
+									        <div class="col-sm-8">
+									            <input th:if="${member.identityId==0}" class="form-control" type="text" value="代理" />
+									            <input th:if="${member.identityId==1}" class="form-control" type="text" value="店长" />
+									            <input th:if="${member.identityId==2}" class="form-control" type="text" value="普通用户" />
+									        </div>
+									</div>
+
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="tel"><font
+											color="red">*</font>固定电话：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="tel" name="tel"
+												th:value="${member.tel}" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="mobile"><font
+											color="red">*</font>手机号码：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="mobile"
+												name="mobile" th:value="${member.mobile}" />
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="sex">性别：</label>
+									        <div class="col-sm-8">
+									            <input th:if="${member.sex==0}" class="form-control" type="text" value="男" />
+									            <input th:if="${member.sex==1}" class="form-control" type="text" value="女" />
+									        </div>
+									</div>
+
+									
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="balance"><font
+											color="red">*</font>余额：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="advance"
+												name="advance" th:value="${member.advance}" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="lowerCount"><font
+											color="red">*</font>下级数量：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="lowerCount"
+												name="lowerCount" th:value="${member.lowerCount}" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="regtime"><font
+											color="red">*</font>注册时间：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="regtime"
+												name="regtime" th:value="${member.regtime}" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="address"><font
+											color="red">*</font>详细地址：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="address"
+												name="address" th:value="${member.address}" />
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="col-sm-3 control-label">是否分润会员：</label>
+									        <div class="col-sm-8">
+									            <input th:if="${member.isProfit==0}" class="form-control" type="text" value="否" />
+									            <input th:if="${member.isProfit==1}" class="form-control" type="text" value="是" />
+									        </div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label">成为分润会员时间：</label>
+									        <div class="col-sm-8">
+									            <input class="form-control" th:if="${member.isProfit==1}" th:value="${#dates.format(member.profitTime, 'yyyy-MM-dd HH:mm:ss')}" />
+									        </div>
+									</div>
+									
+									<div class="form-group" >
+										<label class="col-sm-3 control-label">店长二维码：</label>
+										<div class="col-sm-8">
+											<img type="text" th:if="${member.qRCodePath == null}" name="qRCodePath"  src="../../../static/images/defaultBackGround/qRCodeBackGround.png" width='280' height='280' readonly="readonly" style="border:none" />
+											<img type="text" th:if="${member.qRCodePath != null}" name="qRCodePath" th:src="${member.qRCodePath}" width='280' height='280' readonly="readonly" style="border:none"/>
+										<div th:if="${member.qRCodePath != null}">
+										<a id="exportImage" th:href="${member.qRCodePath}" download="w3logo" class="btn btn-primary"><i class="fa">导出二维码</i></a>
+										</div>
+										</div>
+										
+										
+									</div>
+
+									<div align="center">
+										<input type="button"
+											class="btn btn-info cancelBtn" value="返回"></input>
+									</div>
+								</form>
+							</div>
+							
+							
+							<div class="tab-pane" id="bs-tabdrop-pill2" style="width: 1000px">
+								<div th:if="${addressList.size() == 0}">
+									无数据
+								</div>
+								<div th:if="${addressList.size() != 0}">
+									<div class="table-info">
+										<table class="table table-bordered">
+											<thead>
+												<tr style="text-align: center">
+													<th class="text-center">收货人</th>
+													<th class="text-center">省份</th>
+													<th class="text-center">城市</th>
+													<th class="text-center">区县</th>
+													<th class="text-center">收货地址</th>
+													<th class="text-center">电话</th>
+													<th class="text-center">手机</th>
+													<th class="text-center">邮编</th>
+													<th class="text-center">是否默认</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="memberAddress:${addressList}"
+													style="text-align: center">
+													<td th:text="${memberAddress.name}"></td>
+													<td th:text="${memberAddress.provinceName}"></td>
+													<td th:text="${memberAddress.cityName}"></td>
+													<td th:text="${memberAddress.districtName}"></td>
+													<td th:text="${memberAddress.addressDetail}"></td>
+													<td th:text="${memberAddress.tel}"></td>
+													<td th:text="${memberAddress.mobile}"></td>
+													<td th:text="${memberAddress.zip}"></td>
+													
+													<td th:if="${memberAddress.defAddr==1}" th:text="默认"></td>
+													<td th:if="${memberAddress.defAddr!=1}" th:text="null"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div align="center">
+									<input type="button" class="btn btn-info cancelBtn" value="返回"></input>
+								</div>
+							</div>
+							
+							
+							<div class="tab-pane" id="bs-tabdrop-pill3" style="width: 1000px">
+								<div th:if="${sonMemberList.size() == 0}">
+									无数据
+								</div>
+								<div th:if="${sonMemberList.size() != 0}">
+									<div class="table-info">
+										<table class="table table-bordered">
+											<thead>
+												<tr style="text-align: center">
+													<th class="text-center">会员ID</th>
+													<th class="text-center">注册时间</th>
+													<th class="text-center">用户名</th>
+													<th class="text-center">昵称</th>
+													<th class="text-center">身份</th>
+													<th class="text-center">是否关注公众号</th>
+													<th class="text-center">手机号</th>
+													<th class="text-center">累计贡献红积分</th>
+													<th class="text-center">累计贡献黄积分</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="sonMember:${sonMemberList}" style="text-align: center">
+													
+													<td th:text="${sonMember.memberId}"></td>
+													
+													<td th:if="${sonMember.regtime==null}" th:text="null"></td>
+													<td th:if="${sonMember.regtime!=null}" th:text="${#dates.format(sonMember.regtime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+													
+													<td th:text="${sonMember.uname}"></td>
+													<td th:text="${sonMember.nickname}"></td>
+													
+													<td th:if="${sonMember.identityId==0}" th:text="代理"></td>
+													<td th:if="${sonMember.identityId==1}" th:text="店长"></td>
+													<td th:if="${sonMember.identityId==2}" th:text="普通用户"></td>
+													
+													<td th:if="${sonMember.subscribe==0}" th:text="否"></td>
+													<td th:if="${sonMember.subscribe==null}" th:text="否"></td>
+													<td th:if="${sonMember.subscribe==1}" th:text="是"></td>
+													
+													<td th:text="${sonMember.mobile}"></td>
+													<td th:text="${sonMember.redPoint}"></td>
+													<td th:text="${sonMember.yellowPoint}"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div align="center">
+									<input type="button" class="btn btn-info cancelBtn" value="返回"></input>
+								</div>
+							</div>
+							
+							<div class="tab-pane" id="bs-tabdrop-pill4" style="width: 1000px">
+								<div th:if="${drawTypeMap.bankcardList.size() == 0 and drawTypeMap.alipayInfo.accountNo=='' and drawTypeMap.wechatInfo.accountNo==''}">
+									无数据
+								</div>
+								<div th:if="${drawTypeMap.alipayInfo.accountNo!='' or drawTypeMap.alipayInfo.accountName!=''}">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">支付宝：</label>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">支付宝帐号：</label>
+										<div class="col-sm-2">
+											<input class="form-control" type="text"
+												readonly="readonly" th:value="${drawTypeMap.alipayInfo.accountNo}" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">真实姓名：</label>
+										<div class="col-sm-2">
+											<input class="form-control" type="text"
+												readonly="readonly" th:value="${drawTypeMap.alipayInfo.accountName}" />
+										</div>
+									</div>
+								</div>
+								<div th:if="${drawTypeMap.wechatInfo.accountNo!='' or drawTypeMap.wechatInfo.accountName!=''}">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">微信零钱：</label>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">微信昵称：</label>
+										<div class="col-sm-2">
+											<input class="form-control" type="text"
+												readonly="readonly" th:value="${drawTypeMap.wechatInfo.accountNo}" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">真实姓名：</label>
+										<div class="col-sm-2">
+											<input class="form-control" type="text"
+												readonly="readonly" th:value="${drawTypeMap.wechatInfo.accountName}" />
+										</div>
+									</div>
+								</div>
+								<div th:if="${drawTypeMap.bankcardList.size() != 0}">
+									<label class="col-sm-3 control-label">银行卡：</label>
+									<div class="table-info">
+										<table class="table table-bordered">
+											<thead>
+												<tr style="text-align: center">
+													<th class="text-center">开户行</th>
+													<th class="text-center">开户省市</th>
+													<th class="text-center">支行名称</th>
+													<th class="text-center">开户名</th>
+													<th class="text-center">卡号</th>
+													<th class="text-center">绑定状态</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="bankcard:${drawTypeMap.bankcardList}" style="text-align: center">
+													
+													<td th:text="${bankcard.openBank}"></td>
+													<td th:text="${bankcard.openBankCity}"></td>
+													<td th:text="${bankcard.branchName}"></td>
+													<td th:text="${bankcard.accountName}"></td>
+													<td th:text="${bankcard.accountNo}"></td>
+													<td th:if="${bankcard.isBinding==0}" th:text="已绑定"></td>
+													<td th:if="${bankcard.isBinding==1}" th:text="已解绑"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>		
+									
+								<div align="center">
+									<input type="button" class="btn btn-info cancelBtn" value="返回"></input>
+								</div>
+							</div>
+							
+							<div class="tab-pane" id="bs-tabdrop-pill5" style="width: 1000px">
+								<div th:if="${orderList.size() == 0}">
+									无数据
+								</div>
+								<div th:if="${orderList.size() != 0}">
+									<div class="table-info">
+										<table class="table table-bordered">
+											<thead>
+												<tr style="text-align: center">
+													<th class="text-center">交易时间</th>
+													<th class="text-center">订单编号</th>
+													<th class="text-center">订单金额</th>
+													<th class="text-center">实付款</th>
+													<th class="text-center">支付方式</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="order:${orderList}" style="text-align: center">
+													<td th:text="${#dates.format(order.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+													<td th:text="${order.orderSn}"></td>
+													<td th:text="${order.goodsAmount}"></td>
+													<td th:text="${order.orderAmount}"></td>
+													<td th:if="${order.paymentType==1}" th:text="支付宝"></td>
+													<td th:if="${order.paymentType==2}" th:text="微信"></td>
+													<td th:if="${order.paymentType==3}" th:text="银行卡"></td>
+													<td th:if="${order.paymentType==null}" th:text="其他"></td>
+	
+													<!-- <td th:if="${order.orderStatus==-9}" th:text="已换货"></td>
+													<td th:if="${order.orderStatus==-8}" th:text="换货被拒绝"></td>
+													<td th:if="${order.orderStatus==-7}" th:text="退货被拒绝"></td>
+													<td th:if="${order.orderStatus==-6}" th:text="退款被拒绝"></td>
+													<td th:if="${order.orderStatus==-5}" th:text="申请换货"></td>
+													<td th:if="${order.orderStatus==-4}" th:text="申请退货退款"></td>
+													<td th:if="${order.orderStatus==-3}" th:text="申请退款，不退货"></td>
+													<td th:if="${order.orderStatus==-2}" th:text="已退货"></td>
+													<td th:if="${order.orderStatus==-1}" th:text="已退款"></td>
+													<td th:if="${order.orderStatus==0}" th:text="未付款"></td>
+													<td th:if="${order.orderStatus==1}" th:text="已支付"></td>
+													<td th:if="${order.orderStatus==2}" th:text="已配货"></td>
+													<td th:if="${order.orderStatus==3}" th:text="已发货"></td>
+													<td th:if="${order.orderStatus==4}" th:text="已收货"></td>
+													<td th:if="${order.orderStatus==5}" th:text="已完成"></td>
+													<td th:if="${order.orderStatus==6}" th:text="已取消"></td>
+	
+													<td th:if="${order.payStatus==0}" th:text="未付款"></td>
+													<td th:if="${order.payStatus==1}" th:text="已付款"></td>
+													<td th:if="${order.payStatus==2}" th:text="已退款"></td>
+													<td th:if="${order.payStatus==3}" th:text="部分退款"></td> -->
+													
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div align="center">
+									<input type="button" class="btn btn-info cancelBtn" value="返回"></input>
+								</div>
+							</div>
+
+
+							<div class="tab-pane" id="bs-tabdrop-pill6" style="width: 1000px">
+								<div th:if="${pointList.size() == 0}">
+									无数据
+								</div>
+								<div th:if="${pointList.size() != 0}">
+									<div class="table-info">
+										<table class="table table-bordered">
+											<thead>
+												<tr style="text-align: center">
+													<th class="text-center">订单编号</th>
+													<th class="text-center">积分类别</th>
+													<th class="text-center">积分类型</th>
+													<th class="text-center">积分来源</th>
+													<th class="text-center">积分状态</th>
+													<th class="text-center">积分变化</th>
+													<th class="text-center">变化时间</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="point:${pointList}"
+													style="text-align: center">
+													<td th:text="${point.orderSn}"></td>
+													
+													<td th:if="${point.type==0}" th:text="获取"></td>
+													<td th:if="${point.type==1}" th:text="消费"></td>
+													<td th:if="${point.type==2}" th:text="提现"></td>
+													
+													<td th:if="${point.pointType==0}" th:text="云积分"></td>
+													<td th:if="${point.pointType==1}" th:text="黄积分"></td>
+													<td th:if="${point.pointType==2}" th:text="红积分"></td>
+													
+													<td th:if="${point.getType==0 and point.type!=2}" th:text="本人购买"></td>
+													<td th:if="${point.getType==1 and point.type!=2}" th:text="下级购买"></td>
+													<td th:if="${point.getType==2 and point.type!=2}" th:text="下级消费"></td>
+													<td th:if="${point.getType==3 and point.type!=2}" th:text="白积分转换"></td>
+													<td th:if="${point.getType==4 and point.type!=2}" th:text="旧商城数据"></td>
+													<td th:if="${point.type==2}" th:text="null"></td>
+													
+													<td th:if="${point.pointStatus==0 and point.type!=2}" th:text="已确认"></td>
+													<td th:if="${point.pointStatus==1 and point.type!=2}" th:text="已确认"></td>
+													
+													<td th:if="${point.pointStatus==0 and point.type==2}" th:text="待审核"></td>
+													<td th:if="${point.pointStatus==1 and point.type==2}" th:text="待打款"></td>
+													<td th:if="${point.pointStatus==2 and point.type==2}" th:text="已打款"></td>
+													<td th:if="${point.pointStatus==3 and point.type==2}" th:text="已到账"></td>
+													<td th:if="${point.pointStatus==4 and point.type==2}" th:text="已拒绝"></td>
+													
+													<td th:if="${point.type!=2}" th:text="${+ point.point}"></td>
+													<td th:if="${point.type==2}" th:text="${- point.point}"></td>
+													
+													<td th:text="${#dates.format(point.createTime, 'yyyy-MM-dd hh:mm:ss')}"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div align="center">
+									<input type="button" class="btn btn-info cancelBtn" value="返回"></input>
+								</div>
+							</div>
+
+							<div class="tab-pane" id="bs-tabdrop-pill7" style="width: 1000px">
+								<div th:if="${pointUnconfirmedList.size() == 0}">
+									无数据
+								</div>
+								<div th:if="${pointUnconfirmedList.size() != 0}">
+									<div class="table-info">
+										<table class="table table-bordered">
+											<thead>
+												<tr style="text-align: center">
+													<th class="text-center">订单编号</th>
+													<th class="text-center">订单类型</th>
+													<th class="text-center">积分类型</th>
+													<th class="text-center">积分来源</th>
+													<th class="text-center">积分变化</th>
+													<th class="text-center">订单支付时间</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="point:${pointUnconfirmedList}"
+													style="text-align: center">
+													<td th:text="${point.orderSn}"></td>
+													<td th:if="${point.orderType==0}" th:text="普通订单"></td>
+													<td th:if="${point.orderType==1}" th:text="礼包订单"></td>
+													<td th:text="红积分"></td>
+													
+													<td th:if="${point.getType==0}" th:text="首购抽佣"></td>
+													<td th:if="${point.getType==1}" th:text="自购抽佣"></td>
+													<td th:if="${point.getType==2}" th:text="上级抽佣"></td>
+													
+													<td th:text="${point.point}"></td>
+													
+													
+													<td th:if="${point.createTime!=null}" th:text="${#dates.format(point.createTime, 'yyyy-MM-dd hh:mm:ss')}"></td>
+													<td th:if="${point.createTime==null}" th:text="获取不到时间"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div align="center">
+									<input type="button" class="btn btn-info cancelBtn" value="返回"></input>
+								</div>
+							</div>
+							
+
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+
+	$(function() {
+		$(".cancelBtn").click(function() {
+			goPage('/admin/member/memMain');
+		});
+		
+		
+		freezeMember = function(state){
+			if(state == 0){
+				title = "确定要解除冻结该用户吗?";
+			}else{
+				title = "确定要冻结该用户吗?";
+			}
+			var url = "/admin/member/modifyMemberState/"+$("#memberId").val()
+			if(_urlPath!="/")
+				url=_urlPath+url;
+			$.Cfm(title,function(){
+		        $.ajax({
+		            url:  url,
+		            type:"post",
+		            data: { "state" : state},
+		            dataType:"json",
+		            success: function (req){
+		                if (req.retcode == 0) {
+		                    goPage("/admin/member/preDetaileMember/"+$("#memberId").val());
+		                    $.Suc(req.retmsg);
+		                } else {
+		                    $.Err(req.retmsg);
+		                }
+		            }
+		        });
+		    });
+		}
+		
+	});
+	/*]]>*/
+</script>

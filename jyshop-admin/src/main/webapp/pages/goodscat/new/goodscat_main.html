@@ -1,0 +1,256 @@
+<div>
+	<div class="left-col col-md-12">
+		<h5><strong>当前分类路径:</strong>
+		<span id="span1"></span> -> <span id="span2"></span> -> <span id="span3"></span>
+		<input type="hidden" id="span1Val"/>
+		<input type="hidden" id="span2Val"/>
+		<input type="hidden" id="span3Val"/>
+		</h5>
+	</div>
+	
+</div>
+<hr/>
+<div> 
+	<div class="left-col col-md-4">
+		<div class="list-group">
+		<h4><span class="left-col col-md-8">一级分类</span><button id="addFirstBtn" class="btn btn-primary" onclick="javascript:void(0);"><span class="btn-label icon fa fa-plus"></span></button></h4>
+		<hr/>
+		<form id="firstCat" style="padding-top:10px;">
+		</form>
+		</div>
+	</div>
+	<div class="left-col col-md-4">
+		<div class="list-group">
+		<h4><span class="left-col col-md-8">二级分类</span><button id="addSecondBtn" class="btn btn-primary" onclick="javascript:void(0);"><span class="btn-label icon fa fa-plus"></span></button></h4><hr/>
+		<form id="secondCat" style="padding-top:10px;">
+		</form>
+	    </div>
+	</div>
+	<div class="left-col col-md-4">
+		<div class="list-group">
+		<h4><span class="left-col col-md-8">三级分类</span> <button id="addThirdBtn" class="btn btn-primary" onclick="javascript:void(0);"><span class="btn-label icon fa fa-plus"></span></button></h4><hr/>
+		<form id="thirdCat" style="padding-top:10px;">
+		</form>
+	    </div>
+	</div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(function(){
+    	var url = "/admin/goodscatNew/listGoodsCatByParentId/" + 0;
+    	if(_urlPath!="/")
+    		url=_urlPath+url;
+    	$.ajax({
+            url: url,
+            data: {},
+            type: "post",
+            dataType:"json",
+            success: function (req){
+            	if (req.retcode == 0) {
+            		$("#firstCat").empty();
+            		$("#secondCat").empty();
+            		$("#thirdCat").empty();
+                    $.each(req.data,function(index,item){
+                    	if(item.disable == 1){
+	                    	$("#firstCat").append("<div class='message unread'><div class='col-md-4'><label><span>("+item.catOrder+")</span></label>&nbsp;&nbsp;<label onClick='clickFirstCat(this)' class='cat firstCat' data='"+ item.catId +"'><span>"+item.name+"</span></label></div>"+
+	                    			"<div class='datalist-content' style='text-align:center'>"+
+	                    			"&nbsp;<a href='javascript:updateCat("+ item.catId +")' title='编辑' class='btn btn-xs btn-info add-tooltip'><i class='fa fa-pencil'></i></a>"+
+	                    			//"&nbsp;<a href='javascript:void(0);' class='btn btn-xs btn-danger add-tooltip' title='删除' title=''><i class='fa fa-times'></i></a>"+
+	                    			"&nbsp;<a href='javascript:updateCatDisable("+ item.catId +",0);' class='btn btn-xs btn-success add-tooltip' title='显示' title=''><i class='fa fa-unlock'></i></a>"+
+	                    			"</div>"+
+	                    			"</div><br/>");
+                    	}else{
+                    		$("#firstCat").append("<div class='message unread'><div class='col-md-4'><label><span>("+item.catOrder+")</span></label>&nbsp;&nbsp;<label onClick='clickFirstCat(this)' class='cat firstCat' data='"+ item.catId +"'><span>"+item.name+"</span></label></div>"+
+	                    			"<div class='datalist-content' style='text-align:center'>"+
+	                    			"&nbsp;<a href='javascript:updateCat("+ item.catId +")' title='编辑' class='btn btn-xs btn-info add-tooltip'><i class='fa fa-pencil'></i></a>"+
+// 	                    			"&nbsp;<a href='javascript:void(0);' class='btn btn-xs btn-danger add-tooltip' title='删除' title=''><i class='fa fa-times'></i></a>"+
+	                    			"&nbsp;<a href='javascript:updateCatDisable("+ item.catId +",1);' class='btn btn-xs btn-warning add-tooltip' title='隐藏' title=''><i class='fa fa-lock'></i></a>"+
+	                    			"</div>"+
+	                    			"</div><br/>");
+                    	}
+                    	if(index == 0){
+                    		$("#span1").text(item.name);
+                    		$("#span1Val").val(item.catId);
+                    		showSecondCat(item.catId);
+                    	}
+                    });
+                 }else {
+                     $.Err(req.retmsg);
+                 }
+            }
+        });
+    	
+    	$("#addFirstBtn").click(function(){
+    		var parentId = 0;
+    		var parentName = "顶级分类";
+    		var url = "/admin/goodscatNew/preAddGoodsCat?parentId="+parentId+"&parentName="+parentName ;
+        	if(_urlPath!="/")
+        		url=_urlPath+url;
+        	showModal("添加一级分类", url);
+    	});
+    	$("#addSecondBtn").click(function(){
+    		var parentId = $("#span1Val").val();
+    		var parentName = $("#span1").text();
+    		var url = "/admin/goodscatNew/preAddGoodsCat?parentId="+parentId+"&parentName="+parentName ;
+        	if(_urlPath!="/")
+        		url=_urlPath+url;
+        	showModal("添加二级分类", url);
+    	});
+    	$("#addThirdBtn").click(function(){
+    		var parentId = $("#span2Val").val();
+    		var parentName = $("#span2").text();
+    		if(parentId == null || parentId == ""){
+    			$.Err("请选择二级分类再添加！");
+    			return;
+    		}
+    		var url = "/admin/goodscatNew/preAddGoodsCat?parentId="+parentId+"&parentName="+parentName ;
+        	if(_urlPath!="/")
+        		url=_urlPath+url;
+        	showModal("添加三级分类", url);
+    	});
+    	
+    	
+    });
+    
+    function clickFirstCat(ele){
+    	$("#span1").text($($(ele).children()[0]).text());
+    	$("#span1Val").val($(ele).attr("data"));
+    	
+    	$("#span2").text('');
+    	$("#span2Val").val('');
+    	$("#span3").text('');
+    	$("#span3Val").val('');
+    	//$(ele).parent().prop('style','background-color:#E7E8ED');
+    	showSecondCat($(ele).attr("data"));
+    }
+    function clickSecondCat(ele){
+    	$("#span2").text($($(ele).children()[0]).text());
+    	$("#span2Val").val($(ele).attr("data"));
+    	$("#span3").text('');
+    	$("#span3Val").val('');
+    	//$(ele).parent().prop('style','background-color:#E7E8ED');
+    	showThirdCat($(ele).attr("data"));
+    }
+    
+    function showSecondCat(parentId){
+    	var url = "/admin/goodscatNew/listGoodsCatByParentId/" + parentId;
+    	if(_urlPath!="/")
+    		url=_urlPath+url;
+    	$.ajax({
+            url: url,
+            data: {},
+            type: "post",
+            dataType:"json",
+            success: function (req){
+            	if (req.retcode == 0) {
+            		$("#secondCat").empty();
+            		$("#thirdCat").empty();
+                    $.each(req.data,function(index,item){
+                    	if(item.disable == 1){
+	                    	$("#secondCat").append("<div class='message unread'><div class='col-md-4'><label><span>("+item.catOrder+")</span></label>&nbsp;&nbsp;<label onClick='clickSecondCat(this)' class='cat secondCat' data='"+ item.catId +"'><span>"+item.name+"</span></label></div>"+
+	                    			"<div class='datalist-content' style='text-align:center'>"+
+	                    			"&nbsp;<a href='javascript:updateCat("+ item.catId +")' title='编辑' class='btn btn-xs btn-info add-tooltip'><i class='fa fa-pencil'></i></a>"+
+	                    			//"&nbsp;<a href='javascript:void(0);' class='btn btn-xs btn-danger add-tooltip' title='删除' title=''><i class='fa fa-times'></i></a>"+
+	                    			"&nbsp;<a href='javascript:updateCatDisable("+ item.catId +",0);' class='btn btn-xs btn-success add-tooltip' title='显示' title=''><i class='fa fa-unlock'></i></a>"+
+	                    			"</div>"+
+	                    			"</div><br/>");
+                    	}else{
+                    		$("#secondCat").append("<div class='message unread'><div class='col-md-4'><label><span>("+item.catOrder+")</span></label>&nbsp;&nbsp;<label onClick='clickSecondCat(this)' class='cat secondCat' data='"+ item.catId +"'><span>"+item.name+"</span></label></div>"+
+	                    			"<div class='datalist-content' style='text-align:center'>"+
+	                    			"&nbsp;<a href='javascript:updateCat("+ item.catId +")' title='编辑' class='btn btn-xs btn-info add-tooltip'><i class='fa fa-pencil'></i></a>"+
+	                    			//"&nbsp;<a href='javascript:void(0);' class='btn btn-xs btn-danger add-tooltip' title='删除' title=''><i class='fa fa-times'></i></a>"+
+	                    			"&nbsp;<a href='javascript:updateCatDisable("+ item.catId +",1);' class='btn btn-xs btn-warning add-tooltip' title='隐藏' title=''><i class='fa fa-lock'></i></a>"+
+	                    			"</div>"+
+	                    			"</div><br/>");
+                    	}
+                    	if(index == 0){
+                    		$("#span2").text(item.name);
+                    		$("#span2Val").val(item.catId);
+                    		showThirdCat(item.catId);
+                    	}
+                    });
+                 }else {
+                     $.Err(req.retmsg);
+                 }
+            }
+        });
+    }
+    
+    function showThirdCat(parentId){
+    	var url = "/admin/goodscatNew/listGoodsCatByParentId/" + parentId;
+    	if(_urlPath!="/")
+    		url=_urlPath+url;
+    	$.ajax({
+            url: url,
+            data: {},
+            type: "post",
+            dataType:"json",
+            success: function (req){
+            	if (req.retcode == 0) {
+            		$("#thirdCat").empty();
+                    $.each(req.data,function(index,item){
+                    	
+                    	if(item.disable == 1){
+	                    	$("#thirdCat").append("<div class='message unread'><div class='col-md-4'><label><span>("+item.catOrder+")</span></label>&nbsp;&nbsp;<label class='cat thirdCat' data='"+ item.catId +"'><span>"+item.name+"</span></label></div>"+
+	                    			"<div class='datalist-content' style='text-align:center'>"+
+	                    			"&nbsp;<a href='javascript:updateCat("+ item.catId +")' title='编辑' class='btn btn-xs btn-info add-tooltip'><i class='fa fa-pencil'></i></a>"+
+	                    			//"&nbsp;<a href='javascript:void(0);' class='btn btn-xs btn-danger add-tooltip' title='删除' title=''><i class='fa fa-times'></i></a>"+
+	                    			"&nbsp;<a href='javascript:updateCatDisable("+ item.catId +",0);' class='btn btn-xs btn-success add-tooltip' title='显示' title=''><i class='fa fa-unlock'></i></a>"+
+	                    			"</div>"+
+	                    			"</div><br/>");
+                    	}else{
+                    		$("#thirdCat").append("<div class='message unread'><div class='col-md-4'><label><span>("+item.catOrder+")</span></label>&nbsp;&nbsp;<label class='cat thirdCat' data='"+ item.catId +"'><span>"+item.name+"</span></label></div>"+
+	                    			"<div class='datalist-content' style='text-align:center'>"+
+	                    			"&nbsp;<a href='javascript:updateCat("+ item.catId +")' title='编辑' class='btn btn-xs btn-info add-tooltip'><i class='fa fa-pencil'></i></a>"+
+	                    			//"&nbsp;<a href='javascript:void(0);' class='btn btn-xs btn-danger add-tooltip' title='删除' title=''><i class='fa fa-times'></i></a>"+
+	                    			"&nbsp;<a href='javascript:updateCatDisable("+ item.catId +",1);' class='btn btn-xs btn-warning add-tooltip' title='隐藏' title=''><i class='fa fa-lock'></i></a>"+
+	                    			"</div>"+
+	                    			"</div><br/>");
+                    	}
+                    	if(index == 0){
+                    		$("#span3").text(item.name);
+                    		$("#span3Val").val(item.catId);
+                    	}
+                    	
+                    });
+                 }else {
+                     $.Err(req.retmsg);
+                 }
+            }
+        });
+    }
+    
+    updateCat = function(id){
+		var editUrl = "/admin/goodscatNew/preEditGoodsCat/" + id;
+		showModal("更新分类", editUrl);
+    }
+    
+    updateCatDisable = function(id,disable){
+		var editUrl = "/admin/goodscatNew/editGoodsCatDisable/" + id + "?disable=" + disable;
+		if(_urlPath != "/")
+			editUrl = _urlPath + editUrl;
+		var title = "";
+		if(disable == 0){
+			title = "确定显示此分类吗？";
+		}else{
+			title = "确定隐藏此分类吗？";
+		}
+		$.Cfm(title,function(){
+	        $.ajax({
+	            url:  editUrl,
+	            type:"post",
+	            dataType:"json",
+	            success: function (req){
+	                if (req.retcode == 0) {
+	                	goPage("/admin/goodscatNew/goodsCatMain");
+	                    $.Suc(req.retmsg);
+	                } else {
+	                    $.Err(req.retmsg);
+	                }
+	            }
+	        });
+	    });
+    }
+    
+    /*]]>*/
+</script>

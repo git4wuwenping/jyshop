@@ -1,0 +1,159 @@
+<form id="submitForm" class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="sjr"><font color="red">*</font>收件人：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="sjr" name="sjr" placeholder="请填写收件人名称"/>
+            <!--<div id="validation-sjr" class="validate-error help-block"></div>-->
+        </div>
+	</div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="tel"><font color="red">*</font>联系电话：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="tel" name="tel" placeholder="请填写联系电话"/>
+            <!--<div id="validation-tel" class="validate-error help-block"></div>-->
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="address"><font color="red">*</font>退货地址：</label>
+        <div class="col-sm-8" id="demo3">
+            <!--<select name="province" style="width: 70px;"></select>-->
+            <!--<select name="city" style="width: 70px;"></select>-->
+            <!--<select name="area" style="width: 70px;"></select>-->
+            <!--<select name="town" style="width: 80px;" onchange="javascript:selectVal(this)"></select>-->
+            <input class="form-control" type="text" id="address" name="address" placeholder="请填写详细退货地址"/>
+            <!--<div id="validation-address" class="validate-error help-block"></div>-->
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="disable">设为默认：</label>
+        <div class="col-sm-8">
+            <div class="radio">
+                <label style="display: inline-block; width: 50px;">
+                    <input th:checked="true" value="1" name="used" type="radio" class="ace"/>是
+                </label>
+                <label style="display: inline-block; width: 50px;">
+                    <input value="" name="used" type="radio" class="ace"/>否
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="num">排序：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="num" name="num" placeholder="请输入整数"/>
+            <!--<div id="validation-num" class="validate-error help-block"></div>-->
+        </div>
+    </div>
+
+</form>
+
+<script type="text/javascript" th:inline="javascript">
+    /*var area_;
+    var $town = $('[name="town"]');
+    var townFormat = function(info){
+        $town.hide().empty();
+        $.ajax({
+            url:'http://passer-by.com/data_location/town/'+info['code']+'.json',
+            dataType:'json',
+            success:function(town){
+                $town.show();
+                for(i in town){
+                    $town.append('<option value="'+i+'">'+town[i]+'</option>');
+                }
+            }
+        });
+    };
+    $('#demo3').citys({
+        required:false,
+        nodata:'disabled',
+        onChange:function(data){
+            townFormat(data);
+            // var text = data['direct']?'(直辖市)':'';
+            if(data['town']==undefined){
+                $('#address').val(data['province']+' '+data['city']+' '+data['area']);
+            }else{
+                $('#address').val(data['province']+' '+data['city']+' '+data['area']+' '+data['town']);
+            }
+            area_ = $('#address').val();
+        }
+    },function(api){
+        var info = api.getInfo();
+        townFormat(info);
+    });
+    function selectVal(data) {
+        var data = $(data);
+        var a = data.find("option:selected").text();
+        $('#address').val(area_+' '+a);
+    }*/
+
+    submit = function(){
+    	$('#submitForm').data('bootstrapValidator').validate();
+        if($('#submitForm').data('bootstrapValidator').isValid()){
+        	$("#submitForm").attr("disabled", true);
+    		var data = $("#submitForm").serialize();
+    		ajaxRequest("/admin/goodsRejectedAds/save", data);
+        }
+    };
+    $(function() {
+        $('#submitForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                sjr: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入收件人'
+                        },
+                        stringLength: {
+                            min: 2,
+                            max: 4,
+                            message: '用户名长度必须在2到4位之间'
+                        }
+                    }
+                },
+                tel: {
+                    message: '该号码不合法!',
+                    validators: {
+                        notEmpty: {
+                            message: '手机号码不能为空'
+                        },
+                        stringLength: {
+                            min: 11,
+                            max: 11,
+                            message: '请输入11位手机号码'
+                        },
+                        regexp: {
+                            regexp: /^1[3|5|8]{1}[0-9]{9}$/,
+                            message: '请输入正确的手机号码'
+                        }
+                    }
+                },
+                address: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入详细退货地址'
+                        }
+                    }
+                },
+                num: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入排序号'
+                        },
+                        numeric: {
+                            message: '请输入整数'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

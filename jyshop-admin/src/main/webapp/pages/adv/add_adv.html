@@ -1,0 +1,110 @@
+<form id="submitForm" class="form-horizontal">
+	<input id="advSpaceId" hidden="true" name="advSpaceId"
+		th:value="${advSpaceId}" />
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="advTitle"><font
+			color="red">*</font>广告名称：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="advTitle" name="advTitle"
+				placeholder="请填写广告名称" />
+			<div id="validation-advTitle" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<!-- <div class="form-group">
+        <label class="col-sm-3 control-label" for="adPositionTitle"><font color="red">*</font>广告位名称：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" readonly="readonly" name="adPositionTitle" th:value="${adPositionTitle}"/>
+        </div>
+    </div> -->
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="advHref">广告链接：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="advHref" name="advHref"
+				placeholder="请填写广告链接" />
+			<div id="validation-advHref" class="validate-error help-block"></div>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="advOrder">广告序号：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="advOrder" name="advOrder"
+				placeholder="请填写序号" />
+			<div id="validation-advOrder" class="validate-error help-block"></div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label">广告图片：</label>
+		<div class="col-sm-8">
+			<div class="imgPrivew" id="imgPrivew">
+				<input id="fileupload" type="file" name="files[]"
+					multiple="multiple" />
+			</div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	submit = function() {
+		$('#submitForm').data('bootstrapValidator').validate();
+		if ($('#submitForm').data('bootstrapValidator').isValid()) {
+			$("button[class='btn btn-primary']").attr("disabled", true);
+			var data = $("#submitForm").serialize();
+			ajaxRequest("/admin/adv/addAdv", data)
+		}
+	}
+
+	$(function() {
+		$('#fileupload')
+				.fileupload(
+						{
+							url : _urlPath + "upload/jqUploadImg",
+							dataType : 'html',
+							// 上传完成后的执行逻辑
+							done : function(e, data) {
+								$("#fileupload").attr("type", "hidden");
+								$("#imgPrivew")
+										.append(
+												"<div style='display: inline-block; margin-left: 10px;position:relative'>"
+														+ "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>"
+														+ "<i class='fa fa-times' onclick='deleteImg(this)'></i>"
+														+ "</span> "
+														+ "<img src='"+data.result+"' width='120px' height='120px'/>"
+														+ "<input type='hidden' name='advAttach' value='"+data.result+"'/>"
+														+ "</div>")
+								//$(this).parent().parent().find("small").hide();
+							},
+						});
+
+		$('#submitForm').bootstrapValidator({
+			message : 'This value is not valid',
+			feedbackIcons : {
+				valid : 'glyphicon glyphicon-ok',
+				invalid : 'glyphicon glyphicon-remove',
+				validating : 'glyphicon glyphicon-refresh'
+			},
+			fields : {
+				advTitle : {
+					validators : {
+						notEmpty : {
+							message : '广告名称'
+						}
+					}
+				},
+				advOrder : {
+					validators : {
+						notEmpty : {
+							message : '序号不能为空'
+						},
+						regexp : {
+							regexp : /^\d+(\.\d+)?$/,
+							message : '请输入非负的数字~'
+						}
+					}
+				}
+			}
+		});
+	});
+	/*]]>*/
+</script>

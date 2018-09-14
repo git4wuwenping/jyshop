@@ -1,0 +1,128 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+ 	<div class="col-md-2" style="padding-bottom: 0px;width: 200px;"> 
+ 		<select class="form-control" id='paramSelect' style="width: 90%;display: inline;float:left;" onchange="paramSelect();" > 
+			<option value='' text="查询条件" >==查询条件==</option> 
+			<option value='1' text="供应商名称">供应商名称</option> 
+			<option value='0' text="供应商账号" >供应商账号</option> 
+	</select>
+ 	</div> 
+  	<div class="col-md-2" style="width: 200px">
+		<input type="text" class="form-control search-query"  placeholder="查询条件" />
+	</div>
+    <div class="col-md-1" style="width: 105px;">
+        <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+    </div>
+    <div class="col-md-12" style="text-align: left;padding-bottom: unset;display:flex">
+    <label class="col-sm-1 control-label">交易金额：</label>
+			<input class="form-control" id="minAmount" style="width: 150px;height:34px" />
+					<span style="vertical-align: middle;font-size:20px">--</span>
+					<input class="form-control" id="maxAmount" style="width: 150px;height:34px;"/>&nbsp;&nbsp;&nbsp;&nbsp;
+		<div class='input-group date' style="width: 20%;">
+					<input type='text' class="form-control" name="minAddTime"
+						 placeholder="开始时间" />
+					 <span class="input-group-addon"> <span
+						class="glyphicon glyphicon-calendar"></span>
+					</span>
+					 
+		</div>
+		<span style="vertical-align: middle;font-size:20px">--</span>
+		<div class='input-group date' style="width: 20%;">
+					<input type='text' class="form-control" name="maxAddTime"
+						placeholder="结束时间" />  <span
+						class="input-group-addon">  <span
+						class="glyphicon glyphicon-calendar"></span>
+					</span> 
+				</div>
+    </div>
+    <div class="col-md-11" style="padding-bottom: 0px;width: 200px;display: flex"> 
+ 		<button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:goPage('/admin/company/preAddCom');" ><span class="btn-label icon fa fa-plus"></span>添加供应商</button>
+ 	</div> 
+  </div> 
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"comId",text:"供应商ID", sortColumn:"id"},
+                {field:"username", text:"账号"},
+                {field:"comName", text:"供应商名称"},
+                {field:"comCode", text:"供应商编码"},
+                {field:"comContact", text:"负责人"},
+                {field:"comMobile", text:"手机"},
+                {field:"comType", text:"店铺类型",formatter:function(index, content, data){
+                	if( content == 0 ){
+                    	return "<font color='blue'>商户</font>";
+                	}
+                	if( content == 1 ){
+                    	return "<font color='blue'>直营</font>";
+                	}
+                }},
+                {field:"bond", text:"保证金（元）"},
+                {field:"addTime", text:"创建时间",formatter:function(index, content, data){
+                	if(typeof content!='undefined' && content!=null)
+                		return new Date(content).toLocaleString();
+                	else
+                		return "";
+                }},
+                {field:"useable", text:"状态",formatter:function(index, content, data){
+                    return content == 0 ? "<font color='blue'>正常</font>" : "<font color='red'>停用</font>";
+                }},
+                {field:"remark", text:"备注"},
+                {field:"comId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                	if(99 == data.roleId){
+                		return "禁止操作超级管理员";
+                	}else{
+	                    var editUrl = "/admin/company/preEditCom/" + content;
+	                    var staNoUrl = "/admin/company/disabledNo/" + content;
+	                    var staYesUrl = "/admin/company/disabledYes/" + content;
+	                    /* var opDiv = "";	
+	                     return opDiv + "&nbsp;<a href='javascript:showModal(\"编辑供应商\", \""+editUrl+"\");' data-original-title='编辑' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>编辑</i></a>"
+	                        + "&nbsp;<a href='javascript:showCfm(\"停用\", \""+staUrl+"\");'  data-original-title='停用' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>停用</i></a>";
+	                     */
+	                    var opDiv = "&nbsp;<a href='javascript:showModal(\"编辑供应商\", \""+editUrl+"\");' data-original-title='编辑' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>编辑</i></a>";
+						if(data.useable==1){
+							opDiv += "&nbsp;<a href='javascript:showCfm(\"启用\", \""+staYesUrl+"\");' data-original-title='启用' class='btn btn-xs btn-success add-tooltip><i class='fa fa-times'>启用</i></a>";
+						}else{
+							opDiv += "&nbsp;<a href='javascript:showCfm(\"停用\", \""+staNoUrl+"\");'  data-original-title='停用' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>停用</i></a>";
+						}
+						return opDiv;
+	                }
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/company/pageCompanyAjax",
+            sort:"id",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+        
+        $('.date').datetimepicker({
+			language : 'zh-CN',
+			monthsShort : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			forceParse : 0,
+			showMeridian : 0, //是否显示上下午
+			initialDate : new Date()
+		});
+    });
+    function paramSelect(){
+		var param = $('#paramSelect').val();
+		if(param==1){
+			$('.search-query').attr('name','comName');
+		}else if(param==0){
+			$('.search-query').attr('name','username');
+		}
+	}
+    /*]]>*/
+</script>

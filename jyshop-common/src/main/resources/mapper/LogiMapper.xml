@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.LogiDao">
+
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.Logi">
+		<id column="logi_id" jdbcType="INTEGER" property="logiId" />
+		<result column="logi_code" jdbcType="VARCHAR" property="logiCode" />
+		<result column="logi_name" jdbcType="VARCHAR" property="logiName" />
+	</resultMap>
+	
+	<!-- 根据物流代码获取物流信息 -->
+	<select id="selectByLogiCode" resultMap="baseResultModel">
+		select * from shop_logi where logi_code = #{logiCode}
+	</select>
+	
+	<!-- 根据物流名称获取物流信息 -->
+	<select id="selectByLogiName" resultMap="baseResultModel">
+		select * from shop_logi where logi_name = #{logiName}
+	</select>
+</mapper>

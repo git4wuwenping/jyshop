@@ -1,0 +1,57 @@
+<table class="table-bordered" style="padding: unset; margin: unset">
+	<tr class="active">
+		<td class="text-right">模版ID：</td>
+		<td th:text="${info.templateId}"></td>
+	</tr>
+	<tr class="active">
+		<td class="text-right">标题：</td>
+		<td th:text="${info.templateTitle}"></td>
+	</tr>
+	<tr class="active">
+		<td class="text-right">一级行业：</td>
+		<td th:text="${info.firstIndustry}"></td>
+	</tr>
+	<tr class="active">
+		<td class="text-right">二级行业：</td>
+		<td th:text="${info.secondIndustry}"></td>
+	</tr>
+	
+	<tr class="active">
+		<td class="text-right">详情链接：</td>
+		<td th:text="${info.callUrl}"></td>
+	</tr>
+	
+	<tr class="active">
+		<td class="text-right">详细内容：</td>
+		<td>
+			<div th:if="${detail!=null}" th:each="dtl:${detail}">
+				<p th:text="${dtl.colText}"></p><br/>
+			</div>
+		</td>
+	</tr>
+	
+	<tr class="active">
+		<td class="text-right">示例内容：</td>
+		<td>
+			<div th:if="${detail!=null}" th:each="dtl:${detail}">
+				<p th:text="${dtl.colEgText}"></p><br/>
+			</div>
+		</td>
+	</tr>
+	<tr class="active">
+		<td class="text-right">说明：</td>
+		<td>
+			<p>模版ID:开发者调用模版消息接口时需提供模版ID;</p><br/>
+			<p>详细内容:在发送时，需要将内容中的参数（{{.DATA}}内为参数）赋值替换为需要的信息.</p>
+		</td>
+	</tr>
+</table>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+
+	$(function(){
+		$(".btn-primary").hide();
+	});
+	/*]]>*/
+</script>

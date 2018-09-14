@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.SpecValuesDao">
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.SpecValues">
+		<id column="spec_value_id" jdbcType="BIGINT" property="specValueId" />
+		<result column="spec_id" jdbcType="BIGINT" property="specId" />
+		<result column="spec_value" jdbcType="VARCHAR" property="specValue" />
+		<result column="spec_image" jdbcType="VARCHAR" property="specImage" />
+		<result column="sort" jdbcType="INTEGER" property="sort" />
+		<result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+	</resultMap>
+	
+	<!-- 根据规格ID获取规格值 -->
+	<select id="selectBySpecId" resultMap="baseResultModel">
+		select * from shop_spec_values where spec_id=#{specId}
+	</select>
+	
+	<!-- 根据规格ID获取规格值Id -->
+	<select id="selectOfSpecValuesId" resultType="long">
+		select 
+			 spec_value_id
+		from shop_spec_values 
+		where spec_Id=#{specId}
+	</select>
+	
+	<!-- 批量添加 -->
+	<insert id="batchInsert">
+		insert into shop_spec_values(spec_id, spec_value,spec_image,creation_time) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.specId}, #{item.specValue},#{item.specImage}, #{item.creationTime})
+		</foreach>
+	</insert>
+	
+	<!-- 根据规格Id删除规格值  -->
+	<delete id="delBySpecId">
+		delete from shop_spec_values where spec_id=#{specId}
+	</delete>
+	
+	<!-- 根据规格值IDS删除规格值 -->
+	<delete id="deleteBySpecValuesIds" >
+		delete from shop_spec_values where spec_value_id in  
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+		 	#{item}  
+		</foreach>  
+	</delete>
+</mapper>

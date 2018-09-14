@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.CommentDao">
+	<!-- 查询商品详情评价列表 -->
+	<select id="selectGoodsCommentList" resultType="map" >
+		select 
+			a.content,
+			a.comment_time as commentTime,
+			a.image,
+			if(a.anon_flag=1,'匿名评价',c.uname) as uanme,
+			c.weixin_face as weixinFace
+		from shop_comment a 
+		LEFT JOIN shop_goods b on a.goods_id = b.goods_id 
+		LEFT JOIN shop_member c on a.member_id = c.member_id 
+	 	where a.`status` = 1 and a.goods_id = #{goodsId}
+	</select>
+	<!-- 根据条件查询评论列表 -->
+	<select id="queryCommentByParam" resultType="map">
+		SELECT
+		t1.`comment_id` as commentId,
+		t1.`member_id` as memberId,
+		t2.`goods_id` AS goodsId,
+		t2.`name`,
+		t2.`image`,
+		t1.`comment_time` AS commentTime,
+		t1.`member_id` AS memberId,
+		t3.`uname`,
+		t1.`order_id` AS orderId,
+		t1.`score`,
+		t1.`content`,
+		t1.`status`
+		FROM
+		shop_comment t1
+		LEFT JOIN shop_goods t2
+		ON t1.`goods_id` = t2.`goods_id`
+		LEFT JOIN shop_member t3
+		ON t1.`member_id` = t3.`member_id` 
+		WHERE t1.`auto_flag` = 0
+		<if test="queryType == 0 and queryValue != null and queryValue!=''">
+			and t2.name like '%${queryValue}%'
+		</if>
+		<if test="queryType == 1 and queryValue != null and queryValue!=''">
+			and t1.member_id = #{queryValue}
+		</if>
+		<if test="queryType == 2 and queryValue != null and queryValue!=''">
+			and t1.goods_id = #{queryValue}
+		</if>
+		<if test="queryType == 3 and queryValue != null and queryValue!=''">
+			and t1.order_id = #{queryValue}
+		</if>
+		<if test="status != null and status != ''">
+			and t1.status = #{status}
+		</if>
+		<if test="score != null and score != ''">
+			and t1.score = #{score}
+		</if>
+		<if test="comId != null">
+			and t2.com_id=#{comId}
+		</if>
+		order by t1.comment_time desc
+	</select>
+
+
+	<select id="queryCommentById" resultType="map">
+		SELECT
+		t1.`comment_id` as commentId,
+		t2.`goods_id` AS goodsId,
+		t2.`name`,
+		t2.`image` as goodsImage,
+		t1.`comment_time` AS commentTime,
+		t1.`member_id` AS memberId,
+		t1.`order_id` AS orderId,
+		t1.`score`,
+		t1.`content`,
+		t1.`image` as image,
+		t1.`status`,
+		t1.`anon_flag` as anonFlag
+		FROM
+		shop_comment t1
+		LEFT JOIN shop_goods t2
+		ON t1.`goods_id` = t2.`goods_id`
+		WHERE t1.`comment_id` = #{commentId}
+	</select>
+
+
+	<!-- 查询订单评价信息 -->
+	<select id="queryOrderComment" resultType="map">
+		SELECT
+		oi.order_sn AS orderSn,
+		oi.goods_image AS goodsImage,
+		oi.goods_name AS goodsName,
+		oi.buy_count AS buyCount,
+		c.content,
+		c.score,
+		c.image,
+		c.comment_time AS commentTime
+		FROM
+		es_order_items oi
+		LEFT JOIN es_comment c
+		ON oi.ITEM_ID = c.item_id
+		WHERE oi.ORDER_SN = #{orderSn}
+	</select>
+	
+	<select id="queryGoodsComment" resultType="map">
+		SELECT 
+		t3.`nickname` ,
+		t1.`comment_time` AS commentTime,
+		t2.`PRODUCT_SPEC` AS productSpec,
+		t1.`score`,
+		t1.`content`,
+		t1.`image`
+		 FROM shop_comment t1
+		LEFT JOIN shop_order_items t2 ON t2.`ITEM_ID`=t1.`item_id`
+		LEFT JOIN shop_member t3 ON t3.member_id = t1.member_id
+		 WHERE t1.`goods_id` = #{goodsId}
+	</select>
+</mapper>

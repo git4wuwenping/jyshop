@@ -1,0 +1,49 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+    <div class="col-md-3" style="text-align: left;padding-bottom: unset">
+        <button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:showModal('添加规格', '/admin/spec/preAddSpec', 450);"><span class="btn-label icon fa fa-plus"></span>添加规格</button>
+    </div>
+  </div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"specId",text:"类型ID", sortColumn:"specId"},
+                {field:"specName", text:"规格名称"},
+                {field:"showType", text:"显示方式",formatter:function(index, content, data){
+                	if( content == 0 ){
+                    	return "<font color='blue'>文字</font>";
+                	}
+                	if( content == 1 ){
+                    	return "<font color='green'>图片</font>";
+                	}
+                	if( content == 2 ){
+                    	return "<font color='yellow'>文字和图像</font>";
+                	}
+                }},
+                {field:"specId", text:"操作", style:"text-align:center", formatter:function(index, content, data){
+
+                	var editUrl = "/admin/spec/preEditSpec/" + content;
+                	var delUrl = "/admin/spec/delSpec/" + content;
+                    return "<a href='javascript:showModal(\"更新规格\", \""+editUrl+"\");' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改</i></a>"+
+                    "&nbsp;<a href='javascript:showCfm(\"确定删除该类型\", \""+delUrl+"\");'  data-original-title='删除' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+                	
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/spec/pageSpecAjax",
+            sort:"specId",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+    /*]]>*/
+</script>

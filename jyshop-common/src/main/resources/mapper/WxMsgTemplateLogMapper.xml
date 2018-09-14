@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.WxMsgTemplateLogDao">
+	<select id="pageMsgLogData" resultType="map">
+		SELECT
+		  t1.`id`,
+		  t2.`template_title` as templateTitle,
+		  t1.`op_time` as opTime,
+		  t1.`end_time` as endTime,
+		  t1.`content`,
+		  t1.`msg_text` as msgText
+		FROM
+		  shop_wx_msg_template_log t1
+		  LEFT JOIN shop_wx_msg_template_info t2
+		    ON t1.`tpl_id` = t2.`id`
+		WHERE 1=1
+		AND t1.`tpl_id`= #{tplId}
+		ORDER BY T1.op_time DESC
+	</select>
+</mapper>

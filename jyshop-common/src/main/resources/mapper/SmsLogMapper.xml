@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.SmsLogDao">
+  <resultMap id="BaseResultMap" type="com.qyy.jyshop.model.SmsLog">
+    <id column="log_id" jdbcType="BIGINT" property="logId" />
+    <result column="request_ip" jdbcType="VARCHAR" property="requestIp" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="log_type" jdbcType="INTEGER" property="logType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+  <select id="checkCode" resultType="com.qyy.jyshop.model.SmsLog" >
+  	select max(create_time) ,log_id, request_ip,mobile,code,log_type,create_time 
+  	from shop_sms_log where mobile = #{mobile} 
+  	and code = #{code} 
+  </select>
+  
+</mapper>

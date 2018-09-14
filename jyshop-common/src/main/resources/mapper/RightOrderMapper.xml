@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.RightOrderDao">
+
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.RightOrder">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="type" jdbcType="VARCHAR" property="type" />
+		<result column="reason" jdbcType="VARCHAR" property="reason" />
+		<result column="statement" jdbcType="VARCHAR" property="statement" />
+		<result column="serial" jdbcType="VARCHAR" property="serial" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="show_time" jdbcType="DECIMAL" property="showTime" />
+		<result column="status" jdbcType="VARCHAR" property="status" />
+		<result column="seller_status" jdbcType="VARCHAR" property="sellerStatus" />
+		<result column="price" jdbcType="DECIMAL" property="price" />
+		<association property="order" select="com.qyy.jyshop.dao.OrderDao.selectByOrderId" column="order_id"/>
+		<collection property="items" ofType="com.qyy.jyshop.model.OrderItems" column="items_id">
+			<id property="itemId" column="items_id"/>
+			<result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+			<result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+			<result column="goods_image" jdbcType="VARCHAR" property="goodsImage" />
+			<result column="buy_count" jdbcType="INTEGER" property="buyCount" />
+			<result column="goods_price" jdbcType="DECIMAL" property="goodsPrice" />
+			<result column="ship_count" jdbcType="INTEGER" property="shipCount" />
+			<result column="price" jdbcType="DECIMAL" property="price" />
+			<result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
+			<result column="weight" jdbcType="DECIMAL" property="weight" />
+			<result column="unit" jdbcType="VARCHAR" property="unit" />
+		</collection>
+	</resultMap>
+
+	<select id="pageList" resultMap="baseResultModel">
+		SELECT r.*,t.items_id,t.GOODS_NAME,t.GOODS_IMAGE,
+		t.buy_count,t.goods_price,t.ship_count,t.price,t.product_spec,t.weight,t.unit,
+		t.order_id,o.`MEMBER_ID`,o.`COM_ID`,d.show_time
+		FROM
+		shop_order_right r
+		LEFT JOIN
+		(SELECT DISTINCT
+		r.right_id ,r.items_id,i.order_id ,i.order_sn,i.`GOODS_NAME`,i.`GOODS_IMAGE`,
+		i.buy_count,i.goods_price,i.ship_count,i.price,i.product_spec,i.weight,i.unit
+		FROM shop_order_right_rel r
+		LEFT JOIN shop_order_items i
+		ON r.items_id = i.`ITEM_ID`) t
+		ON r.id = t.right_id
+		LEFT JOIN
+		shop_order o
+		ON t.`ORDER_ID` = o.`ORDER_ID`
+		LEFT JOIN
+		(SELECT
+		<![CDATA[ CASE WHEN deal_time<0 THEN 0 ELSE deal_time END show_time,]]>
+		right_order_id
+		FROM
+		(SELECT CASE WHEN p.right_status_id > 7 THEN
+		UNIX_TIMESTAMP(p.`create_time`)+ ${tk} -UNIX_TIMESTAMP(NOW())
+		ELSE
+		UNIX_TIMESTAMP(p.`create_time`)+ ${thtk} -UNIX_TIMESTAMP(NOW())
+		END deal_time,
+		p.`right_order_id`
+		FROM
+		(SELECT MAX(id) AS id FROM shop_order_right_process GROUP BY right_order_id) t
+		LEFT JOIN
+		shop_order_right_process p
+		ON t.id = p.id
+		WHERE 1=1
+		AND p.right_status_id = 1
+		OR p.right_status_id = 3
+		OR p.right_status_id = 8
+		OR p.right_status_id = 9) t
+		) d
+		ON r.`id` = d.right_order_id
+		where 1=1
+		<if test="memberId != null and memberId != ''">
+			and o.MEMBER_ID = #{memberId}
+		</if>
+		<if test="comId != null">
+			and o.COM_ID = #{comId}
+		</if>
+		<if test="queryType == 0 and queryValue != null and queryValue!=''">
+			and t.goods_name like '%${queryValue}%'
+		</if>
+		<if test="queryType == 1 and queryValue != null and queryValue!=''">
+			and r.serial like '%${queryValue}%'
+		</if>
+		<if test="sellerStatus != null">
+			and r.seller_status = #{sellerStatus}
+		</if>
+		<if test="type != null">
+			and r.type = #{type}
+		</if>
+		<if test="paymentId!=null ">
+			and o.payment_id=#{paymentId}
+		</if>
+		<if test="createStartTime!=null and createStartTime!=''">
+			<![CDATA[ and r.create_time>=#{createStartTime} ]]>
+		</if>
+		<if test="createEndTime!=null and createEndTime!=''">
+			<![CDATA[ and r.create_time<=#{createEndTime} ]]>
+		</if>
+        ORDER BY r.`create_time` DESC
+	</select>
+
+	<select id="tuikuanList" resultType="string">
+		SELECT r.id
+			FROM
+			(SELECT p.*
+			FROM
+			(SELECT MAX(id) AS id FROM shop_order_right_process GROUP BY right_order_id) t
+			LEFT JOIN
+			shop_order_right_process p
+			ON t.id = p.id
+			WHERE p.right_status_id = 8
+			<![CDATA[ AND p.create_time < DATE_SUB(NOW(), INTERVAL ${time} SECOND) ]]>
+			) t
+		LEFT JOIN
+		shop_order_right r
+		ON t.right_order_id = r.id
+	</select>
+
+</mapper>

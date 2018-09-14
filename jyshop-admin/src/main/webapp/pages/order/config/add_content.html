@@ -1,0 +1,49 @@
+<form id="addSubmitForm" class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="content"><font color="red">*</font>好评内容：</label>
+        <div class="col-sm-8">
+            <textarea class="form-control" id="content" name="content" placeholder="请输入好评内容" row="4" />
+            <div id="validation-cname" class="validate-error help-block"></div>
+        </div>
+    </div> 
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	submit = function(){
+		//frmValidate();
+		$('#addSubmitForm').data('bootstrapValidator').validate();
+		
+        if($('#addSubmitForm').data('bootstrapValidator').isValid()){
+        	$("#addSubmitForm").attr("disabled", true);
+			var data = $("#addSubmitForm").serialize();
+			ajaxRequest("/admin/orderConfig/addContent", data);
+        }
+	}
+	
+	$(function(){
+		$('#addSubmitForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+            	content: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入好评内容'
+    					},
+    					stringLength: {     //输入　长度限制　　校验
+    	                    min: 10,
+    	                    max: 30,
+    	                    message: '文字限制：10-30个字'
+    	                }
+                    }
+                }
+            }
+        });
+		
+	});
+	/*]]>*/
+</script>

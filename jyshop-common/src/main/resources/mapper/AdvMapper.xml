@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.AdvDao">
+	<select id="queryAdvByAdvSpaceId" resultType="map">
+		SELECT
+		  t1.`id`,
+		  t1.`adv_title` AS advTitle,
+		  t1.`adv_space_id` AS advSpaceId,
+		  t2.`title`,
+		  t1.`used`,
+		  t1.`adv_order` as advOrder
+		FROM
+		  shop_adv t1
+		  LEFT JOIN shop_adv_space t2
+		    ON t1.`adv_space_id` = t2.`id`
+		WHERE t1.`adv_space_id` = #{advSpaceId}
+		order by t1.adv_order asc
+	</select>
+</mapper>

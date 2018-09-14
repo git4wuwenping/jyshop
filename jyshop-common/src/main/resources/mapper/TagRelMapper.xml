@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.TagRelDao">
+
+	<select id="selectTagRelByTagId" resultType="map">
+        SELECT
+        	t1.id,
+			t1.goods_id as goodsId,
+			t2.name,
+			t2.image
+		FROM
+			shop_tag_rel t1
+		LEFT JOIN shop_goods t2 ON t1.goods_id = t2.goods_id
+		WHERE
+			t1.tag_id = #{tagId} 
+	</select>
+	
+	<!-- 删除 -->
+	<delete id="deleteByTagId">
+		delete from shop_tag_rel where tag_id = #{tagId}
+	</delete>
+	
+	
+	<!-- 批量添加 -->
+	<insert id="batchInsert">
+		insert into shop_tag_rel(tag_id, goods_id) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.tagId}, #{item.goodsId})
+		</foreach>
+	</insert>
+</mapper>

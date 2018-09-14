@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.GoodsDao" >
+
+    <resultMap id="baseResultModel" type="com.qyy.jyshop.model.Goods" >
+        <id column="goods_id" property="goodsId" jdbcType="BIGINT" />
+        <result column="goods_sn" property="goodsSn" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="brand_id" property="brandId" jdbcType="INTEGER" />
+        <result column="cat_id" property="catId" jdbcType="INTEGER" />
+        <result column="com_id" property="comId" jdbcType="INTEGER" />
+        <result column="type_id" property="typeId" jdbcType="INTEGER" />
+        <result column="goods_type" property="goodsType" jdbcType="SMALLINT" />
+        <result column="unit" property="unit" jdbcType="VARCHAR" />
+        <result column="weight" property="weight" jdbcType="DECIMAL" />
+        <result column="market_enable" property="marketEnable" jdbcType="SMALLINT" />
+        <result column="brief" property="brief" jdbcType="VARCHAR" />
+        <result column="intro" property="intro" jdbcType="LONGVARCHAR" />
+        <result column="price" property="price" jdbcType="DECIMAL" />
+        <result column="cost" property="cost" jdbcType="DECIMAL" />
+        <result column="mktprice" property="mktprice" jdbcType="DECIMAL" />
+        <result column="params" property="params" jdbcType="LONGVARCHAR" />
+        <result column="specs" property="specs" jdbcType="LONGVARCHAR" />
+        <result column="have_spec" property="haveSpec" jdbcType="SMALLINT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify" property="lastModify" jdbcType="TIMESTAMP" />
+        <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+        <result column="buy_count" property="buyCount" jdbcType="INTEGER" />
+        <result column="disabled" property="disabled" jdbcType="SMALLINT" />
+        <result column="store" property="store" jdbcType="INTEGER" />
+        <result column="sort" property="sort" jdbcType="INTEGER" />
+        <result column="grade" property="grade" jdbcType="INTEGER" />
+        <result column="image" property="image" jdbcType="VARCHAR" />
+        <result column="alarm_num" property="alarmNum" jdbcType="INTEGER" />
+        <result column="isgroupbuy" property="isgroupbuy" jdbcType="SMALLINT" />
+        <result column="volume" property="volume" jdbcType="DECIMAL" />
+        <result column="SHIP_ID" property="shipId" jdbcType="INTEGER" />
+        <result column="SHIP_TYPE" property="shipType" jdbcType="VARCHAR" />
+        <result column="SHIP_AMOUNT" property="shipAmount" jdbcType="DECIMAL" />
+        <result column="shop_store_id" property="shopStoreId" jdbcType="INTEGER" />
+        
+    </resultMap>
+   	
+    <resultMap id="baseResultModel2" type="com.qyy.jyshop.model.Goods" >
+    	<result column="goods_id" property="goodsId" jdbcType="BIGINT" />
+    	<result column="name" property="name" jdbcType="VARCHAR" />
+    	<result column="price" property="price" jdbcType="DECIMAL" />
+    	<result column="mktprice" property="mktprice" jdbcType="DECIMAL" />
+    	<result column="image" property="image" jdbcType="VARCHAR" />
+    	<result column="brandId" property="brand_id" jdbcType="INTEGER" />
+    	<result column="qRCodePath" property="q_r_code_path" jdbcType="VARCHAR" />
+    </resultMap>
+    
+	<update id="updateAa" >
+		update shop_goods set goods_sn=#{goodsSn} where goods_id=#{goodsId}
+	</update>
+	<!-- 根据条件查询商品库存列表 -->
+	<select id="selectGoodsStoreByParams" resultType="map" >
+		select 
+			a.goods_id as goodsId,
+			a.goods_sn as goodsSn,
+			a.image,
+			a.name,
+			e.shop_store_name as shopStoreName,
+			c.CREATION_TIME as creationTime,
+			SUM(c.STORE) as store 
+		from   
+			shop_product b,shop_product_store c ,shop_goods a
+	    LEFT JOIN shop_company d on a.com_id = d.com_id 
+ 		LEFT JOIN shop_store e on d.com_id = e.com_id 
+ 		where b.goods_id = a.goods_id 
+  	 	 	and c.GOODS_ID = a.goods_id 
+   	 		and c.PRODUCT_ID = b.product_id 
+   	 	 <if test="comId != null">
+	  	 	and d.com_id = #{comId}
+	  	 	and a.shop_store_id = e.shop_store_id 
+	  	 </if>
+	  	 <if test="comIds != null">
+	  	 	and d.com_id = #{comIds}
+	  	 </if>
+		 <if test="goodsSn != null">
+			and a.goods_sn =#{goodsSn}
+		 </if>
+		 <if test="name != null">
+			and a.name like '%${name}%'
+		 </if>
+		 <if test="shopStoreName != null">
+			and e.shop_store_name like '%${shopStoreName}%'
+		 </if>
+		    GROUP BY b.goods_id  
+	</select>
+	
+    <!-- 根据分类Id查询最近的商品号 -->
+    <select id="selectOfGoodsSn" resultType="string">
+    	SELECT goods_sn FROM shop_goods WHERE com_Id=#{comId} and cat_id=#{catId} 
+    	ORDER BY goods_sn DESC LIMIT 0,1
+    </select>
+    
+    <!-- 查询店长礼包 -->
+    <select id="selectShopownerGoods" resultType="map"  >
+    	select a.GOODS_ID as goodsId,
+    		   a.name,
+    		   a.price,
+    		   a.cost,
+    		   a.image,
+    		   b.product_id as productId 
+    		   <if test="redPointRatio != null">
+		       ,CASE WHEN a.price-a.cost > 0 THEN (a.price-a.cost) * #{redPointRatio} ELSE 0 END AS redPoint
+			   </if>
+     	  from shop_goods a,shop_product b, shop_company c
+     	 where goods_type = 1 
+     	   and a.goods_id = b.goods_id
+     	   and a.market_enable = 1
+     	   and a.com_id = c.com_id 
+     	   and c.com_type = 1
+    </select>
+    
+    <select id="selectByGoodsSn" resultMap="baseResultModel">
+    	select * from shop_goods where goods_sn=#{goodsSn}
+    </select>
+
+	<select id="selectByGoodsId" resultMap="baseResultModel">
+		select * from shop_goods where goods_id=#{goodsId}
+	</select>
+    
+    <!-- 根据商品id获取总销售量 -->
+    <select id="getTotalSales"  resultType="Integer"  >
+    	select COALESCE(a.BUY_COUNT,0) from shop_order_items a 
+    	where a.GOODS_ID = #{goodsId};
+    </select>
+    <!-- 查询商品主图 -->
+    <select id="selectGoodsGalleryByGoodsId" resultType="map" >
+    	select 
+    		a.img_id as imgId,
+    		a.image
+    		from shop_goods_gallery a, shop_goods b 
+    		where 
+    			a.goods_id = b.goods_id
+    		and
+    			a.goods_id = #{goodsId}
+    </select>
+    <select id="selectGoodsByParams" resultType="map">
+        SELECT
+          sg.goods_id as goodsId,
+          sg.goods_sn as goodsSn,
+          sg.name,
+          sg.cat_name as catName,
+          sg.price,
+          sg.store,
+          sg.cost,
+          sg.mktprice,
+          sg.image,
+          sg.goods_type as goodsType,
+          sg.market_enable as marketEnable,
+          sg.sort,
+          sg.create_time as createTime,
+          sc.com_name as comName,
+          ss.shop_store_name as shopStoreName
+        FROM shop_goods sg
+        left join shop_company sc on sg.com_id=sc.com_id 
+        left join shop_store ss on sc.com_id = ss.com_id
+        <if test="comId != null and comIds == null">
+        	and sg.shop_store_id = ss.shop_store_id
+        </if>
+        where 1=1 
+        <if test="shopStoreName != null">
+        	and sc.store_name like '%${shopStoreName}%'
+        </if>
+		<if test="comId != null">
+			and sg.com_id=#{comId}
+		</if>
+		<if test="goodsSn != null">
+			and sg.goods_sn =#{goodsSn}
+		</if>
+		<if test="comIds != null">
+			and sg.com_id!=#{comIds}
+		</if>
+		<if test="shopStoreId != null">
+			and ss.shop_store_id = #{shopStoreId}
+		</if>
+		<if test="name != null">
+			and sg.name like '%${name}%'
+		</if>
+		<if test="state != null">
+			and sg.market_enable=#{state}
+		</if>
+		<if test="marketEnable != null">
+			and sg.market_enable = #{marketEnable}
+		</if>
+		<if test="goodsType != null">
+			and sg.goods_type = #{goodsType}
+		</if>
+		<if test="minMktprice != null and maxMktprice != null ">
+		<![CDATA[
+			and sg.mktprice >= #{minMktprice} and sg.mktprice < #{maxMktprice} 
+			]]>
+		</if>
+		<if test="minCost != null and maxCost != null ">
+		<![CDATA[
+			and sg.cost >= #{minCost} and sg.cost< #{maxCost} 
+			]]>
+		</if>
+		<if test="minStore != null and maxStore != null ">
+		<![CDATA[
+			and sg.store >= #{minStore} and sg.store < #{maxStore}
+			]]>
+		</if>
+		<if test="storeSituation != null and storeSituation ==1">
+		<![CDATA[
+			and sg.store > sg.alarm_num
+			]]>
+		</if>
+		<if test="storeSituation != null and storeSituation ==0">
+		<![CDATA[
+			and sg.store <= sg.alarm_num
+		]]>
+		</if>
+		group by sg.goods_id 
+		order by sg.create_time desc
+    </select>
+    <!-- 前台首页搜索商品接口 -->
+    <select id="searchGoodsByParams" resultType="map" >
+    	SELECT
+          sg.goods_id as goodsId,
+          sg.goods_sn as goodsSn,
+          sg.name,
+          sg.cat_name as catName,
+          sg.price,
+          sg.store,
+          sg.cost,
+          sg.mktprice,
+          sg.image,
+          sg.goods_type as goodsType,
+          sg.market_enable as marketEnable,
+          sg.sort,
+          sg.create_time as createTime,
+          sc.com_name as comName
+          <if test="redPointRatio != null">
+    	  ,CASE WHEN sg.price-sg.cost > 0 THEN (sg.price-sg.cost) * #{redPointRatio} ELSE 0 END AS redPoint
+		  </if>
+        FROM shop_goods sg
+        left join shop_company sc on sg.com_id=sc.com_id 
+        <if test="shopStoreId != null">
+        left join shop_store ss on sc.com_id = ss.com_id
+        </if>
+        where 1=1 
+		<if test="shopStoreId != null">
+			and ss.shop_store_id = #{shopStoreId}
+		</if>
+		<if test="name != null">
+			and sg.name like '%${name}%'
+		</if>
+			and sg.market_enable = 1
+		    order by sg.create_time desc
+    </select>
+    <select id="selectGoodsList"  resultType="map" >
+    	select 
+    		sg.goods_id as goodsId,
+    		sg.image, 
+    		sg.name,
+    		sg.mktprice,
+    		sg.price,
+    		sg.goods_type as goodsType,
+            IF((sg.com_id=0 and sg.shop_store_id =0),'巨柚自营',ss.shop_store_name)as shopStoreName
+    	<if test="redPointRatio != null">
+    		,CASE WHEN price-cost > 0 THEN (price-cost) * #{redPointRatio} ELSE 0 END AS redPoint
+		</if>
+		 from shop_goods sg 
+		 left join shop_company sc on sg.com_id=sc.com_id 
+         left join shop_store ss on IF(sg.com_id = 0 ,sg.shop_store_id = ss.shop_store_id,sc.com_id = ss.com_id)
+		 where market_enable = 1
+    </select>
+    
+    <select id="selectGoodListOrderByCounts" resultType="map">
+    	select 
+    		sg.goods_id as goodsId,
+    		sg.image, sg.name,
+    		sg.mktprice,sg.price,
+    		sg.goods_type as goodsType,
+    		IF((sg.com_id=0 and sg.shop_store_id =0),'巨柚自营',ss.shop_store_name)as shopStoreName
+    	<if test="redPointRatio != null">
+    		,CASE WHEN price-cost > 0 THEN (price-cost) * #{redPointRatio} ELSE 0 END AS redPoint
+		</if>
+    	 from 
+    	 	shop_goods sg 
+    	 left join shop_company sc on sg.com_id=sc.com_id 
+         left join shop_store ss on IF(sg.com_id = 0 ,sg.shop_store_id = ss.shop_store_id,sc.com_id = ss.com_id)
+    	 where sg.market_enable = 1 ORDER BY sg.create_time desc 
+    </select>
+    <!-- 根据商品类别id查询商品列表 -->
+     <select id="selectGoodsById" resultType="map">
+    	select 
+    		goods_id as goodsId,
+    		name,
+    		goods_type as goodsType,
+    		brand_id as brandId,
+    		price,
+    		mktprice,
+    		image
+    		<if test="redPointRatio != null">
+	    	  ,CASE WHEN price-cost > 0 THEN (price-cost) * #{redPointRatio} ELSE 0 END AS redPoint
+			  </if>
+    	 from shop_goods where  cat_id = #{catId} and market_enable = 1
+    </select>
+    
+    <!-- 根据店铺id查询商品列表 -->
+    <select id="selectGoodListByShopId" resultType="map" >
+    	select 
+			  a.goods_id as goodsId,
+    		  a.name,
+    		  a.price,
+    		  a.goods_type as goodsType,
+    		  a.mktprice,
+    		  a.image,
+    		  a.brand_id as brandId
+    		  <if test="redPointRatio != null">
+	    	  ,CASE WHEN a.price-a.cost > 0 THEN (a.price-a.cost) * #{redPointRatio} ELSE 0 END AS redPoint
+			  </if>
+    	 from 
+    	 	  shop_goods a,shop_company b,shop_store c 
+    	where 1=1
+		  and a.com_id = b.com_id 
+		  and b.com_id = c.com_id 
+		  and a.com_id = #{comId}
+		  <if test="comId!=null and comId!=0">
+		  	and c.shop_store_id = #{shopStoreId}
+		  </if>
+		  <if test="shopStoreId!=null and comId==0">
+		   	and a.shop_store_id = c.shop_store_id
+		  	and a.shop_store_id = #{shopStoreId}
+		  </if>
+    	  and a.market_enable = 1 
+    </select>
+    
+    
+    <!--  商品分页datatable -->
+    <select id="selectDataTableGoods" resultType="map" >
+    	SELECT
+		  t1.`goods_id` AS goodsId,
+		  t1.`image`,
+		  t1.`name`,
+		  t1.`com_id` AS comId,
+		  t3.`com_name` AS comName,
+		  SUM(t2.store) AS store
+		FROM
+		  shop_goods t1
+		  LEFT JOIN (SELECT  SUM(store) store,goods_id FROM shop_product  GROUP BY goods_id) t2
+		    ON t1.`goods_id` = t2.`goods_id`
+		  LEFT JOIN shop_company t3
+		    ON t1.`com_id` = t3.`com_id`
+		  where 1=1 
+		  <if test="goodsName != null">
+	    	  and t1.name like '%${goodsName}%' 
+		  </if>
+		  <if test="comName != null">
+	    	  and t3.com_name like '%${comName}%' 
+		  </if>
+		GROUP BY t1.`goods_id`
+    </select>
+    
+    <!-- 查询我的商品 -->
+    <select id="getMemberGoods" resultType="map"  >
+    	select 
+    		   c.GOODS_ID as goodsId,
+    		   c.name,
+    		   c.price,
+    		   c.cost,
+    		   c.image,
+    		   c.q_r_code_path as qRCodePath
+    	from 
+    		shop_member a,shop_goods_member b,shop_goods c 
+		where a.member_id = b.member_id and b.goods_id = c.goods_id 
+		and a.member_id = #{memberId} and c.market_enable = 1;
+    </select>
+    <select id="findGoodDetailedById" resultType="map" >
+    	select  
+    		a.goods_id as goodsId,
+    		a.goods_sn as goodsSn,
+    		a.name,
+    		a.cat_id as catId,
+    		a.com_id as comId,
+    		a.brand_id as branchId,
+    		a.unit,
+    		a.weight,
+    		a.brief,
+    		a.goods_type as goodsType,
+    		a.store,
+    		a.intro,
+    		a.shop_store_id as shopStoreId,
+    		a.price,
+    		a.cost,
+    		a.mktprice,
+    		a.image,
+    		b.name as catName,
+      	   aa.tag_names as ensureTagName,
+		  	GROUP_CONCAT(bb.`tag_name`ORDER BY bb.`tag_order` SEPARATOR '|') AS tagName
+		  	<if test="redPointRatio != null">
+		       ,CASE WHEN a.price-a.cost > 0 THEN (a.price-a.cost) * #{redPointRatio} ELSE 0 END AS redPoint
+			   </if>
+    	from shop_goods a
+    	left join shop_goods_cat b on a.cat_id = b.cat_id  
+    	<!-- 保障标签 -->
+		LEFT JOIN
+				(SELECT
+						d.goods_id,
+						GROUP_CONCAT(
+							DISTINCT(c.`tag_name`)
+							ORDER BY c.`tag_order` SEPARATOR '|'
+						) AS tag_names
+					FROM
+						shop_ensure_template a
+						LEFT JOIN shop_ensure_template_tag_rel b
+							ON a.`id` = b.`template_id`
+						LEFT JOIN shop_ensure_tag c
+							ON b.`tag_id` = c.`id`
+						LEFT JOIN shop_ensure_template_goods_rel d on d.template_id = a.id 
+							and d.goods_id is not NULL 
+					GROUP BY d.goods_id
+						ORDER BY a.`create_time`) aa
+		ON a.goods_id = aa.goods_id 
+    	<!-- 商品标签 -->
+		LEFT JOIN 
+				(select 
+						a.goods_id,
+						b.`tag_name`,
+						b.tag_order
+				 from shop_tag_rel a 
+    		left join shop_tag b on a.tag_id = b.tag_id) bb 
+		on bb.goods_id = a.goods_id
+     where a.goods_id=#{goodsId} ;
+    </select>
+    
+    <select id="findBondByComId" resultType="Integer" >
+    	select IFNULL(max(a.bond),0) 
+    	  from shop_company a,shop_goods b 
+    	  where a.com_id = #{comId} and a.com_id = b.com_id
+    </select>
+    <select id="orderGoods" resultMap="baseResultModel2">
+    	 select 
+			  a.goods_id,
+    		  a.name,
+    		  a.price,
+    		  a.goods_type as goodsType,
+    		  a.image,
+    		  a.brand_id
+    		  <if test="redPointRatio != null">
+		       ,CASE WHEN a.price-a.cost > 0 THEN (a.price-a.cost) * #{redPointRatio} ELSE 0 END AS redPoint
+			   </if>
+    	 from 
+    	 	  shop_goods a
+    <if test="shopStoreId!=null">
+    	 left join shop_company b on a.com_id = b.com_id
+    	 left join shop_store c on b.com_id = c.com_id
+    </if>
+    	where 1=1 
+	<if test="shopStoreId!=null">
+    	  and c.shop_store_id = #{shopStoreId}
+    </if>
+    <if test="catId!=null">
+    	  and a.cat_id = #{catId} 
+    </if>
+    	  and a.market_enable = 1 
+   		  order by ${orderType} 
+    <if test="sort==1">
+    	  	desc 
+    </if>
+    <if test="sort==0">
+    	  	asc
+    </if>
+    </select>
+    <!-- 根据一级类别查询商品 -->
+    <select id="selectGoodsByFirCatId" resultType="map" >
+    	select
+    		a.goods_id,
+    		a.name,
+    		a.brand_id,
+    		a.goods_type as goodsType,
+    		a.price,
+    		a.image
+    		<if test="redPointRatio != null">
+	       ,CASE WHEN a.price-a.cost > 0 THEN (a.price-a.cost) * #{redPointRatio} ELSE 0 END AS redPoint
+		   </if>
+		 from shop_goods a,shop_goods_cat b 
+		 where a.cat_id = b.cat_id and b.cat_path like '%${catId}%' 
+		 and  LENGTH(b.cat_path)  > 10 and a.market_enable = 1
+    </select>
+    <!-- 修改商品上架情况 -->
+    <update id="updateOfMarketEnable">
+    	update shop_goods set market_enable=#{marketEnable} where goods_id=#{goodsId}
+    </update>
+    <!--  根据商品id修改商品二维码 -->
+    <update id="updateGoodsQRCodePathById"  >
+    	update shop_goods set q_r_code_path = #{qRCodePath} where goods_id = #{goodsId}
+    </update>
+	
+</mapper>

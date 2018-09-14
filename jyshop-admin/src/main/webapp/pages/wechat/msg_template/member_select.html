@@ -1,0 +1,166 @@
+<div class="panel">
+		昵称：&nbsp;<input id="nickname" name="nickname" style="width: 150px" />&nbsp;&nbsp;&nbsp;&nbsp;
+		手机号：&nbsp;<input  id="mobile" name="mobile" style="width: 150px"/>
+		<input id="searchBtn" type="button" value="搜索" onclick="search()"></input>
+		<div class="table-primary">
+			<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="jq-datatables">
+				<thead>
+				<tr>
+					<th class="text-center"><input type="checkbox" name="select_all" value="1" id="example-select-all"/></th>
+					<th class="text-center">用户ID</th>
+					<th class="text-center">头像</th>
+					<th class="text-center">昵称</th>
+					<th class="text-center">身份</th>
+					<th class="text-center">手机号</th>
+					<th class="text-center">是否关注公众号</th>
+				</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+
+	submit = function(){
+		var memberIdArr = [];
+		$(":checked").each(function(){
+			if($(this).attr('class') == "checkboxClass"){
+				var memberId = $($(this).parent().parent().children()[1]).html();
+				memberIdArr.push(memberId);
+			}
+		    
+		  });
+		if(memberIdArr.length){
+			var data = {"memberIdArr":memberIdArr,"tplId":[[${tplId}]]};
+			ajaxRequest("/admin/wechat/msgTemplate/addRel", data);
+		}
+		
+		$(".close", ".modal").click();
+	}
+	
+	
+	
+	
+	
+    $(function () {
+        var table = $('#jq-datatables').dataTable({
+            //"bPaginate" : true, //是否显示（应用）分页器
+            "sPaginationType" : "full_numbers", //详细分页组，可以支持直接跳转到某页
+            "bServerSide":true,//指定服务端分页，必须的属性！
+            "bSort" : false, //是否启动各个字段的排序功能
+            "bFilter":false, //关闭过滤功能
+            "iDisplayLength": 10,//每页显示10条数据
+            "singleSelect":true,
+            "oLanguage": {
+                "oPaginate": {
+                    "sFirst" : "第一页",
+                    "sPrevious" : "上一页",
+                    "sNext" : "下一页",
+                    "sLast" : "最后一页"
+                },
+                "sProcessing" : "正在获取数据，请稍后...",
+                "sLengthMenu" : "每页显示 _MENU_ 条",
+                "sZeroRecords" : "没有您要搜索的内容",
+                "sInfo" : "从 _START_ 到  _END_ 条记录 总记录数为 _TOTAL_ 条",
+                "sInfoEmpty" : "记录数为0",
+            },
+            //服务器端，数据回调处理
+            "fnServerData" : retrieveData,
+            "columns": [
+                {
+                	'targets': 0,
+                    'searchable': false,
+                    'orderable': false,
+                    'className': 'dt-body-center',
+                    'data' : 'memberId',
+                    "render": function (data, type, full, meta) {
+                        return '<input type="checkbox" class="checkboxClass" data="' + data + '"></input>';
+                    }
+                },
+                {
+                    "className": "text-center",
+                    "data": "memberId"
+                },
+                {
+                    "className": "text-center",
+                    "data": "weixinFace",
+                    "render": function (data, type, full, meta) {
+                        return "<img src='"+data+"' width='50' height='50' >";
+                    }
+                },
+                {
+                    "className": "text-center",
+                    "data": "nickname"
+                },
+                {
+                    "className": "text-center",
+                    "data": "identityId", //identityId
+                    "render": function (data, type, full, meta) {
+                    	if(data == 0){
+                    		return "<font color='black'>代理</font>";
+                    	}
+                    	if(data == 1){
+                    		return "<font color='black'>店长</font>";
+                    	}
+                    	if(data == 2){
+                    		return "<font color='black'>普通客户</font>";
+                    	}
+                    }
+                },
+                {
+                    "className": "text-center",
+                    "data": "mobile"
+                },
+                {
+                    "className": "text-center",
+                    "data": "subscribe",
+                    "render": function (data, type, full, meta) {
+                    	return data == 0 ? "<font color='blue'>已关注</font>" : "<font color='red'>未关注</font>";
+                    }
+                },
+            ]
+        });
+        //$('#jq-datatables_wrapper .table-caption').text('商品列表');
+        //$('#jq-datatables_wrapper .dataTables_filter input').attr('placeholder', '搜索...');
+        
+        
+     
+ 	   $('#example-select-all').on('click', function(){
+ 		  $("input[class='checkboxClass']").each(function() {
+				if ($(this).prop("checked") && !$('#example-select-all').prop("checked")) {
+					$(this).prop("checked", false);
+				} else if( !$(this).prop("checked") && $('#example-select-all').prop("checked")) {
+					$(this).prop("checked", true);
+				}
+			});
+ 	   });
+
+    });
+
+    function retrieveData(sSource, aDataSet, fnCallback) {
+    	aDataSet['search']['nickname'] = $("#nickname").val();
+    	aDataSet['search']['mobile'] = $("#mobile").val();
+    	//alert(JSON.stringify(aDataSet))
+        $.ajax( {
+            type: "POST",
+            //url: _urlPath + "admin/ensureTemplate/pageDataTableGoods?now=" + new Date().getTime(),
+            url: _urlPath + "admin/member/pageDataTableMember?now=" + new Date().getTime(),
+            dataType: "json",
+            data: aDataSet,
+            success: function(result){
+                //console.log(result)
+                fnCallback(result)
+            },
+            error:function(){
+                //alert('error');
+            }
+        });
+    }
+    
+    function search(){
+    	$("#jq-datatables").dataTable().fnDraw(false);
+    }
+	/*]]>*/
+</script>

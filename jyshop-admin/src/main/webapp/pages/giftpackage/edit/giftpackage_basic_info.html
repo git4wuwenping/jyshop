@@ -1,0 +1,48 @@
+<div th:fragment="giftpackage_basic_info" class="tab-pane active" id="bs-tabdrop-pill1">
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="gpName"><font
+			color="red">*</font>礼包名称：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="gpName" name="gpName" th:value="${giftPackage.gpName}"
+				placeholder="请填写礼包名称" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="goodsSn">货号：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="goodsSn" name="goodsSn" 
+				th:value="${giftPackage.gpSn}" placeholder="请填写商品货号" />
+		</div>
+    </div> 
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="disabled">是否可用：</label>
+		<div class="col-sm-8">
+			<div class="radio">
+				<label style="display: inline-block; width: 50px;"> <input
+						value="1" name="disabled" type="radio" class="ace"
+						th:checked="${giftPackage.disabled==1}?true:false" />是
+				</label> <label style="display: inline-block; width: 50px;"> <input
+					value="0" name="disabled" type="radio" class="ace"
+					th:checked="${giftPackage.disabled==0}?true:false" />否
+			</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="store"><font
+				color="red">*</font>库存：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="store" name="store" th:value="${giftPackage.store}"/>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="intro">详情：</label>
+		<div class="col-sm-8">
+			<textarea type="text/plain" id="content" style="width:1000px"></textarea>
+			<textarea style="visibility: hidden;" id="intro" name="intro" th:text="${giftPackage.intro}"></textarea>
+		</div>
+	</div>
+</div>

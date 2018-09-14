@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.ProductStoreDao">
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.ProductStore">
+		<id column="store_id" jdbcType="BIGINT" property="storeId" />
+		<result column="goods_id" jdbcType="BIGINT" property="goodsId" />
+		<result column="goods_sn" jdbcType="VARCHAR" property="goodsSn" />
+		<result column="com_id" jdbcType="INTEGER" property="comId" />
+		<result column="com_name" jdbcType="VARCHAR" property="comName" />
+		<result column="product_id" jdbcType="BIGINT" property="productId" />
+		<result column="product_sn" jdbcType="VARCHAR" property="productSn" />
+		<result column="freeze_store" jdbcType="INTEGER" property="freezeStore" />
+		<result column="store" jdbcType="INTEGER" property="store" />
+		<result column="usable_store" jdbcType="INTEGER" property="usableStore" />
+		<result column="disabled_store" jdbcType="INTEGER" property="disabledStore" />
+		<result column="depot_id" jdbcType="BIGINT" property="depotId" />
+		<result column="depot_code" jdbcType="VARCHAR" property="depotCode" />
+		<result column="depot_name" jdbcType="VARCHAR" property="depotName" />
+		<result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+	</resultMap>
+	<resultMap id="baseResultMode2" type="com.qyy.jyshop.model.ProductStore">
+		<id column="store_id" jdbcType="BIGINT" property="storeId" />
+		<result column="usable_store" jdbcType="INTEGER" property="usableStore" />
+	</resultMap>
+	
+	<select id="selectProductStoreAndStoreId" resultMap="baseResultMode2" >
+		select 
+			b.STORE_ID as storeId,
+			b.USABLE_STORE as usableStore 
+		from shop_goods a 
+		LEFT JOIN shop_product_store b ON a.goods_id = b.goods_id
+		where a.goods_id = #{goodsId}
+	</select>
+	
+	<!-- 根据goodsId查询商品库存回显编辑 -->
+	<select id="selectProductStoreByGoodsId" resultType="map">
+		select 
+			a.goods_id as goodsId,
+			c.STORE_ID as storeId,
+			b.sn as goodsSn,
+			b.`name`,
+			b.spec_value_ids as specValueId,
+			d.SPEC_VALUE as specValue ,
+			c.STORE as usableStore 
+		from shop_goods a 
+		LEFT JOIN shop_product b on a.goods_id = b.goods_id
+		LEFT JOIN shop_product_store c ON b.goods_id = c.goods_id and b.product_id = c.PRODUCT_ID
+		LEFT JOIN shop_spec_values d on  b.spec_value_ids = d.SPEC_VALUE_ID
+		where a.goods_id = #{goodsId} GROUP BY b.sn
+	</select>
+	
+	
+	<!-- 查询大于库存的货品根据供应商排序 -->
+	<select id="selectByUsableStore" resultMap="baseResultModel">
+		SELECT 
+			* 
+		FROM shop_product_store 
+		where product_id=#{productId} 
+			<if test="usableStore != null and usableStore != ''">
+				and usable_store>=#{usableStore}
+			</if>
+		ORDER BY 
+			<if test="comIdOrder != null and comIdOrder != ''">
+				com_id IN(${comIdOrder}) DESC,
+			</if>
+			store DESC
+	</select>
+	
+	<update id="updateProductStoreByStoreId">
+		update 
+			shop_product_store 
+		set 
+			STORE = #{userableStore},
+			CREATION_TIME = #{creationTime} 
+		where STORE_ID = #{storeId}
+	</update>
+	
+	<!-- 减少货品库存 -->
+	<update id="updateStoreOfCut">
+		update shop_product_store set store=store-#{store} where product_id=#{productId}
+	</update>
+	
+	<!-- 根据货品IDS删除货品库存 -->
+	<delete id="deleteByProductIds" >
+		delete from shop_product_store where product_id in  
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+		 	#{item}  
+		</foreach>  
+	</delete>
+</mapper>

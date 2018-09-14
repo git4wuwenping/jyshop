@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.PayOrderDao">
+
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.PayOrder">
+		<id column="pay_id" jdbcType="BIGINT" property="payId" />
+		<result column="pay_sn" jdbcType="VARCHAR" property="paySn" />
+		<result column="pay_status" jdbcType="VARCHAR" property="payStatus" />
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+		<result column="pay_amount" jdbcType="DECIMAL" property="payAmount" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+		<result column="payment_id" jdbcType="INTEGER" property="paymentId" />
+		<result column="payment_name" jdbcType="VARCHAR" property="paymentName" />
+		<result column="payment_type" jdbcType="VARCHAR" property="paymentType" />
+	</resultMap>
+	
+	<!-- 根据支付流水号与支付状态查询支付订单  -->
+	<select id="selectByPaySnAndPayStatus" resultMap="baseResultModel">
+		select * from shop_pay_order 
+		where pay_sn=#{paySn} and pay_status=#{payStatus}
+	</select>
+	
+	<!-- 修改支付订单状态  -->
+	<update id="updatePayStatus" >
+		update shop_pay_order set pay_status=#{payStatus} where pay_id=#{payId}
+	</update>
+	
+	<select id="selectPayOrderList" resultType="map">
+		SELECT
+			spo.pay_id,
+			spo.pay_sn as paySn,
+			spo.member_id as memberId,
+			spo.payment_name as paymentName,
+			spo.pay_status as payStatus,
+			spo.order_amount as orderAmount,
+			spo.pay_amount as payAmount,
+			spo.pay_time as payTime,
+			sm.nickname
+		FROM
+			shop_pay_order spo
+		LEFT JOIN shop_member sm ON sm.member_id = spo.member_id
+		WHERE
+			1=1
+		<if test="nickname != null ">
+			and sm.nickname LIKE '%${nickname}%'
+		</if>
+		<if test="payType != null ">
+			and spo.payment_id = #{payType}
+		</if>
+		order by spo.pay_time desc
+	</select>
+	
+	<select id="selectPayOrderListByMemberId" resultType="map"  >
+		select * from shop_pay_order a where a.member_id = #{memberId} order by a.pay_time desc
+	</select>
+	
+</mapper>

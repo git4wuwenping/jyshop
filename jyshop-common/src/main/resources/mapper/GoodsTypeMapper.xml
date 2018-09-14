@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.GoodsTypeDao">
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.GoodsType">
+		<id column="type_id" jdbcType="INTEGER" property="typeId" />
+		<result column="type_name" jdbcType="VARCHAR" property="typeName" />
+		<result column="type_props" jdbcType="VARCHAR" property="typeProps" />
+		<result column="spec_ids" jdbcType="VARCHAR" property="specIds" />
+		<result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+		<result column="creation_time" jdbcType="VARCHAR" property="creationTime" />
+		<result column="com_id" jdbcType="VARCHAR" property="comId" />
+	</resultMap>
+	
+	<!-- 根据供应商获取类型 -->
+	<select id="selectByComId" resultMap="baseResultModel">
+		select * from shop_goods_type where com_id=#{comId}
+	</select>
+	
+	<!-- 修改类型规格 -->
+	<update id="updateOfSpecIds" >
+		update shop_goods_type set spec_ids=#{specIds} where type_id=#{typeId} and com_id=#{comId}
+	</update> 
+	
+</mapper>

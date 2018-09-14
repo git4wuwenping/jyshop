@@ -1,0 +1,36 @@
+<div class="input-group date" id="bs-datepicker-component">
+	<input type="text"  class="form-control" /> 
+	<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+</div>
+
+
+<div class="input-daterange input-group" id="bs-datepicker-range">
+	<input type="text" class="input-sm form-control" name="start" placeholder="Start date" />
+	<span class="input-group-addon">to</span>
+	<input type="text" class="input-sm form-control" name="end" placeholder="End date" />
+</div>
+
+<form id="submitForm" class="form-horizontal">
+<div class="form-group" style="padding-left: unset; padding-right: unset;">
+	<label class="col-sm-2 control-label" for="content"><font color="red">*</font>内容：</label>
+	<div class="col-sm-8">
+		<script id="content" name="content" type="text/plain"></script>
+	</div>
+</div>
+</form>	
+<input type="button" id="aaa" value="获取第一个时间" />
+
+<script type="text/javascript" th:inline="javascript">
+		
+	/*<![CDATA[*/
+		initUeditor();           
+		$('#bs-datepicker-component').datepicker();    
+		
+		var options2 = { orientation: $('body').hasClass('right-to-left') ? "auto right" : 'auto auto' };
+		$('#bs-datepicker-range').datepicker(options2);
+		
+		$("#aaa").click(function(){
+			alert($("input[type='text']").eq(0).val());
+		});
+   /*]]>*/
+</script>

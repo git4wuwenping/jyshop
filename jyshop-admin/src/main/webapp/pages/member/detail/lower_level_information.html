@@ -1,0 +1,29 @@
+<div th:fragment="lower_level_information" class="tab-pane" id="bs-tabdrop-pill3" style="width: 100%">
+	<div class="table-info">
+    	<table class="table table-bordered">
+        	<thead>
+            	<tr style="text-align:center">
+                	<th class="text-center">用户id</th>
+                    <th class="text-center">注册时间</th>
+                    <th class="text-center">昵称</th>
+                    <th class="text-center">是否关注公众号</th>
+                    <th class="text-center">手机号</th>
+                    <th class="text-center">累计贡献红积分</th>
+                    <th class="text-center">累计贡献黄积分</th>
+                </tr>
+            </thead>
+            <tbody>
+            	 <tr th:if="${members!=null}" th:each="member:${members}" style="text-align:center">
+                 	<td th:text="${member.memberId}"></td>
+                    <td th:text="${member.regtime}"></td>
+                    <td th:text="${member.nickname}"></td>
+                    <td th:if="${member.subscribe}==0" th:text="已关注" ></td>
+                    <td th:if="${member.subscribe}==1" th:text="未关注" ></td>
+                    <td th:text="${member.mobile}"></td>
+                    <td >累计贡献红积分</td>  
+                    <td >累计贡献黄积分</td>
+                 </tr>
+            </tbody>
+    	</table>
+	</div>
+</div>

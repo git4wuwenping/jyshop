@@ -1,0 +1,132 @@
+<form id="submitForm" class="form-horizontal">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel">
+				<div class="panel-heading">
+					
+					<div align="left">
+						<a href="javascript:submitForm();" class="btn btn-primary">发放</a>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="panel">
+						<div class="panel-body">
+							<div style="margin-left: 100px;" >
+								<input id="cpnId" hidden="true" name="cpnId" th:value="${coupon.cpnId}" />
+								<input id="grantType" hidden="true" name="grantType" th:value="${coupon.grantType}" />
+								<input name="memberIds" id="memberIds" type="hidden"  value="" />
+								
+								<div>您正在为 <font color="red"><span th:text="${coupon.cpnName}"></span></font> 发放优惠券</div>
+								<div>发放方式: <span th:text="${coupon.grantTypeName}"></span></div>
+								<div>已发放: <span th:text="${coupon.grantNum}"></span> 张</div>
+								<div>已领取: <span th:text="${coupon.hasGetNum}"></span> 张</div>
+								<div>已使用: <span th:text="${coupon.hasUseNum}"></span> 张</div>
+								<div>每人发放 
+									<select name="count">
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+									</select>
+									张
+								</div>
+								<div class="radio">
+									发放对象
+									<label style="display: inline-block; width: 100px;">
+										<input value="0" checked="checked" name="gType" type="radio" class="ace"
+										onclick="javascript:clickRadio(0);" />全站会员
+									</label> <label style="display: inline-block; width: 100px;">
+										<input value="1" name="gType" type="radio" class="ace"
+										onclick="javascript:clickRadio(1);" />指定会员
+									</label>
+								</div>
+							</div>	
+						</div>
+					</div>
+					<div class="panel" style="display: none;" id="member-panel">
+						<div class="panel-heading">
+							<span class="panel-title">优惠券发放会员列表：</span>
+							<a href="javascript:showModal('选择会员', '/admin/coupon/selectMember','1200px');" class="btn btn-info">点击选择会员</a>
+						</div>
+						<div class="panel-body">
+							<table id="coupon-member-list" class="table table-bordered">
+								<tr>
+									<td>用户ID</td>
+									<td>头像</td>
+									<td>昵称</td>
+									<td>操作</td>
+								</tr>
+							</table>
+						</div>
+	
+	
+					</div>
+	
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</form>
+
+
+
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	
+	function clickRadio(type){
+		if(type == 0){
+			$("#member-panel").hide();
+		}
+		if(type == 1){
+			$("#member-panel").show();
+		}
+	}
+	
+	function couponMemberRemove(data){
+		var idArr = $("#memberIds").val().split(',');
+		for(var i = 0;i<idArr.length;i++){
+			if(idArr[i] == data){
+				idArr.splice(i,1);
+			}
+		}
+		$("#memberIds").val(idArr.join(','));
+		var did = "#mid" + data;
+		$(did).remove();
+	}
+	
+	function submitForm(){
+		var data = $("#submitForm").serialize();
+		var url = "/admin/coupon/grantCouponMember";
+		if(_urlPath!="/")
+			url=_urlPath+url;
+		$.ajax({
+	        url: url,
+	        data: data,
+	        type: "post",
+	        dataType:"json",
+	        success: function (req){
+	        	
+	            if (req.retcode == 0) {
+	                goPage("/admin/coupon/couponMain");
+	                $.Mod.Close(req.retmsg);
+	            } else {
+	            	alert(req.retmsg);
+	                //modalErr(req.retmsg);
+	            }
+	        }
+	    });
+	}
+	$(function() {
+		
+	});
+	/*]]>*/
+</script>

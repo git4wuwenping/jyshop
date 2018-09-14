@@ -1,0 +1,119 @@
+.floor_m {
+	width: 949px;
+	float: left;
+	height: 30px;
+	line-height: 30px;
+	color: #333;
+	padding-left: 10px;
+	margin-top: 10px;
+	color: #39F;
+	font-size: 14px;
+}
+
+.floor_rel {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.floor {
+	width: 1202px;
+	overflow: hidden;
+	clear: both;
+	margin-top: 20px;
+	position: relative;
+}
+
+.floor_box {
+	width: 1202px;
+	float: left;
+	overflow: hidden
+}
+
+.floorclass {
+	width: 809px;
+	float: left;
+	height: 551px;
+	overflow: hidden;
+}
+.catFloorclass {
+	width: 809px;
+	float: left;
+	height: 551px;
+	overflow: hidden;
+}
+.floorul {
+	width: 809px;
+	margin-top: -1px;
+	height: 39px;
+	position: relative;
+	z-index: 3;
+	background: #EEEEEE;
+	border-bottom: 1px solid #777;
+}
+
+.edfloor {
+	font-size: 12px;
+	font-weight: lighter;
+	margin-left: 10px;
+	color: #36C
+}
+
+.ftab {
+	width: 809px;
+	overflow: hidden;
+}
+
+.ftabone {
+	width: 809px;
+	overflow: hidden;
+	float: left;
+	position: relative;
+}
+
+.classpro {
+	/* width: 820px; */
+	float: left;
+	border-bottom: 1px solid #ddd;
+	background: url(/images/floor/flool_0_bg.jpg) repeat-x left top;
+	overflow: hidden;
+	z-index: 1;
+	position: relative;
+	top: -1px;
+	height: 512px;
+}
+
+.productone {
+	width: 162px;
+	float: left;
+	background: #fff;
+	margin-top: 1px;
+}
+
+.pronames {
+	height: 43px;
+	margin-top: 7px;
+	overflow: hidden;
+}
+
+.center_span {
+	width: 145px;
+	height: 145px;
+	display: table-cell;
+	*display: block;
+	text-align: center;
+	position: relative;
+	vertical-align: middle;
+	padding-top: 5px;
+}
+
+.hui2 {
+	color: #666
+}
+
+.through {
+	text-decoration: line-through
+}
+
+.red {
+	color: red;
+}

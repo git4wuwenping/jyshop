@@ -1,0 +1,155 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+    <div id="searchForm">
+        <!--<div class="col-md-2" style="width: 200px">-->
+            <!--&lt;!&ndash;<input type="hidden" name="comId" th:value="${comId}" />&ndash;&gt;-->
+            <!--&lt;!&ndash;<input type="hidden" name="orderType" th:value="${orderType}" />&ndash;&gt;-->
+            <!--<input type="text" class="form-control search-query" name="serial" placeholder="维权单号" />-->
+        <!--</div>-->
+        <div class="col-md-2" style="width: 200px">
+            <input type="text" class="form-control search-query" name="goodsName" placeholder="商品名称" />
+        </div>
+        <div class="col-md-2" style="padding-bottom: 0px;width: 200px;">
+            <select class="form-control" name="sellerStatus" onchange="javascript:formSubmit();">
+                <option value="">==维权状态==</option>
+                <jy:dic group_name="order_items_status" type="option"/>
+            </select>
+        </div>
+        <div class="col-md-2" style="padding-bottom: 0px;width: 200px;">
+            <select class="form-control" name="paymentId" onchange="javascript:formSubmit();">
+                <option value="">==支付方式==</option>
+                <jy:dic group_name="pay_type" type="option"/>
+            </select>
+        </div>
+        <div class="col-md-2" style="padding-bottom: 0px;width: 200px;">
+            <select class="form-control" name="type" onchange="javascript:formSubmit();">
+                <option value="">==维权类型==</option>
+                <jy:dic group_name="right_type" type="option"/>
+            </select>
+        </div>
+
+        <!--<div class="col-md-2" style="padding-bottom: 0px;width: 200px;">-->
+            <!--<select class="form-control" id='paramSelect' onchange="paramSelect();" >-->
+                <!--&lt;!&ndash; <option value='' text="查询条件" >==查询条件==</option>  &ndash;&gt;-->
+                <!--<option value='1' text="创建时间" selected="selected">创建时间</option>-->
+                <!--<option value='0' text="支付时间" >支付时间</option>-->
+            <!--</select>-->
+        <!--</div>-->
+        <div class='col-sm-6' style="width: 220px">
+            <div class="form-group">
+                <div class='input-group date'>
+                    <input id="startTime" type='text' class="form-control" name="createStartTime" placeholder="创建开始时间" />
+                    <span class="input-group-addon">
+               		<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+                </div>
+            </div>
+        </div>
+        <div class='col-sm-6' style="width: 220px">
+            <div class="form-group">
+                <div class='input-group date'>
+                    <input id="endTime" type='text' class="form-control" name="createEndTime" placeholder="创建结束时间" />
+                    <span class="input-group-addon">
+               		<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1" style="width: 105px;">
+            <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+        </div>
+        <!--<div class="col-md-1" style="width: 120px;">-->
+            <!--<button id="exportBtn" class="btn btn-labeled btn-success">-->
+                <!--<span class="btn-label icon fa fa-download"></span>导出-->
+            <!--</button>-->
+        <!--</div>-->
+    </div>
+</div>
+<div class="openAppGrid">
+    <div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"id",text:"维权ID", sortColumn:"id"},
+                {field:"serial", text:"维权编号"},
+                {field:"createTime", text:"维权时间",formatter:function(index, content, data){
+                        if(typeof content!=null)
+                            return new Date(content).toLocaleString();
+                        else
+                            return "<font color='red'>获取下单时间失败</font>";
+                    }},
+                {field:"order.paymentName", text:"支付方式"},
+                {field:"type", text:"维权类型"},
+                {field:"sellerStatus", text:"状态"},
+                {field:"id", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                        var detailUrl = "/admin/right/detail/" + content;
+                        var shenheUrl = "/admin/right/shenhe/"+ content;
+                        // var shouhuoUrl = "/admin/right/shouhuo/"+ content;
+                        var tuikuanUrl = "/admin/right/tuikuan/"+ content;
+                        var str = "<a href='javascript:goPage(\""+detailUrl+"\");' data-original-title='详情' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>详情</i></a>";
+                        if(data.sellerStatus=="待审核"){
+                            return "<a href='javascript:showModal(\"审核\",\""+shenheUrl+"\",\"660px\");' data-original-title='审核' class='btn btn-xs btn-success add-tooltip'><i class='fa fa-pencil'>审核</i></a>"+str
+                        }
+                        else if(data.sellerStatus=='待收货'){
+                            return "<a href='javascript:showCfm(\"确定收货后，退款将自动退回给买家。请确认已收到退货并无问题。\n\", \"" + tuikuanUrl+"\")' data-original-title='确认收货' class='btn btn-xs btn-primary add-tooltip'><i class='fa fa-pencil'>确认收货</i></a>"+str
+                        }
+                        else if(data.sellerStatus=='退款中'){
+                            return "<a href='javascript:showCfm(\"确定退款后，退款将自动退回给买家。\n\", \"" + tuikuanUrl+"\")' data-original-title='退款' class='btn btn-xs btn-primary add-tooltip'><i class='fa fa-pencil'>退款</i></a>"+str
+                        }
+                        else
+                            return str;
+                       }},
+                {field:"tr",child_field:"items",child_array:"goodsImage,goodsName,productSpec,price,buyCount",text:"商品列表", formatter:
+                    "<img style='width:66px;float:left' src='goodsImage'/>goodsName&nbsp;&nbsp;&nbsp;productSpec<br/>"+
+                    "单价:price&nbsp;[数量buyCount]"
+                }
+            ],
+            cls: "",
+            url: _urlPath + "admin/right/page",
+            sort:"id",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+
+        //导出
+        $("#exportBtn").click(function(){
+            $.Cfm('导出到excel',function(){
+                var data = getExportParam("searchForm");
+                //alert(data)
+                location.href = '/admin/order/exportOrderToExcel?'+data;
+            });
+        });
+
+        $('.date').datetimepicker({
+            language: 'zh-CN',
+            monthsShort: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 0, //是否显示上下午
+            initialDate: new Date()
+        });
+    });
+    function paramSelect(){
+        var param = $('#paramSelect').val();
+        if(param==1){
+            $('#startTime').attr('name','createStartTime');
+            $('#startTime').attr('placeholder','创建开始时间');
+            $('#endTime').attr('name','createEndTime');
+            $('#endTime').attr('placeholder','创建结束时间');
+        }else if(param==0){
+            $('#startTime').attr('name','payStartTime');
+            $('#startTime').attr('placeholder','支付开始时间');
+            $('#endTime').attr('name','payEndTime');
+            $('#endTime').attr('placeholder','支付结束时间');
+        }
+    }
+    /*]]>*/
+</script>

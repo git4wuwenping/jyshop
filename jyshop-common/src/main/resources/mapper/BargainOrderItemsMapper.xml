@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.BargainOrderItemsDao">
+	
+	<!-- 查询用户指定砍价任务数量 -->
+	<select id="selectCountByMemberIdAndBargainId" resultType="int">
+		select 
+			count(0) 
+		from shop_bargain_order_items sboi 
+		INNER join shop_bargain_order sbo on sboi.order_id=sbo.order_id 
+		<trim prefix="where" prefixOverrides="and">
+			sboi.bargain_id=#{bargainId} 
+			and sbo.order_status=0 
+			and take_date >=NOW() 
+			<if test="memberId!=null ">
+				and sbo.member_Id=#{memberId}
+			</if>
+			<if test="memberIds!=null ">
+				and FIND_IN_SET(#{memberIds},sboi.member_ids)
+			</if>
+		</trim>
+	</select>
+	
+	<!-- 查询指定砍价任务的完成数量 -->
+	<select id="selectCountByCompleteAndBargainId" resultType="int">
+		select 
+			count(0) 
+		from shop_bargain_order_items sboi 
+		INNER join shop_bargain_order sbo on sboi.order_id=sbo.order_id and sbo.order_status>0
+		where sboi.bargain_id=#{bargainId} 
+	</select>
+	
+	<!-- 根据订单ID获取砍价详情 -->
+	<select id="selectByOrderId" resultMap="baseResultModel">
+		select * from shop_bargain_order_items where order_id=#{orderId} 
+	</select>
+	
+	<!-- 砍价订单列表 -->
+	<select id="selectBargainOrderList" resultType="map" >
+		
+		<!-- CASE  
+			WHEN a.ORDER_STATUS = 0 THEN '新订单' 
+			WHEN a.ORDER_STATUS = 1 THEN '己完成标靶订单'
+			WHEN a.ORDER_STATUS = 2 THEN '已付款,待分配'
+			WHEN a.ORDER_STATUS = 3 THEN '已分配,待确定'
+			WHEN a.ORDER_STATUS = 4 THEN '配货中'
+			WHEN a.ORDER_STATUS = 5 THEN '部分发货'
+			WHEN a.ORDER_STATUS = 6 THEN '已发货,待收货'
+			WHEN a.ORDER_STATUS = 7 THEN '已收货'
+			WHEN a.ORDER_STATUS = 8 THEN '已完成'
+			WHEN a.ORDER_STATUS = 9 THEN '作废'
+			END as bargainOrderStatus, -->
+			(select 
+			DISTINCT a.order_id as bargainOrderId,
+			1 as type,
+			a.ORDER_STATUS as bargainOrderStatus,
+			c.bargain_id as bargainId,
+			c.title,
+			c.goods_id as goodsId,
+			c.bargain_type as bargainType,
+			c.goods_price as goodsPrice,
+			c.target_price as targetPrice ,
+			c.is_first as isFirst ,
+			c.first_price_min as firstPriceMin,
+			c.first_price_max as firstPriceMax,
+			c.bargain_mode as bargainMode,
+			c.image,
+			c.details,
+			c.share_title as shareTitle,
+			c.share_describe as shareDescribe,
+			c.rule,
+			d.`name`,
+			d.image as goodsImage,
+			b.take_date as takeDate,
+			b.bargain_prices as bargainPrices,
+			(c.goods_price - b.bargain_prices-c.target_price) as surplusPrice,
+			0 AS childOrderStatus 
+		from shop_bargain_order a
+		LEFT JOIN shop_bargain_order_items b on a.order_id = b.order_id 
+		LEFT JOIN shop_bargain_goods c on b.bargain_id = c.bargain_id
+		LEFT JOIN shop_goods d  on c.goods_id = d.goods_id
+	  where a.MEMBER_ID = #{memberId}  
+		and EXISTS(select 1 from shop_bargain_order a , shop_bargain_order_items b where a.order_id = b.order_id and a.MEMBER_ID = #{memberId})
+		order by a.CREATE_DATE desc limit 999999999 
+   	)UNION ALL(
+		select 
+			DISTINCT b.order_id as bargainOrderId,
+			2 as type,
+			b.ORDER_STATUS as bargainOrderStatus,
+			c.bargain_id as bargainId,
+			c.title,
+			c.goods_id as goodsId,
+			c.bargain_type as bargainType,
+			c.goods_price as goodsPrice,
+			c.target_price as targetPrice ,
+			c.is_first as isFirst ,
+			c.first_price_min as firstPriceMin,
+			c.first_price_max as firstPriceMax,
+			c.bargain_mode as bargainMode,
+			c.image,
+			c.details,
+			c.share_title as shareTitle,
+			c.share_describe as shareDescribe,
+			c.rule,
+			d.`name`,
+			d.image as goodsImage,
+			a.take_date as takeDate,
+			a.bargain_prices as bargainPrices,
+			(c.goods_price - a.bargain_prices-c.target_price) as surplusPrice,
+			IFNULL(e.order_status,1) AS childOrderStatus 
+	   from shop_bargain_order_items a
+	   LEFT JOIN shop_bargain_order b on a.order_id = b.order_id  
+	   LEFT JOIN shop_bargain_goods c on a.bargain_id = c.bargain_id 
+	   LEFT JOIN shop_goods d on c.goods_id = d.goods_id
+	   LEFT JOIN shop_bargain_order e on b.order_id=e.parent_id
+	  where FIND_IN_SET(#{memberId},a.member_ids)  
+	    and b.order_id not in (select parent_id from shop_bargain_order where member_id=#{memberId} group by parent_id )
+		order by b.CREATE_DATE desc limit 999999999 
+	)
+	</select>
+  
+
+	<select id="pageList" resultType="map">
+		SELECT
+			t.*
+		FROM
+		(SELECT
+		   t.item_id itemId,t.order_id orderId,t.bargain_id bargainId,
+		   t.goods_image image,t.goods_name title,t.goods_price goodsPrice,
+		   t.target_price targetPrice,t.bargain_type bargainType,
+		   t.goods_price-t.bargain_prices price,o.CREATE_DATE createTime,
+		   bargain_num num,
+		   CASE WHEN o.ORDER_STATUS>0 THEN '砍价成功'
+		   <![CDATA[ WHEN o.ORDER_STATUS=0 && UNIX_TIMESTAMP(t.take_date)>UNIX_TIMESTAMP(NOW()) THEN '正在砍价' ]]>
+		   ELSE '砍价失败'END status, m.weixin_face face,m.nickname
+		 FROM
+		   shop_bargain_order_items t
+		 JOIN
+		   shop_bargain_order o
+		 on t.order_id = o.order_id
+		 JOIN shop_member m
+		 ON o.MEMBER_ID = m.member_id
+		 WHERE t.bargain_id = #{bargainId}
+		 AND o.parent_id = 0
+			<if test="createStartTime!=null and createStartTime!=''">
+				<![CDATA[ and o.CREATE_DATE>=#{createStartTime} ]]>
+			</if>
+			<if test="createEndTime!=null and createEndTime!=''">
+				<![CDATA[ and o.CREATE_DATE<=#{createEndTime} ]]>
+			</if>
+		)t
+		WHERE 1=1
+		<if test="status != null and status != ''">
+			and t.status = #{status}
+		</if>
+		<choose>
+			<when test="sortName != null and sortName !='' and sortOrder != null and sortOrder != ''">
+				ORDER BY LENGTH(t.${sortName}) ${sortOrder},t.${sortName} ${sortOrder}
+			</when>
+			<otherwise>
+				ORDER BY t.createTime desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- 批量删除 -->
+	<delete id="batchDel">
+		delete from shop_bargain_order_items where
+		<foreach collection="list" item="item" index="index" open="(" separator="or" close=")">
+			bargain_id=#{item.bargainId}
+		</foreach>
+	</delete>
+
+
+		<resultMap id="baseResultModel" type="com.qyy.jyshop.model.BargainOrderItems">
+		<id column="item_id" jdbcType="BIGINT" property="itemId" />
+		<result column="order_id" jdbcType="BIGINT" property="orderId" />
+		<result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+		<result column="bargain_id" jdbcType="BIGINT" property="bargainId" />
+		<result column="goods_id" jdbcType="BIGINT" property="goodsId" />
+		<result column="goods_name" jdbcType="TINYINT" property="goodsName" />
+		<result column="goods_image" jdbcType="TINYINT" property="goodsImage" />
+		<result column="bargain_type" jdbcType="TINYINT" property="bargainType" />
+		<result column="goods_price" jdbcType="DECIMAL" property="goodsPrice" />
+		<result column="target_price" jdbcType="DECIMAL" property="targetPrice" />
+		<result column="is_first" jdbcType="TINYINT" property="isFirst" />
+		<result column="first_price_min" jdbcType="DECIMAL" property="firstPriceMin" />
+  		<result column="first_price_max" jdbcType="DECIMAL" property="firstPriceMax" />
+		<result column="bargain_mode" jdbcType="TINYINT" property="bargainMode" />
+		<result column="price_min" jdbcType="DECIMAL" property="priceMin" />
+		<result column="price_max" jdbcType="DECIMAL" property="priceMax" />
+		<result column="is_free" jdbcType="TINYINT" property="isFree" />
+		<result column="free_price" jdbcType="DECIMAL" property="freePrice" />
+		<result column="take_date" jdbcType="TIMESTAMP" property="takeDate" />
+		<result column="member_ids" jdbcType="VARCHAR" property="memberIds" />
+		<result column="bargain_prices" jdbcType="VARCHAR" property="bargainPrices" />
+		<result column="bargain_moneys" jdbcType="VARCHAR" property="bargainMoneys" />
+		<result column="bargain_num" jdbcType="INTEGER" property="bargainNum" />
+		
+	</resultMap>
+</mapper>

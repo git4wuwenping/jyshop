@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.GiftPackageSpecDao">
+	<resultMap id="BaseResultMap" type="com.qyy.jyshop.model.GiftPackageSpec">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="spec_id" property="specId" jdbcType="BIGINT" />
+		<result column="spec_value_id" property="specValueId" jdbcType="BIGINT" />
+		<result column="gp_id" property="gpId" jdbcType="BIGINT" />
+		<result column="gp_product_id" property="gpProductId" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<select id="querySepcValueByGpId" resultType="map">
+		SELECT
+			distinct
+			t1.spec_id as specId,
+			t2.SPEC_NAME as specName,
+			t3.spec_value_id as specValueId,
+			t3.SPEC_VALUE as specValue
+		FROM
+			shop_giftpackage_spec t1
+		LEFT JOIN shop_spec t2 ON t1.spec_id = t2.spec_id
+		LEFT JOIN shop_spec_values t3 ON t1.spec_value_id = t3.spec_value_id
+			AND t1.spec_id = t3.spec_id
+		where t1.gp_id = #{gpId}
+		order by t1.spec_id
+	</select>
+	
+	<delete id="deleteByGpId">
+		delete from shop_giftpackage_spec where gp_id=#{gpId}
+	</delete>
+</mapper>

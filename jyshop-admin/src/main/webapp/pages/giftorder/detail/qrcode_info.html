@@ -1,0 +1,17 @@
+<div th:fragment="qrcode_info" class="tab-pane" id="bs-tabdrop-pill7" style="width: 100%">
+	<div class="form-group" >
+		<div th:if="${member!=null and member.qRCodePath!=null}">
+			<label class="col-sm-3 control-label">店长二维码：</label>
+			<div class="col-sm-8">
+				<img type="text" name="qRCodePath" th:src="${member.qRCodePath}" width='280' height='280' readonly="readonly" style="border:none"/>
+			<a id="exportImage" th:href="${member.qRCodePath}" download="w3logo" class="btn btn-primary"><i class="fa">导出二维码</i></a>
+			</div>
+		</div>
+		<div th:if="${member == null}">
+			没有二维码数据
+		</div>
+		<!-- <div> <input th:value="${member.qRCodePath}"/></div> -->
+		
+		
+	</div>
+</div>

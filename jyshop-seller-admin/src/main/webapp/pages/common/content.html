@@ -1,0 +1,44 @@
+<div th:fragment="content-wrapper" id="content-wrapper" style="padding-top:1px">
+	<div >
+ 	<div class="col-md-2" style="width: 100%;padding-top:1px"> 
+ 	
+ 	<div style="float: left;width: 100%;line-height:2.5em"> 
+ 		<label  style="text-align: left;padding-bottom:10px">订单统计</label><br/>
+ 		<div style="width: 45%;display: inline-block;background-color: white;border-radius:5px;padding:10px;margin-right: 50px" onclick="javascript:goPage('/admin/statistics/consignmentOrdersMain');" >
+	 		<span class="panel-title"  >待发货订单</span><br/>
+	 		<span th:text="${consignmentOrdersCount+'&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;'}" style="font-size: large;color: blue;" />单
+ 		</div>
+ 		<div style="width: 45%;display: inline-block;background-color: white;border-radius:5px;padding:10px;" onclick="javascript:goPage('/admin/statistics/yesterdayOrdersMain');" >
+	 		<span class="panel-title" >昨日订单</span><br/>
+	 		<span th:text="${yesterdayOrdersCount+'&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; '}" style="font-size: large;color: red;" />单
+ 		</div>
+ 	</div>
+ </div>
+ 	
+ <div class="col-md-2" style="width: 100%;">
+ 	<div style="width: 100%;line-height:2.5em"> 
+ 		<label  style="text-align: left;padding-bottom:10px">交易统计</label><br/>
+ 		<div style="width: 45%;display: inline-block;background-color: white;border-radius:5px;padding:10px;"  >
+ 			<label  style="text-align: center;padding-bottom:10px">昨日订单交易总额</label><br/>
+	 		<span th:text="${'￥'+yesterdayTradingVolumeCount}" style="font-size: large;border-top:1px solid #ccc;width:100%;display: inline-block;" />
+ 		</div>
+ 	</div>
+ </div>
+ 
+ <div class="col-md-2" style="width: 100%;">
+ 	<label  style="text-align: left;padding-bottom:10px">商品统计</label><br/>
+ 	<div style="width: 45%;display: inline-block;background-color: white;border-radius:5px;padding:10px;margin-right: 10px"  >
+		 	<label  style="text-align: left;padding-bottom:10px;">商户</label><br/><br/>
+ 			<div style="display: inline-block;margin-right: 50px;width:40%;margin-left: 20px;border-radius:5px;" onclick="javascript:goPage('/admin/goods/comGoodsMain?state=0');">
+	 			<label  style="text-align: center;padding-bottom:10px;">待审核商品</label><br/>
+		 		<span th:text="${reviewSalesYesGoodsCount}+'&nbsp;&nbsp;'" style="font-size: x-large;color: Cyan;" />款
+ 			</div>
+ 			<div style="display: inline-block;border: 1px solid #FF8C00;width:40%; padding:10px;border-radius:5px;" onclick="javascript:goPage('/admin/goods/comGoodsMain?state=1');">
+ 				<label  style="text-align: center;padding-bottom:10px">正售商品数量</label><br/>
+		 		<span th:text="${saleingGoodsCount}+'&nbsp;&nbsp;'" style="font-size: x-large;color: Darkorange" />款
+ 			</div>
+ 	</div>
+ </div>
+</div>
+</div>
+<div th:fragment="main-menu-bg" id="main-menu-bg"></div>

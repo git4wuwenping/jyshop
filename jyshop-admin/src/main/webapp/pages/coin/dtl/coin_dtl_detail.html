@@ -1,0 +1,71 @@
+<form id="submitForm" class="form-horizontal">
+
+
+	
+	<table border="1">
+		<tr style="width:200px; height:50px;">
+			<td>客户信息：</td>
+			<td><img th:src="${info.memberInfo.weixinFace}" width='50'
+				height='50' /></td>
+			<td>ID:<span th:text="${info.memberInfo.memberId}"></span><br />昵称:<span
+				th:text="${info.memberInfo.nickname}"></span></td>
+			<td>身份：</td>
+			<td><span th:if="${info.memberInfo.identityId == 0}"
+				th:text="代理"></span> <span
+				th:if="${info.memberInfo.identityId == 1}" th:text="店长"></span> <span
+				th:if="${info.memberInfo.identityId == 2}" th:text="普通用户"></span></td>
+		</tr>
+		<tr style="width:200px; height:50px;">
+			<td>金币：</td>
+			<td>金币余额：</td>
+			<td><span th:text="${info.memberInfo.coin}"></span></td>
+			<td>累计金币：</td>
+			<td><span th:text="${info.memberInfo.coinSum}"></span></td>
+
+		</tr>
+
+
+	</table>
+
+
+
+
+	<div class="table-info">
+		<div th:if="${info.coinDtlList.size() == 0}">
+			无金币明细
+		</div>
+		<table class="table table-bordered" th:if="${info.coinDtlList.size() != 0}">
+			<thead>
+				<tr style="text-align: center">
+					<th class="text-center">类型</th>
+					<th class="text-center">数量</th>
+					<th class="text-center">时间</th>
+					<th class="text-center">关联订单号</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="dtl:${info.coinDtlList}" style="text-align: center">
+					<td th:if="${dtl.coinType==0}" th:text="邀请好友"></td>
+					<td th:if="${dtl.coinType==1}" th:text="关注公众号"></td>
+					<td th:if="${dtl.coinType==2}" th:text="注册"></td>
+					<td th:if="${dtl.coinType==3}" th:text="兑换"></td>
+					<td th:if="${dtl.coinType==4}" th:text="抽奖"></td>
+					<td th:if="${dtl.coinType==5}" th:text="签到"></td>
+
+					<td th:if="${dtl.coinType==3}" th:text="${- dtl.coinNum}"></td>
+					<td th:if="${dtl.coinType!=3}" th:text="${+ dtl.coinNum}"></td>
+
+					<td th:if="${dtl.createTime!=null}"
+						th:text="${#dates.format(dtl.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+					<td th:if="${dtl.createTime==null}"></td>
+					
+					<td th:if="${dtl.orderId!=null}"
+						th:text="${dtl.orderId}"></td>
+					<td th:if="${dtl.orderId==null}"></td>
+
+
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</form>

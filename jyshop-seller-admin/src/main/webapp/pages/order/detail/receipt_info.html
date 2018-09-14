@@ -1,0 +1,28 @@
+<div th:fragment="receipt_info" class="tab-pane" id="bs-tabdrop-pill5" style="width: 100%">
+	<div class="col-sm-6">
+		<div class="panel-group panel-group-info" id="accordion-danger-example" th:if="${order.isReceipt==1}">
+			<div class="panel">
+			
+				<div class="panel-collapse in">
+					<div class="panel-body">
+						<table class="table-condensed" style="padding: unset; margin: unset">
+		                	<tr class="active"><td class="text-right">发票抬头：</td><td th:text="${order.receiptHead}"></td></tr>
+		                    <tr class="active"><td class="text-right">发票内容：</td><td th:text="${order.receiptContent}"></td></tr>
+		                    <tr class="active"><td class="text-right">发票人手机：</td><td th:text="${order.receiptMobile}"></td></tr>
+		                    <tr class="active"><td class="text-right">发票人邮箱：</td><td th:text="${order.receiptEmail}"></td></tr>
+		             	</table>
+					</div> 
+				</div> 
+			</div>
+		</div>
+		<div class="panel-group panel-group-info" id="accordion-danger-example" th:if="${order.isReceipt==0}">
+			<div class="panel">
+				<div  class="panel-collapse in">
+					<div class="panel-body">
+						未索要发票
+					</div>
+				</div> 
+			</div>
+		</div>
+	</div>
+</div>

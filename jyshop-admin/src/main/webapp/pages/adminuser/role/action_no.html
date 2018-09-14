@@ -1,0 +1,115 @@
+<div class="col-md-1 no-padding">
+	<button id="addNoOperationBtn" class="btn btn-labeled btn-success">
+		<span class="btn-label icon fa fa-link"></span>添加
+	</button>
+</div>
+<div class="col-md-11">
+	<div class="has-feedback">
+		<input type="text" name="opName" id="noSearchName"
+			th:value="${opName}" placeholder="权限名称/权限码" class="form-control" />
+		<i class="fa fa-search form-control-feedback add-tooltip"
+			data-original-title="" onclick="searchNoOperation()"
+			style="cursor: pointer;top:10px"></i>
+	</div>
+</div>
+<form id="noOperationForm" style="padding-top:30px;">
+	<input type="hidden" th:value="${roleId}" name="roleId" />
+	<div class="checkbox">
+		<label> <input type="checkbox" name="" value="" class="px"
+			onclick="noOperationSelectAll(this)" /> <span class="lbl">&nbsp;全选</span>
+		</label>
+	</div>
+	<div class="message unread" th:each="noAction:${noActionList}">
+		<div class="checkbox">
+			<label> <input type="checkbox" class="px"
+				th:value="${noAction.opId}" name="opIds"
+				th:attr="opCode=${noAction.opCode}"
+				th:onclick="'selectNoBox('+${noAction.opCode}+', this)'" /> <span
+				class="lbl" th:text="${noAction.opName}+'('+${noAction.opCode}+')'+${noAction.opHref}" /> </label>
+		</div>
+	</div>
+</form>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$(function() {
+		$('.add-tooltip').tooltip();
+		$("#addNoOperationBtn").click(function() {
+			addNoOperations();
+		});
+		$("#noOpNum").text($("div[class='message unread'] div label").children("input[type='checkbox']").size());
+		$(document).delegate("#noSearchName", 'keydown', function() {
+			var e = e || event, keycode = e.which || e.keyCode;
+			if (keycode == 13) {
+				searchNoOperation();
+			}
+		});
+		
+		var noOpNum=[[${noActionCount}]];
+	    var allOpNum=$("#allOpNum").text();
+	    $("#noOpNum").text(noOpNum);
+	    $("#hasOpNum").text(allOpNum-noOpNum);
+	});
+	noOperationSelectAll = function(obj) {
+		var noRoleIds = document.getElementsByName("opIds");
+		if (obj.checked) {
+			for ( var i = 0; i < noRoleIds.length; i++) {
+				noRoleIds[i].checked = true;
+			}
+		} else {
+			for ( var i = 0; i < noRoleIds.length; i++) {
+				noRoleIds[i].checked = false;
+			}
+		}
+	}
+
+	addNoOperations = function() {
+		var data = $("#noOperationForm").serialize();
+		if (data != "") {
+			$.ajax({
+				url : _urlPath + "admin/role/bindUserOperat",
+				data : data,
+				type : "post",
+				dataType : "json",
+				success : function(req) {
+					if (req.retcode == 0) {
+						$.growl.notice({
+							title : "成功",
+							message : req.retmsg
+						});
+						loadNoOperation("");
+					} else {
+						$.Err(req.retmsg);
+					}
+				}
+			});
+		}
+	}
+
+	searchNoOperation = function() {
+		var opname = $("#noSearchName").val();
+		loadNoOperation(opname);
+	}
+
+	selectNoBox = function(opCode, obj) {
+// 		var hasRoleIds = document.getElementsByName("opIds");
+// 		var isChecked = obj.checked;
+// 		for ( var i = 0; i < hasRoleIds.length; i++) {
+// 			var childOpAttr = hasRoleIds[i].attributes["opCode"];
+// 			if (childOpAttr == undefined) {
+// 				continue;
+// 			}
+// 			var childOpCode = childOpAttr.value;
+// 			if (childOpCode != undefined
+// 					&& (childOpCode.substr(0, opCode.length) == opCode || opCode
+// 							.substr(0, childOpCode.length) == childOpCode)) {
+// 				if (isChecked == true) {
+// 					hasRoleIds[i].checked = true;
+// 				} else {
+// 					hasRoleIds[i].checked = false;
+// 				}
+// 			}
+// 		}
+	}
+	/*]]>*/
+</script>

@@ -1,0 +1,70 @@
+<div class="page-header"
+	style="padding: 10px 20px; margin: -18px 0px 0px">
+	<div id="searchForm">
+
+		<div class="col-md-2" style="padding-bottom: 0px; width: 150px;">
+			<select class="form-control" name="searchType">
+				<option value="1" text="维权单号">维权单号</option>
+				<option value="2" text="关联订单号">关联订单号</option>
+			</select>
+		</div>
+		<div class="col-md-2" style="width: 200px">
+			<input type="text" class="form-control search-query" name="searchVal"
+				placeholder="请输入搜索条件" />
+		</div>
+
+		<div class="col-md-2" style="padding-bottom: 0px; width: 200px;">
+			<select class="form-control" name="rightType"
+				onchange="javascript:formSubmit();">
+				<option value="">==维权类型==</option>
+				<option value="1" text="仅退款">仅退款</option>
+				<option value="2" text="退货退款">退货退款</option>
+			</select>
+		</div>
+
+		<div class="col-md-2" style="width: 150px;">
+			<button id="searchBtn" class="btn btn-labeled btn-info"
+				onclick="javascript:formSubmit();">
+				<span class="btn-label icon fa fa-search"></span>搜索
+			</button>
+		</div>
+	</div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid" style="text-align: center;"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$(function() {
+		$("#openAppGrid").sgrid({
+			columns : [ {
+				field : "paySn",
+				text : "关联订单号"
+			}, {
+				field : "nickname",
+				text : "维权单号"
+			}, {
+				field : "orderAmount",
+				text : "维权类型",
+				formatter : function(index, content, data) {
+					return "+" + content;
+				}
+			}, {
+				field : "payAmount",
+				text : "金额"
+			}, {
+				field : "payStatus",
+				text : "退款时间"
+			} ],
+			cls : "",
+			url : _urlPath + "admin/financialMgr/refundDtl/pageAjaxRefundDtl",
+			sort : "paySn",
+			order : "desc",
+			pagination : true,
+			onLoad : function() {
+				$(".add-tooltip").tooltip();
+			}
+		});
+	});
+	/*]]>*/
+</script>

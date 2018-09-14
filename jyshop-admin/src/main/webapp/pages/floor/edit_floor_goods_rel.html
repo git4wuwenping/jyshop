@@ -1,0 +1,130 @@
+<link th:href="@{../css/floor/floor-goods-rel.css}" th:rel="stylesheet" />
+<form>
+	<div class="box_floor">
+		<div class="box_floor_six">
+			<div class="box_floor_class">
+				<input name="id" type="hidden" id="id" th:value="${floor.floorId}" />
+				<input type="hidden" name="ids" id="ids" /> <b>楼层标题：</b> <input
+					name="gf_name" type="text" id="gf_name"
+					th:value="${floor.floorName}" />
+			</div>
+			<span class="floor_choose">已选推荐商品：</span>
+			<div class="box_floor_prodel">
+				<em class="floor_warning">注释：最多选择<span th:text="${maxSize}"></span>件商品，双击删除已有商品信息，按下鼠标拖动商品次序
+				</em>
+				<div class="floor_box_pls" id="floor_goods_info">
+					<ul th:each="goods:${goodsList}" ondblclick="jQuery(this).remove();" class="floor_pro">
+						<input type="hidden" th:value="${goods.goodsId}" />
+						<li class="floor_pro_img"><img th:src="${goods.image}"
+							width="100" height="100" /></li>
+						<li class="floor_pro_name"><span th:text="${goods.name}"></span></li>
+					</ul>
+				</div>
+			</div>
+			<span class="floor_choose">选择要展示的商品：</span>
+			<div class="floor_choose_box">
+				<span class="floor_choose_sp"><b>选择分类：</b> <select
+					name="gc_id" id="gc_id">
+						<option value="">请选择商品分类...</option>
+				</select> </span> <span class="floor_search_sp"><b>商品名称：</b> <input
+					name="goods_name" type="text" id="goods_name" /> <input
+					type="button" class="floor_sear_btn" value="搜索"
+					onclick="goods_floor_list_goods_load();" style="cursor: pointer;" />
+				</span> <em class="floor_warning">注释：点击商品加入楼层，最多选择<span
+					th:text="${maxSize}"></span>件商品
+				</em>
+				<div id="floor_goods_list"></div>
+			</div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$(function() {
+		var goodsCatList = [[${goodsCatList}]];
+		var tbody = "";  
+		$.each(goodsCatList,function(n,goodsCat) {   
+	        var trs = "";
+	        
+	        trs += "<option value='"+goodsCat.catId+"'>"
+	        if(goodsCat.catCode.length == 6){
+	        	trs+= "&nbsp;&nbsp;&nbsp";
+	        }else if(goodsCat.catCode.length == 9){
+	        	trs+= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp";
+	        	
+	        }
+	        trs += goodsCat.name+"</option>";  
+	        tbody += trs;         
+        });  
+       	$("#gc_id").append(tbody);  
+	});
+	
+	submit = function (){
+		// action="/admin/floor/saveFloorGoodsRel" method="post" id="theForm"
+		var goodsIdArr = [];
+		$(".floor_box_pls").find("input").each(function(){
+			goodsIdArr.push($(this).val());
+		});
+		if(goodsIdArr.length > [[${maxSize}]] ){
+			modalErr("超过了最大个数"+[[${maxSize}]]+"个");
+			return;
+		}
+		var url = "/admin/floor/saveFloorGoodsRel";		
+		if(_urlPath!="/")
+			url=_urlPath+url;
+		$.ajax({
+	        url: url,
+	        data: {"floorId" : [[${floorId}]] , "goodsIds" : goodsIdArr.join(",")},
+	        type: "post",
+	        dataType:"json",
+	        success: function (req){
+	            if (req.retcode == 0) {
+	            	goPage("/admin/floor/preEditFloorRel/"+[[${parentId}]]);
+	                $.Mod.Close(req.retmsg);
+	            } else {
+	                modalErr(req.retmsg);
+	            }
+	        }
+	    });
+	}
+	function goods_floor_list_goods_load(){
+	  var gcId=$("#gc_id").val();
+	  var goodsName=$("#goods_name").val();
+	  $.ajax({type:'POST',url:'/admin/floor/goodsFloorListGoodsLoad',data:{"gcId":gcId,"goodsName":goodsName},
+				  success:function(data){
+						$("#floor_goods_list").empty().append(data);																											               
+						}																																		    
+	  });
+	}
+	
+	function ajaxPage(url,page,obj){
+		$.ajax({type:'POST',url:url,data:{"currentPage":page},
+				  success:function(data){
+						jQuery("#floor_goods_list").empty().append(data);																											               
+						}
+		});
+	}
+	
+	function goods_list_set(obj){
+		var img=$(obj).attr("img_uri");
+		var goods_id=$(obj).attr("goods_id"); 
+		var goods_name=$(obj).attr("goods_name");
+		var count=$(".floor_box_pls ul").length;
+		var add=0; 
+		if(count >= [[${maxSize}]] ){
+			modalErr("最多只能添加"+[[${maxSize}]]+"件商品！");
+			add=1;
+		}
+		$(".floor_box_pls input").each(function(){
+			if($(this).val()==goods_id){
+				modalErr("已经存在该商品");
+				add=2;
+			}
+		});
+		if(add==0){
+			var s="<ul ondblclick='jQuery(this).remove();' class='floor_pro'><input type='hidden' value='"+ goods_id +"' /><li class='floor_pro_img'><img src='"+img+"' width='100' height='100' /></li><li class='floor_pro_name'>"+goods_name+"</li></ul>";
+			$(".floor_box_pls").append(s);
+		}
+	}
+	/*]]>*/
+</script>

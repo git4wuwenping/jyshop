@@ -1,0 +1,212 @@
+<div class="page-header"
+	style="padding: 10px 20px; margin: -18px 0px 0px">
+	<div id="searchForm">
+		<div class="col-md-2" style="padding-bottom: 0px; width: 200px;">
+			<select class="form-control" name="queryType">
+				<option value="0">商品名称</option>
+				<option value="1">客户ID</option>
+				<option value="2">商品ID</option>
+				<option value="3">订单编号</option>
+			</select>
+		</div>
+		<div class="col-md-2" style="width: 200px">
+			<input type="text" class="form-control search-query"
+				name="queryValue" placeholder="请输入查询条件" />
+		</div>
+
+		<div class="col-md-2" style="padding-bottom: 0px; width: 200px;">
+			<select class="form-control" name="status"
+				onchange="javascript:formSubmit();">
+				<option value="">==状态==</option>
+				<option value="1">显示</option>
+				<option value="0">隐藏</option>
+			</select>
+		</div>
+
+		<div class="col-md-2" style="padding-bottom: 0px; width: 200px;">
+			<select class="form-control" name="score"
+				onchange="javascript:formSubmit();">
+				<option value="">==评价等级==</option>
+				<option value="0">好评</option>
+				<option value="1">中评</option>
+				<option value="2">差评</option>
+			</select>
+		</div>
+		<div class="col-md-1" style="width: 105px;">
+			<button id="searchBtn" class="btn btn-labeled btn-info"
+				onclick="javascript:formSubmit();">
+				<span class="btn-label icon fa fa-search"></span>搜索
+			</button>
+		</div>
+		<div class="col-md-1" style="width: 120px;">
+			<button id="exportBtn" class="btn btn-labeled btn-success">
+				<span class="btn-label icon fa fa-download"></span>导出评论
+			</button>
+		</div>
+	</div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$(function() {
+		$("#openAppGrid")
+				.sgrid(
+						{
+							columns : [
+									{
+										field : "goodsId",
+										text : "商品信息",
+										formatter : function(index, content,
+												data) {
+											return "<img src='"+ data.image +"' width='50' height='50' > ID:" + data.goodsId + "<br/>" + data.name;
+										}
+									},
+									{
+										field : "commentTime",
+										text : "评论时间",
+										width : 130,
+										formatter : function(index, content,
+												data) {
+											if (typeof content != 'undefined'
+													&& content != null
+													&& content != '')
+												return new Date(content)
+														.toLocaleString();
+											else
+												return "<font color='red'>获取评论时间失败</font>";
+										}
+									},
+									{
+										field : "memberId",
+										text : "客户ID",
+										style : "text-align:center",
+										width : 130
+									},
+									{
+										field : "orderId",
+										text : "订单编号",
+										style : "text-align:center",
+										width : 130
+									},
+									{
+										field : "score",
+										text : "评价等级",
+										style : "text-align:center",
+										width : 100,
+										formatter : function(index, content,
+												data) {
+											if (typeof content != 'undefined'
+													&& content != null
+													&& content != '') {
+												if (content == 0) {
+													return "<font color='green'>好评</font>";
+												} else if (content == 1) {
+													return "<font color='blue'>中评</font>"
+												} else {
+													return "<font color='red'>差评</font>"
+												}
+											} else {
+												return "<font color='red'>获取等级失败";
+											}
+										}
+									},
+									{
+										field : "content",
+										text : "评价内容",
+										style : "text-align:center",
+										width : 300,
+										formatter : function(index, content,
+												data) {
+											if (content.length <= 10) {
+												return content;
+											} else {
+												return content.substring(0, 10)
+														+ "...";
+											}
+										}
+									},
+									{
+										field : "status",
+										text : "状态",
+										width : 80,
+										style : "text-align:center",
+										formatter : function(index, content,
+												data) {
+											var updateUrl1 = "/admin/comment/updateCommentStatus/"
+													+ data.commentId
+													+ "?updateStatus=1";
+											var updateUrl0 = "/admin/comment/updateCommentStatus/"
+													+ data.commentId
+													+ "?updateStatus=0";
+											var opDiv = "";
+											if (content == 0) {
+												return opDiv
+														+ "&nbsp;隐藏"
+														+ "&nbsp;<a href='javascript:showCfm(\"确定取消隐藏?\", \""
+														+ updateUrl1
+														+ "\");'  data-original-title='取消隐藏' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>取消隐藏</i></a>";
+											} else {
+												return opDiv
+														+ "&nbsp;显示"
+														+ "&nbsp;<a href='javascript:showCfm(\"确定隐藏?\", \""
+														+ updateUrl0
+														+ "\");'  data-original-title='开启' class='btn btn-xs btn-primary add-tooltip'><i class='fa fa-anchor'>隐藏</i></a>";
+
+											}
+										}
+									},
+									{
+										field : "commentId",
+										text : "操作",
+										width : 80,
+										style : "text-align:center",
+										formatter : function(index, content,
+												data) {
+											var detailUrl = "/admin/comment/preEditComment/"
+													+ content;
+											var delUrl = "/admin/comment/delComment/"
+													+ content;
+											return "<a href='javascript:showCfm(\"确定删除该条评论信息\", \""
+													+ delUrl
+													+ "\");' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>"
+													+ "&nbsp;<a href='javascript:showModal(\"详情\", \""
+													+ detailUrl
+													+ "\",\"960px\");' data-original-title='详情' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>详情</i></a>";
+										}
+									} ],
+							cls : "",
+							url : _urlPath + "admin/comment/pageCommentAjax",
+							sort : "commentId",
+							order : "desc",
+							pagination : true,
+							onLoad : function() {
+								$(".add-tooltip").tooltip();
+							}
+						});
+
+		//导出
+		$("#exportBtn").click(function() {
+			 $.Cfm('导出到excel',function(){
+			    var data = getExportParam("searchForm");
+			    //alert(data)
+			    location.href = '/admin/comment/exportOrderToExcel?'+data;
+			}); 
+		});
+
+		/* $('.date').datetimepicker({
+			    language: 'zh-CN',
+			    monthsShort: 1,
+			    todayBtn: 1,
+			    autoclose: 1,
+			    todayHighlight: 1,
+			    startView: 2,
+			    forceParse: 0,
+			    showMeridian: 0, //是否显示上下午
+			    initialDate: new Date()
+			}); */
+	});
+
+	/*]]>*/
+</script>

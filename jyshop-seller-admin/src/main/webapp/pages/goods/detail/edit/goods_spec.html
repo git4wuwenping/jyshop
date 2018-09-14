@@ -1,0 +1,100 @@
+<div th:fragment="goods_spec" class="tab-pane" id="bs-tabdrop-pill3">
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="name"><font
+			color="red">*</font>市场价格：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="mktprice" name="mktprice"
+				th:value="${goods.mktprice}" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="cost"><font
+			color="red">*</font>成本价格：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="cost" name="cost"
+				th:value="${goods.cost}" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="price"><font
+			color="red">*</font>销售价格：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="price" name="price"
+				th:value="${goods.price}" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="weight"><font
+			color="red">*</font>重量：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="weight" id="weight" name="weight"
+				th:value="${goods.weight}" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="unit"><font
+			color="red">*</font>单位：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="unit" id="unit" name="unit"
+				th:value="${goods.unit}" />
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="unit"><font
+			color="red"></font>类型：</label>
+		<div class="col-sm-8">
+			<select class="form-control"  name="typeId">
+				<option value="">==类型==</option>
+				<option th:each="goodsType:${goodsTypeList}" 
+					th:value="${goodsType.typeId}" th:text="${goodsType.typeName}" 
+					th:selected ="${goodsType.typeId==goods.typeId}?true:false"/> 
+			</select>
+		</div>
+	</div>
+	 
+	<div class="form-group" specdiv='yes' th:each="spec:${specList}" >
+		<label class="col-sm-3 control-label" for="unit" th:text="${spec.specName}"></label>
+		<div class="col-sm-8">
+			<div class="checkbox" style="display: inline-block" th:each="specValue:${spec.specValueList}">
+				<label>
+					<input type="checkbox" name="spec" class="px" onClick="specCheck(this)" th:attr="specId=${specValue.specId}, specValueId=${specValue.specValueId}" />
+					<span class="lbl" th:text="${specValue.specValue}"></span>
+				</label>
+			</div>
+		</div>
+	</div>
+	
+    <div class="form-group">
+    	<label class="col-sm-3 control-label" for="unit"></label>
+        <div class="col-sm-8">
+        	<div class="table-info">
+            	<table class="table table-bordered" id="specTable">
+                	<thead>
+                    	<tr style='text-align:center' id="specTable-head">
+                        	<th class="text-center" th:each="spec:${goodsSpecList}" th:text="${spec.specName}"></th>
+							<th class="text-center">货品sns</th>
+                            <th class="text-center">成本</th>
+                            <th class="text-center">价格</th>
+                            <th class="text-center">重量</th> 
+                            <th class="text-center">库存</th>
+                     	</tr>
+                 	</thead>
+                    <tbody id="specTable-body">
+                    	<tr style="text-align:center" th:each="product:${productList}" th:if="${product.specValueIds!=null}">
+                        	<td class="text-center-1" th:each="specValues:${product.specValuesList}" th:text="${specValues.specValue}"></td>
+                            <input type="hidden" class="text-center-1" name="spec_value_ids" th:value="${product.specValueIds}"/>
+                            <input type="hidden" class="text-center-1" name="specs" th:value="${product.specs}"/>
+                            <input type="hidden" class="text-center-1" name="spec_ids"  th:value="${product.specIds}"/>
+                            <td class="text-center" ><input name="productSns" th:value="${product.sn}" style="width: 180px" readonly="readonly"/></td>
+                            <td class="text-center"><input name="costs" th:value="${product.cost}" style="width: 80px"/></td>
+                            <td class="text-center"><input name="prices" th:value="${product.price}" style="width: 80px"/></td>
+                            <td class="text-center"><input name="weights" th:value="${product.weight}" style="width: 80px"/></td>
+                            <td class="text-center"><input name="stores" th:value="${product.store}" style="width: 80px"/></td>
+                		</tr>
+					</tbody>
+            	</table>
+        	</div>
+    	</div>
+	</div>
+</div>

@@ -1,0 +1,70 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+ 	<div class="col-md-2" style="padding-bottom: 0px;width: 200px;"> 
+ 		<select class="form-control" name="conditionType"> 
+			<option value="">==条件查询==</option>
+			<option value="1" text="昵称" >昵称</option> 
+			<option value="2" text="客户Id" >客户Id</option> 
+ 		</select> 
+ 	</div> 
+  	<div class="col-md-2" style="width: 200px">
+		<input type="text" class="form-control search-query" name="conditionVal" placeholder="查询条件" />
+	</div>
+    <div class="col-md-1" style="width: 105px;">
+        <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+    </div>
+    
+    <div class="col-md-11" style="padding-bottom: 0px;width: 200px;display: flex"> 
+ 		<select class="form-control" name="memberType" onchange="javascript:formSubmit();"> 
+			<option value="">==身份条件筛选==</option>
+			<option value="2" text="普通用户" >普通用户</option> 
+			<option value="1" text="店长" >店长</option> 
+			<option value="3" text="代理" >代理</option> 
+ 		</select> 
+ 		<!-- <input type="button" value="筛选" text="筛选" float="right"/> -->
+ 	</div> 
+  </div> 
+</div>
+<div class="openAppGrid" >
+	<div id="openAppGrid" style="text-align: center;" ></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"weixinFace", text:"客户头像",formatter:function(index, content, data){
+                		return "<img src='"+data.weixinFace+"' width='50' height='50' >";
+                }},
+                {field:"memberId",text:"用户ID", sortColumn:"id"},
+                {field:"nickname", text:"昵称"},
+                {field:"identityId", text:"客户身份",formatter:function(index, content, data){
+                	if(data.identityId == 0){
+                		return "<font color='black'>代理</font>";
+                	}
+                	if(data.identityId == 1){
+                		return "<font color='black'>店长</font>";
+                	}
+                	if(data.identityId == 2){
+                		return "<font color='black'>普通客户</font>";
+                	}
+               	}},
+                {field:"redPoint", text:"红积分(已确认)"},
+                {field:"memberId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                    var detailUrl = "/admin/point/preDetaileRedPoint/" + content;
+                    var opDiv = "";	
+                    return opDiv + "&nbsp;<a href='javascript:goPage( \""+detailUrl+"\");' data-original-title='详情' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>详情</i></a>";
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/point/pageRedPointAjax",
+            sort:"memberId",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+    /*]]>*/
+</script>

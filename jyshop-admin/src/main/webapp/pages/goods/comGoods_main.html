@@ -1,0 +1,150 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+  	<input id="state" hidden="hidden" th:value="${state}" />
+  	<select class="form-control" id='paramSelect' style="width: 10%;display: inline;float:left;" onchange="paramSelect();" > 
+			<option value='' text="查询条件" >==查询条件==</option> 
+			<option value='2' text="店铺" >店铺</option> 
+			<option value='1' text="商品名称">商品名称</option> 
+			<option value='0' text="sn号" >sn号</option> 
+	</select>
+  	<div class="col-md-10" style="display: inline;" >
+		<input type="text" class="form-control search-query"  placeholder="查询条件" style="width: 500px;display: inline;" value='' />
+        <button id="searchBtn"  class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+	</div>
+ 	<div class="col-md-2" style="padding-bottom: 0px;width: 200px;"> 
+ 		<input type="hidden" name="comIds" th:value="${comIds}" />
+ 		<!-- <select class="form-control" name="" onchange="javascript:formSubmit1();"> 
+			<option value="">==店铺名称==</option>
+			<option text="手机号" ></option> 
+			<option text="昵称" ></option> 
+			<option text="客户Id" ></option> 
+			<option text="微信号" ></option> 
+ 		</select>  -->
+ 	</div> 
+    
+    <div class="col-md-12" style="text-align: left;padding-bottom: unset;">
+		库存情况：
+		<select class="form-control" id="storeSituation" name="storeSituation" style="width: 10%;display: inline;"> 
+			<option value="">==全部==</option>
+			<option value='1' text="正常" >正常</option> 
+			<option value='0' text="警报" >警报</option> 
+ 		</select> 
+		商品状态：
+		<select class="form-control" id="marketEnable" name="marketEnable" style="width: 10%;display: inline;" > 
+			<option value="">==全部==</option>
+			<option value="1" text="上架" >上架</option> 
+			<option value="0" text="上架未审核" >上架未审核</option> 
+			<option value="-1" text="下架" >下架</option> 
+			<option value="-2" text="审核未通过" >审核未通过</option> 
+ 		</select> 
+		销售价：&nbsp;<input id="minMktprice" name ='minMktprice' style="width: 10%" />--<input id="maxMktprice" name ='maxMktprice' style="width: 100px"/>&nbsp;&nbsp;&nbsp;&nbsp;
+		商品类型：
+		<select class="form-control" id="typeId" name="goodsType" style="width: 10%;display: inline;" > 
+			<option value="">==海外商品==</option>
+			<option value="0" text="普通商品" >普通商品</option> 
+			<option value="1" text="店长礼包" >店长礼包</option> 
+ 		</select> <br/><br/>
+		<!-- 商品名称：&nbsp;<input id="goodsName" style="width: 100px" name='name'  />&nbsp;&nbsp;&nbsp;&nbsp; -->
+		成本价：&nbsp;<input id="minCost" name='minCost' style="width: 100px" />--<input id="maxCost" name="maxCost" style="width: 100px"/>&nbsp;&nbsp;&nbsp;&nbsp;
+		库存：&nbsp;<input  id="minStore" name='minStore' style="width: 100px"/>--<input id="maxStore" name='maxStore' style="width: 100px"/>&nbsp;<br/>
+    	<hr/>
+    </div>
+    
+    <div class="col-md-11" style="padding-bottom: 0px;width: 200px;display: flex"> 
+ 		<!-- <button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:goPage('/admin/goods/preAddGoods/1');" ><span class="btn-label icon fa fa-plus"></span>添加商品</button> -->
+ 	</div> 
+  </div> 
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+    	var state = $("#state").val();
+    	var url  =  _urlPath + "admin/goods/pageGoodsAjax";
+    	if(state!='' && state!=null && state!=undefined ){
+      	   $("#marketEnable").find("option[value = '"+state+"']").attr("selected","selected");
+      	   url= url+"?state="+state;
+      	   //formSubmit();
+         }
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"goodsId",text:"商品ID"},
+                {field:"goodsSn",text:"商品货号"},
+                {field:"name",text:"商品名称"},
+                {field:"image",text:"商品图片",formatter:function(index, content, data){
+                		return "<img src='"+data.image+"' width='50' height='50' >";
+                }},
+                {field:"catName", text:"分类"},
+                {field:"shopStoreName",text:"店铺"}, 
+                {field:"price", text:"销售价"},
+                {field:"store", text:"总库存"},
+                {field:"buyCount", text:"总销量"},
+                {field:"goodsType", text:"商品类型",formatter:function(index, content, data){
+                	if( content == 0 ){
+                    	return "<font color='blue'>普通商品</font>";
+                	}
+                	if( content == 1 ){
+                    	return "<font color='blue'>店长礼包</font>";
+                	}
+                }},
+                {field:"marketEnable", text:"状态",formatter:function(index, content, data){
+                	if( content == -2 ){
+                    	return "<font color='blue'>审核未通过</font>";
+                	}
+                	if( content == -1 ){
+                    	return "<font color='blue'>下架</font>";
+                	}
+                	if( content == 0 ){
+                    	return "<font color='blue'>待审核</font>";
+                	}
+                	if( content == 1 ){
+                    	return "<font color='blue'>上架</font>";
+                	}
+                }},
+                {field:"sort", text:"排序"},
+                {field:"goodsId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                	
+                	var checkUrl = "/admin/goods/preDetailGoods/" + content;
+                	var salesNoUrl="/admin/goods/goodsSalesNo/" + content;
+					var salesYesUrl="/admin/goods/goodsSalesYes/" + content;
+					var salesExamineNo = "/admin/goods/preGoodsSalesNo/" + content;
+					var opDiv = "&nbsp;<a href='javascript:goPage( \""+checkUrl+"\");' data-original-title='查看' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>查看</i></a>";
+
+                	if(0 == data.marketEnable){
+		                opDiv +=  "&nbsp;<a href='javascript:showCfm(\"确定通过该商品？如操作有误，可在审核通过列表中驳回该商品\", \""+salesYesUrl+"\");'  data-original-title='通过' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>通过</i></a>"
+		                    + "&nbsp;<a href='javascript:showModal(\"您将驳回该商品，请填写审核失败原因，以便商家进行商品的修改\", \""+salesExamineNo+"\");'  data-original-title='驳回' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>驳回</i></a>";
+                	}
+                	if(1 == data.marketEnable){
+		                opDiv +=  "&nbsp;<a href='javascript:showCfm(\"下架\", \""+salesNoUrl+"\");'  data-original-title='下架' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>下架</i></a>";
+                	}
+                	
+                	return opDiv;
+                
+                }}
+            ],
+            cls: "",
+            //url: _urlPath + "admin/goods/pageGoodsAjax",
+           	url: url,
+            sort:"id",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+		function paramSelect(){
+			var param = $('#paramSelect').val();
+			if(param==1){
+				$('.search-query').attr('name','name');
+			}else if(param==0){
+				$('.search-query').attr('name','goodsSn');
+			}else if(param==2){
+				$('.search-query').attr('name','shopStoreName');
+			}
+		}
+		
+    /*]]>*/
+</script>

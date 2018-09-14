@@ -1,0 +1,126 @@
+<form id="submitForm" class="form-horizontal">
+    <input name="catId" th:value="${category.catId}" type="text" hidden="hidden" />
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="name"><font color="red">*</font>分类名称：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="name" th:value="${category.name}" name="name" placeholder="请填写分类名称"/>
+            <div id="validation-catname" class="validate-error help-block"></div>
+        </div>
+	</div>
+	
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="parentId"><font color="red">*</font>上级分类：</label>
+        <div class="col-sm-8">
+            <select class="form-control span2" disabled="disabled">
+            	<option th:if="${category.parentId == 0}" th:text="无上级"/>
+                <option th:if="${category.parentId != 0}" th:each="goodsCat:${goodsCatList}" th:value="${goodsCat.catId}" th:text="${goodsCat.name}"
+                        th:selected ="${goodsCat.catId==category.parentId}?true:false"/>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="disable">是否展示：</label>
+        <div class="col-sm-8">
+            <div class="radio">
+                <label style="display: inline-block; width: 50px;">
+                    <input value="0" name="disable" type="radio" class="ace" th:checked="${category.disable==0}?true:false"/>是
+                </label>
+                <label style="display: inline-block; width: 50px;">
+                    <input value="1" name="disable" type="radio" class="ace" th:checked="${category.disable==1}?true:false"/>否
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="catOrder">排序：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="catOrder" name="catOrder" th:value="${category.catOrder}"/>
+            <div id="validation-catorder" class="validate-error help-block"></div>
+        </div>
+    </div>
+	
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="image">图片：</label>
+		<div class="col-sm-8" id="image">
+				<input type="file" class="form-control"  multiple="multiple" />
+				<div id="imageDiv" style='display: inline-block; margin-left: 10px; position: relative'>
+					<i class='fa fa-times' onclick='deleteImg(this)' style='display:none;float:right;margin-top:10px'></i>
+					<img class='imgPrivew' id="imgPrivew1" th:src="${category.image}" width='120px' height='120px' />
+					<input type='hidden' name='image' th:value="${category.image}"  />
+				</div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		/* submit = function(){
+			frmValidate();
+			var data = $("#submitForm").serialize();
+			ajaxRequest("/admin/goodscat/editGoodsCat", data);
+		} */
+	
+		submit = function(){
+			$('#submitForm').data('bootstrapValidator').validate();
+	        if($('#submitForm').data('bootstrapValidator').isValid()){
+	        	$("#submitForm").attr("disabled", true);
+				var data = $("#submitForm").serialize();
+				ajaxRequest("/admin/goodscat/editGoodsCat", data);
+	        }
+		}
+	
+		  $(function() {
+			$('#image').fileupload({
+	            url: _urlPath + "upload/jqUploadImg",
+	            dataType: 'html',
+	            // 上传完成后的执行逻辑
+	            done: function (e, data) {
+	                //$("#image").attr("type","hidden");
+	                $('#imageDiv').remove();
+	                $("#image").append("<div id='imageDiv' style='display: inline-block; margin-left: 10px;position:relative'>" +
+	                    "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>" +
+	                    "<i class='fa fa-times' onclick='deleteImg(this)'></i>" +
+	                    "</span> " +
+	                    "<img src='"+data.result+"' width='120px' height='120px'/>" +
+	                    "<input type='hidden' name='image' value='"+data.result+"'/>" +
+	                    "</div>")
+	            }
+	        });
+			
+			$('#submitForm').bootstrapValidator({
+	            message: 'This value is not valid',
+	            feedbackIcons: {
+	                valid: 'glyphicon glyphicon-ok',
+	                invalid: 'glyphicon glyphicon-remove',
+	                validating: 'glyphicon glyphicon-refresh'
+	            },
+	            fields: {
+	            	name: {
+	                    validators: {
+	                        notEmpty: {
+	                            message: '请输入分类名称'
+	    					}
+	                    }
+	                },
+	                catOrder: {
+	                    validators: {
+	                        notEmpty: {
+	                            message: '请输入排序号'
+	    					},
+	    					numeric: {
+	                            message: '请输入整数'
+	    					}
+	                    }
+	                }
+	            }
+	        });
+		}); 
+		function deleteImg(obj) {
+			//$(obj).parent().find('.imgPrivew').attr("src",""); 
+			$('#imageDiv').remove();
+			$("#image").attr("type","file");
+			//todo 根据名称删除服务器图片$(obj).parent().attr("path")
+		} 
+	/*]]>*/
+</script>

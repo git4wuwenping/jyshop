@@ -1,0 +1,377 @@
+<form id="submitForm" class="form-horizontal" style="width: 50%;" >
+	<!-- <input type="radio" id="comType1" name="comType" value="1"  onclick="hide()" />直营 -->
+	<input type="radio" id="comType2" name="comType" checked="checked" value="0"  />商户
+	
+    <div class="form-group" id="usernameDiv" >
+        <label class="col-sm-3 control-label" for="username"><font color="red">*</font>供应商账号：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="username" name="username" placeholder="请填写供应商账号" />
+            <div id="validation-username" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group" id="passwordDiv" >
+        <label class="col-sm-3 control-label" for="password"><font color="red">*</font>供应商密码：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="password" id="password" name="password"  />
+            <div id="validation-password" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group" id="comNameDiv" >
+        <label class="col-sm-3 control-label" for="comName"><font color="red">*</font>供应商名称：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="comName" name="comName"  />
+            <div id="validation-password" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group" id = "form-group1">
+        <label class="col-sm-3 control-label" for="comContact">负责人：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="comContact" name="comContact" />
+            <div id="validation-comContact" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="comMobile">负责人手机：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="comMobile" name="comMobile"/>
+            <div id="validation-comMobile" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="email">Email：</label>
+        <div class="col-sm-8">
+            <input class="form-email" type="text" id="email" name="comEmail" />
+            <div id="validation-bond" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="bond">保证金：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="bond" name="bond" />
+            <div id="validation-bond" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group1">
+        <label class="col-sm-3 control-label" for="bond">生效时间：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="datetime" id="addTime" style="width: 24.2%;display:inline"/>至
+            <input class="form-control" type="datetime" id="activeTime" style="width:24.2%;display:inline"/>
+            <div id="validation-bond" class="validate-error help-block"></div>
+        </div>
+    </div>
+    
+    <div class="form-group1">
+        <label class="col-sm-3 control-label" for="useable">状态：</label>
+        <div class="col-sm-8">
+            <div class="radio">
+				<label style="display: inline-block; width: 50px;">
+					<input value="0" name="useable" type="radio" class="ace" checked="checked"  />启用
+				</label>
+				<label style="display: inline-block; width: 50px;">
+					<input value="1" name="useable" type="radio" class="ace" />停用
+				</label>
+			</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="parentId">推荐人：</label>
+        <div class="col-sm-8">
+            <select class="form-control" id="parent_id" name="parentId" style="width: 250px; Float:left;">
+                <option value="-1">请选择推荐人</option>
+                <option name="parentId" th:each="company:${companys}" th:value="${company.comId}" th:text="${company.comId+ '-' + company.comName}"></option>
+            </select>
+            <div id="validation-parentId" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="remark">备注：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="remark" name="remark" />
+            <div id="validation-remark" class="validate-error help-block"></div>
+        </div>
+    </div>
+    商城店铺信息
+    <div class="form-group">
+    	<label class="col-sm-3 control-label" for="shopStoreName">店铺名称：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="shopStoreName" name="shopStoreName" />
+            <div id="validation-shopStoreName" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group">
+    	<label class="col-sm-3 control-label" for="shopStoreInformation">店铺信息：</label>
+        <div class="col-sm-8">
+            <textarea class="form-control" name='shopStoreInformation' cols='100' rows='4' 
+            id="licenseother" onkeypress="count()" onkeyup="count()"  onblur="count();" 
+            style="width: 424px; height: 125px;resize: none;" onChange="count();"></textarea> 
+            <div id="validation-shopStoreInformation" class="validate-error help-block"></div>
+        </div>
+    </div>
+     <font style="text-align: right;float: right;" size="1px">剩余字符数：
+    		<input readonly="readonly" type="text" size="3" id="result" value="120" style="border:none" /> 
+     </font>
+    	
+    <div class="form-group">
+    	<label class="col-sm-3 control-label" for="shopStoreLogo">店铺logo：</label>
+        <div class="col-sm-8" >
+        <div class="imgPrivew" id="imgPrivew1">
+            <input type="file" class="form-control" id="shopStoreLogo"  multiple="multiple"/>
+            <div id="validation-shopStoreLogo" class="validate-error help-block"></div>
+            </div>
+	    </div>
+    </div>
+    <div class="form-group">
+    	<label class="col-sm-3 control-label" for="shopStoreTheme">店铺主题：</label>
+        <div class="col-sm-8">
+        <div class="imgPrivew" id="imgPrivew2">
+            <input type="file" class="form-control"  id="shopStoreTheme"  multiple="multiple"  />
+            <div id="validation-shopStoreTheme" class="validate-error help-block"></div>
+            </div>
+        </div>
+    </div>
+    <div align="center">
+		<input id="sumbitBtn" type="button" class="btn btn-primary" value="提交"></input>
+		<input id ="resetId" type="reset" style="display:none;" />  
+	</div>
+	<input type="reset" name="reset" style="display: none;" />
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$("#sumbitBtn").click(function(){
+		if($("usernameDiv").is(":visible")){
+			var username = $("#username").val();
+	        if(typeof username == 'undefined' || username == null || username=='' ){
+	        	$.Mod.Close("请填写供应商账号",'warning');
+	            return;
+			}
+	        var password = $("#password").val();
+	        if(typeof password == 'undefined' || password == null || password=='' ){
+	        	$.Mod.Close("请填写供应商密码",'warning');
+	            return;
+			}
+		}
+        var comName = $("#comName").val();
+        if(typeof comName == 'undefined' || comName == null || comName=='' ){
+        	$.Mod.Close("请填写供应商名称",'warning');
+            return;
+		}
+     /*    var comContact = $("#comContact").val();
+        if(typeof comContact == 'undefined' || comContact == null || comContact=='' ){
+        	$.Mod.Close("请填写供应商负责人",'warning');
+            return;
+		}
+        var comMobile = $("#comMobile").val();
+        if(typeof comMobile == 'undefined' || comMobile == null || comMobile=='' ){
+        	$.Mod.Close("请填写供应商负责人手机号",'warning');
+            return;
+		}
+        var email = $("#email").val();
+        if(typeof email == 'undefined' || email == null || email=='' ){
+        	$.Mod.Close("请填写供应商email",'warning');
+            return;
+		}
+        var bond = $("#bond").val();
+        if(typeof bond == 'undefined' || bond == null || bond=='' ){
+        	$.Mod.Close("请填写保证金",'warning');
+            return;
+		}*/
+        var shopStoreName = $("#shopStoreName").val();
+        if(typeof shopStoreName == 'undefined' || shopStoreName == null || shopStoreName=='' ){
+        	$.Mod.Close("请填写店铺名称",'warning');
+            return;
+		}  
+        //$("#sumbitBtn").attr("disabled",true);
+        //$("#intro").val(UE.getEditor('content').getContent());
+        $.ajax({
+            url: _urlPath +'admin/company/addCompany',
+            method: "POST",
+            data:$('#submitForm').serialize(),
+            dataType:"json",
+            success:function(reslut) {
+                if (reslut.retcode == 0) {
+                    $.growl.notice({title:'操作成功', message: reslut.retmsg });
+                    goPage('/admin/company/companyMain');
+                }else {
+                    $("#sumbitBtn").attr("disabled",false);
+                    $.Err(reslut.retmsg);
+                }
+            }
+        });
+	}) 
+	
+	/* 获取当前时间 */
+    function today(){//构建方法
+        var today=new Date();//new 出当前时间
+        var h=today.getFullYear();//获取年
+        var m=today.getMonth()+1;//获取月
+        var d=today.getDate();//获取日
+        return h+"-"+m+"-"+d; //返回 年-月-日 时:分:秒
+}
+	document.getElementById("addTime").value = today();//将获取到的 年-月-日  赋给input文本输入框
+	/* 设置有效时间 */
+	function today2(){//构建方法
+	    var today2=new Date();//new 出当前时间
+	    var h=today2.getFullYear()+1;//获取年
+	    var m=today2.getMonth()+1;//获取月
+	    var d=today2.getDate(); //获取日
+    	return h+"-"+m+"-"+d; //返回 年-月-日 时:分:秒
+}
+	document.getElementById("activeTime").value = today2();//将获取到的 年-月-日  赋给input文本输入框
+	/* 图片上传 */
+	$(function() {
+		$('#shopStoreLogo').fileupload({
+            url: _urlPath + "upload/jqUploadImg",
+            dataType: 'html',
+            // 上传完成后的执行逻辑
+            done: function (e, data) {
+                $("#shopStoreLogo").attr("type","hidden");
+                $("#imgPrivew1").append("<div style='display: inline-block; margin-left: 10px;position:relative'>" +
+                    "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>" +
+                    "<i class='fa fa-times' onclick='deleteImg1(this)'></i>" +
+                    "</span> " +
+                    "<img src='"+data.result+"' width='120px' height='120px'/>" +
+                    "<input type='hidden' name='shopStoreLogo' value='"+data.result+"'/>" +
+                    "</div>")
+            }
+        });	
+	});
+	$(function() {
+		$('#shopStoreTheme').fileupload({
+            url: _urlPath + "upload/jqUploadImg",
+            dataType: 'html',
+            // 上传完成后的执行逻辑
+            done: function (e, data) {
+                $("#shopStoreTheme").attr("type","hidden");
+                $("#imgPrivew2").append("<div style='display: inline-block; margin-left: 10px;position:relative'>" +
+                    "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>" +
+                    "<i class='fa fa-times' onclick='deleteImg2(this)'></i>" +
+                    "</span> " +
+                    "<img src='"+data.result+"' width='120px' height='120px'/>" +
+                    "<input type='hidden' name='shopStoreTheme' value='"+data.result+"'/>" +
+                    "</div>")
+            }
+        });	
+	});
+	 
+	function deleteImg2(obj) {
+		$(obj).parent().parent().remove();
+		$("#shopStoreTheme").attr("type","file");
+		//todo 根据名称删除服务器图片$(obj).parent().attr("path")
+	} 
+	function deleteImg1(obj) {
+		$(obj).parent().parent().remove();
+		$("#shopStoreLogo").attr("type","file");
+		//todo 根据名称删除服务器图片$(obj).parent().attr("path")
+	} 
+	
+	/* 手机号校验 */
+	$("#comMobile").on('change',function(){
+		var phoneNumReg = /^1[3|5|7|8]\d{9}$/;
+		if(!phoneNumReg.test($(this).val())) {
+			$(this).val(null)
+			alert('请填写正确手机号码!!');
+		}
+	})
+	/* 邮箱验证 */
+	$("#email").on('change',function(){
+		var emailReg = /^([a-zA-Z0-9]+[_|\-|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\-|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/gi;
+		if(!emailReg.test($(this).val())) {
+			$(this).val(null)
+			alert('邮件格式有误，请重新输入！！');
+		}
+	})
+	/*供应商名称校验*/
+	$("#comName").on('blur',function(){
+		var success = '<font id="fontId" style="color: green;">供应商名可以使用</font>';
+		var error = '';
+		$.ajax({
+			type:"POST",
+			data:{"comName":$(this).val()},
+			url:_urlPath+"admin/company/checkComName",
+			success:function(result){	
+				 if(result.retcode==2){
+						error = "<font id='fontId' style='color: red;'>"+result.retmsg+"'</font>'"
+						$("#fontId").remove();
+						$("#comName").after(error);
+						$("#sumbitBtn").attr("disabled", true); 
+					}else{
+						$("#fontId").remove();
+						$("#comName").after(success);
+						$("#sumbitBtn").attr("disabled", false);
+					}  
+			}
+		})
+	});
+	
+	
+	/*店铺名称校验*/
+	$("#shopStoreName").on('blur',function(){
+		var success = '<font id="fontId" style="color: green;">店铺名可以使用</font>';
+		//var error = '<font id="fontId" style="color: red;">店铺名已存在!!</font>';
+		var error ='';
+		$.ajax({
+			type:"POST",
+			data:{"shopStoreName":$(this).val()},
+			url:_urlPath+"admin/shopStore/checkShopStoreName",
+			success:function(result){	
+				  if(result.retcode==2){
+					error = "<font id='fontId' style='color: red;'>"+result.retmsg+"'</font>'"
+					$("#fontId").remove();
+					$("#shopStoreName").after(error);
+					$("#sumbitBtn").attr("disabled", true); 
+				}else{
+					$("#fontId").remove();
+					$("#shopStoreName").after(success);
+					$("#sumbitBtn").attr("disabled", false);
+				}  
+			}
+		})
+	});
+	/* 店铺介绍校验 */
+	$("#licenseother").on('blur',function(){
+		var error ='';
+		$.ajax({
+			type:"POST",
+			data:{"shopStoreInformation":$(this).val()},
+			url:_urlPath+"admin/shopStore/checkShopStoreInformation",
+			success:function(result){	
+				  if(result.retcode==2){
+					error = "<font id='fontId' style='color: red;'>"+result.retmsg+"'</font>'"
+					$("#fontId").remove();
+					$("#licenseother").after(error);
+					$("#sumbitBtn").attr("disabled", true); 
+				}else{
+					$("#fontId").remove();
+					//$("#shopStoreInformation").after(success);
+					$("#sumbitBtn").attr("disabled", false);
+				}  
+			}
+		})
+	});
+
+	function getStringUTFLength(str) { 
+		 var value = str.replace(/[\u4e00-\u9fa5]/g," ");
+		 //将汉字替换为两个空格
+		 return value.length; 
+		} 
+		function leftUTFString(str,len) { 
+		 if(getStringUTFLength(str)<=len) { 
+		  return str; 
+		 }
+		 var value = str.substring(0,len); 
+		 while(getStringUTFLength(value)>len) { 
+		  value = value.substring(0,value.length-1); 
+		 } 
+		 return value; 
+		} 
+		function count() { 
+		 var len=120;
+		 var value = document.getElementById("licenseother").value; 
+		 if(getStringUTFLength(value)>=len) {  
+		  document.getElementById("licenseother").value = leftUTFString(document.getElementById("licenseother").value,len); 
+		 } 
+		 document.getElementById("result").value = len-getStringUTFLength(document.getElementById("licenseother").value); 
+		} 
+	
+	/*]]>*/
+</script>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.ExamineGoodsDao">
+
+	<select id="selectExamineByexamineId" resultType="map" >
+		select 
+			a.examine_id as examineId,
+			a.goods_id as goodsId, 
+			a.dismissal,
+			a.suggestion,
+			a.state,
+			a.remarks,
+			b.username,
+			b.id as userId,
+			a.operate_time as operateTime
+		from shop_examine_goods a 
+		LEFT JOIN sys_auth_user b on a.user_id = b.id 
+		LEFT JOIN shop_goods c on a.goods_id = c.goods_id
+		where a.examine_id =#{examineId}
+	</select>
+	<!-- 根据条件分页查询审核列表 -->
+	<select id="selectExamineByParams" resultType="map" >
+		select 
+			a.examine_id as examineId,
+			a.goods_id as goodsId, 
+			a.state,
+			a.remarks,
+			b.username,
+			c.name as goodsName ,
+			c.market_enable as marketEnable,
+			a.operate_time as operateTime
+		from shop_examine_goods a 
+		LEFT JOIN sys_auth_user b on a.user_id = b.id 
+		LEFT JOIN shop_goods c on a.goods_id = c.goods_id 
+		where 1=1 and c.market_enable in (0,-1,-2)
+		order by a.operate_time desc
+	</select>
+	
+	<select id="selectExamineByGoodsId" resultType="map" >
+		select 
+			se.examine_id as examineId,
+			se.goods_id as goodsId,
+			se.dismissal,
+			se.suggestion,
+			se.state,
+			se.remarks,
+			sau.username,
+			se.operate_time as operateTime
+		from shop_examine_goods se
+		left join sys_auth_user sau on se.user_id = sau.id 
+		where se.goods_id = #{goodsId}  order by se.operate_time desc
+			
+	</select>
+	
+	<update id="updateExamineBygoodsId">
+		update 
+			shop_examine_goods seg
+		set
+			seg.state= #{state},
+			seg.type= #{type},
+			seg.create_time=#{createTime}
+		where seg.goods_id = #{goodsId}
+	</update>
+</mapper>

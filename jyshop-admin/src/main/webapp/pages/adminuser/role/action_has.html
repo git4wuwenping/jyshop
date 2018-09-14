@@ -1,0 +1,112 @@
+<div class="col-md-1 no-padding">
+    <button id="cancelHasOperationBtn" class="btn btn-labeled btn-danger"><span class="btn-label icon fa fa-unlink"></span>取消</button>
+</div>
+<div class="col-md-11">
+    <div class="has-feedback">
+        <input type="text" name="opName" th:value="${opName}" id="hasSearchName" placeholder="权限名称/权限码" class="form-control" />
+        <i class="fa fa-search form-control-feedback add-tooltip" data-original-title="" onclick="searchHasOperation()" style="cursor: pointer;top:10px"></i>
+    </div>
+</div>
+<form id="hasOperationForm" style="padding-top:30px;">
+<input type="hidden" th:value="${roleId}" name="roleId" />
+<div class="checkbox">
+   <label>
+       <input type="checkbox" class="px" onclick="hasOperationSelectAll(this)"/>
+       <span class="lbl">&nbsp;全选</span>
+   </label>
+</div>
+    <div class="message unread" th:each="hasAction:${hasActionList}">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" class="px" th:value="${hasAction.opId}" name="opIds" 
+                 th:attr="opCode=${hasAction.opCode}" th:onclick="'selectHasBox('+${hasAction.opCode}+', this)'" />
+                <span class="lbl" th:text="${hasAction.opName}+'('+${hasAction.opCode}+')'+${hasAction.opHref}" />
+            </label>
+        </div>
+    </div>
+
+</form>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+    $(function(){
+    	
+        $('.add-tooltip').tooltip();
+        $("#cancelHasOperationBtn").click(function(){
+            cancelHasOperations();
+        });
+        
+        $(document).delegate("#hasSearchName",'keydown', function (){
+            var e = e || event, keycode = e.which || e.keyCode;
+            if (keycode == 13) {
+                searchHasOperation();
+            }
+        });
+        
+        var hasOpNum=[[${hasActionCount}]];
+        var allOpNum=$("#allOpNum").text();
+        $("#hasOpNum").text(hasOpNum);
+        $("#noOpNum").text(allOpNum-hasOpNum);
+    });
+    hasOperationSelectAll = function(obj){
+        var hasRoleIds = document.getElementsByName("opIds");
+        if(obj.checked){
+            for(var i = 0; i < hasRoleIds.length; i++){
+                hasRoleIds[i].checked = true;
+            }
+        }
+        else{
+            for(var i = 0; i < hasRoleIds.length; i++){
+                hasRoleIds[i].checked = false;
+            }
+        }
+
+    }
+    cancelHasOperations = function(){
+        var data = $("#hasOperationForm").serialize();
+        if (data != ""){
+            $.ajax({
+                url:_urlPath + "admin/role/unBindUserOperat",
+                data:data,
+                type:"post",
+                dataType:"json",
+                success: function (req){
+                    if (req.retcode == 0) {
+                        $.growl.notice({title:'成功', message: req.retmsg });
+                        loadHasOperation("");
+                    }else {
+                        $.Err(req.retmsg);
+                    }
+                }
+            });
+        }
+    }
+    searchHasOperation = function(){
+    	console.log("aa");
+        var opname =$("#hasSearchName").val();
+        loadHasOperation(opname);
+    }
+
+    selectHasBox = function(opCode, obj) {
+        var hasRoleIds = document.getElementsByName("opIds");
+        var isChecked = obj.checked;
+        for(var i = 0; i < hasRoleIds.length; i++){
+            var childOpAttr = hasRoleIds[i].attributes["opCode"];
+            if (childOpAttr == undefined){
+                continue;
+            }
+            var childOpCode = childOpAttr.value;
+            if (childOpCode != undefined && childOpCode.length >= opCode.length
+                    && childOpCode.substr(0, opCode.length) == opCode){
+                if (isChecked == true){
+                    hasRoleIds[i].checked = true;
+                }
+                else {
+                    hasRoleIds[i].checked = false;
+                }
+
+            }
+        }
+    }
+    /*]]>*/
+</script>

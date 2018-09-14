@@ -1,0 +1,215 @@
+<div class="col-sm-12 tab-pane active">
+	<div class="panel">
+		<div class="panel-heading">
+			<span class="panel-title">优惠券信息</span>
+		</div>
+		<div class="panel-body">
+			
+			<table>
+				<tr>
+					<th>优惠券名称：</th>
+					<td width="400"><span th:text="${coupon.cpnName}"></span></td>
+					<th>总发放：</th>
+					<td><span th:text="${coupon.grantNum}"></span></td>
+				</tr>
+				<tr>
+					<th>优惠券类型：</th>
+					<td th:if="${coupon.cpnType==0}">分类券</td>
+					<td th:if="${coupon.cpnType==1}">商品券</td>
+					<td th:if="${coupon.cpnType==2}">供应商券</td>
+					<th>已领取：</th>
+					<td><span th:text="${coupon.hasGetNum}"></span></td>
+				</tr>
+				<tr>
+					<th>发放类型：</th>
+					<td><span th:text="${coupon.grantTypeName}"></span></td>
+					<th>已使用：</th>
+					<td><span th:text="${coupon.hasUseNum}"></span></td>
+				</tr>
+				<tr th:if="${coupon.grantType == 0 or coupon.grantType == 1}">
+					<th>每人限领：</th>
+					<td><span th:text="${coupon.limitGet}"></span>次</td>
+				</tr>
+				<tr>
+					<th>抵扣金额：</th>
+					<td><span th:text="${coupon.discountPrice}"></span></td>
+					<th>未使用：</th>
+					<td><span th:text="${coupon.hasGetNum - coupon.hasUseNum}"></span></td>
+				</tr>
+				<tr>
+					<th>领取有效期：</th>
+					<td th:if="${coupon.useType == 0}"><span th:text="${#dates.format(coupon.getBeginTime, 'yyyy-MM-dd HH:mm:ss')}"></span> ~ <span th:text="${#dates.format(coupon.getEndTime, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
+					<td th:if="${coupon.useType != 0}">领取后<span th:text="${coupon.effectiveDate}"></span>天</td>
+				</tr>
+			</table>
+			<!-- <hr></hr>
+			<table border="1">
+				<tr>
+					<th>总发放：</th>
+					<td><span th:text="${coupon.grantNum}"></span></td>
+				</tr>
+				<tr>
+					<th>已领取：</th>
+					<td><span th:text="${coupon.hasGetNum}"></span></td>
+				</tr>
+				<tr>
+					<th>已使用：</th>
+					<td><span th:text="${coupon.hasUseNum}"></span></td>
+				</tr>
+				<tr>
+					<th>未使用：</th>
+					<td><span th:text="${coupon.hasGetNum - coupon.hasUseNum}"></span></td>
+				</tr>
+				
+			</table> -->
+		</div>
+	</div>
+	
+	<div class="panel">
+		<div class="panel-heading">
+			<span class="panel-title">优惠券发放情况</span>
+		</div>
+		<div class="panel-body">
+			<div class="openAppGrid">
+				<div id="openMemberCouponGrid"></div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$(function() {
+		$("#openMemberCouponGrid")
+		.sgrid(
+				{
+					columns : [
+							{
+								field : "sn",
+								text : "优惠序列号",
+								style : "text-align:center",
+								width : 200
+							},
+							{
+								field : "memberId",
+								text : "用户ID",
+								style : "text-align:center",
+								width : 100
+							},
+							{
+								field : "nickname",
+								text : "用户昵称",
+								style : "text-align:center",
+								width : 100
+							},
+							{
+								field : "memberImage",
+								text : "用户头像",
+								width : 200,
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									return "<img src='"+content+"' width='50' height='50' >";
+								}
+							},
+							{
+								field : "getTime",
+								text : "领取时间",
+								width : 100,
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									if(typeof content!='undefined' && content!=null && content!='')
+				                		return new Date(content).toLocaleString();
+				                	else
+				                		return "";
+								}
+							},
+							{
+								field : "orderId",
+								text : "订单ID",
+								style : "text-align:center",
+								width : 100,
+							},
+							{
+								field : "useTime",
+								text : "使用时间",
+								width : 100,
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									if(typeof content!='undefined' && content!=null && content!='')
+				                		return new Date(content).toLocaleString();
+				                	else
+				                		return "";
+								}
+							},
+							{
+								field : "useBeginTime",
+								text : "使用有效期",
+								width : 200,
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									var ele = "";
+									if(typeof data.useBeginTime!='undefined' && data.useBeginTime!=null && data.useBeginTime!='')
+										ele = ele + new Date(data.useBeginTime).toLocaleString();
+									else{
+										ele = "????"
+									}
+									ele = ele + " ~ "
+									if(typeof data.useEndTime!='undefined' && data.useEndTime!=null && data.useEndTime!='')
+										ele = ele + new Date(data.useEndTime).toLocaleString();
+									else{
+										ele = "????"
+									}
+									return ele;
+								}
+							},
+							{
+								field : "isGet",
+								text : "领取情况",
+								width : 300,
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									return content == 0 ? "未领取" : "已领取";
+								}
+							},
+							{
+								field : "isUse",
+								text : "使用情况",
+								width : 300,
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									return content == 0 ? "未使用" : "已使用";
+								}
+							},
+							{
+								field : "createTime",
+								text : "发放时间",
+								width : 100,
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									if(typeof content!='undefined' && content!=null && content!='')
+				                		return new Date(content).toLocaleString();
+				                	else
+				                		return "";
+								}
+							}],
+					cls : "",
+					url : _urlPath
+							+ "admin/coupon/pageMemberCouponAjax/"+[[${coupon.cpnId}]],
+					sort : "memberId",
+					order : "desc",
+					pagination : true,
+					onLoad : function() {
+						$(".add-tooltip").tooltip();
+					}
+				});
+	});
+	/*]]>*/
+</script>

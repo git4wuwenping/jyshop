@@ -1,0 +1,85 @@
+<div class="page-header"
+	style="padding: 10px 20px; margin: -18px 0px 0px">
+	<div id="searchForm">
+		<div class="col-md-2" style="width: 200px">
+			<input type="text" class="form-control search-query" name="nickname"
+				placeholder="用户昵称" />
+		</div>
+		<div class="col-md-2" style="padding-bottom: 0px; width: 200px;">
+			<select class="form-control" name="payType"
+				onchange="javascript:formSubmit();">
+				<option value="">==支付方式==</option>
+				<option value="1" text="微信">微信</option>
+				<option value="2" text="支付宝">支付宝</option>
+			</select>
+		</div>
+		<div class="col-md-1" style="width: 105px;">
+			<button id="searchBtn" class="btn btn-labeled btn-info"
+				onclick="javascript:formSubmit();">
+				<span class="btn-label icon fa fa-search"></span>搜索
+			</button>
+		</div>
+	</div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid" style="text-align: center;"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$(function() {
+		$("#openAppGrid").sgrid({
+			columns : [ {
+				field : "paySn",
+				text : "流水号"
+			}, {
+				field : "nickname",
+				text : "用户昵称"
+			}, {
+				field : "paymentName",
+				text : "支付方式"
+			}, {
+				field : "orderAmount",
+				text : "预充金额",
+				formatter : function(index, content, data) {
+					return "+" + content;
+				}
+			},{
+				field : "payAmount",
+				text : "实充金额",
+				formatter : function(index, content, data) {
+					return "+" + content;
+				}
+			}, {
+				field : "payStatus",
+				text : "充值状态",
+				formatter : function(index, content, data) {
+					if (content == 1) {
+						return "<font color='black'>充值成功</font>";
+					} else if (content == 0) {
+						return "<font color='red'>充值失败</font>";
+					}
+				}
+			}, {
+				field : "payTime",
+				text : "充值时间",
+				style : "text-align:center",
+				formatter : function(index, content, data) {
+					if (typeof content != 'undefined' && content != null){
+						return new Date(content).toLocaleString();
+					}else{
+						return "";
+					}
+				}
+			} ],
+			cls : "",
+			url : _urlPath + "admin/financialMgr/payOrder/pageAjaxPayOrder",
+			sort : "id",
+			order : "desc",
+			pagination : true,
+			onLoad : function() {
+				$(".add-tooltip").tooltip();
+			}
+		});
+	});
+	/*]]>*/
+</script>

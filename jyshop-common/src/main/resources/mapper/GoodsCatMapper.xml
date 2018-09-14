@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.GoodsCatDao" >
+    <resultMap id="baseResultModel" type="com.qyy.jyshop.model.GoodsCat" >
+        <id column="cat_id" property="catId" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+        <result column="cat_path" property="catPath" jdbcType="VARCHAR" />
+        <result column="cat_code" property="catCode" jdbcType="VARCHAR" />
+        <result column="code_order" property="codeOrder" jdbcType="INTEGER" />
+        <result column="cat_order" property="catOrder" jdbcType="INTEGER" />
+        <result column="type_id" property="typeId" jdbcType="INTEGER" />
+        <result column="list_show" property="listShow" jdbcType="VARCHAR" />
+        <result column="image" property="image" jdbcType="VARCHAR" />
+        <result column="class_id" property="classId" jdbcType="INTEGER" />
+        <result column="alarm_num" property="alarmNum" jdbcType="SMALLINT" />
+        <result column="display" property="display" jdbcType="INTEGER" />
+        <result column="disable" property="disable" jdbcType="INTEGER" />
+        <result column="page_title" property="pageTitle" jdbcType="VARCHAR" />
+        <result column="meta_keywords" property="metaKeywords" jdbcType="VARCHAR" />
+        <result column="meta_description" property="metaDescription" jdbcType="VARCHAR" />
+        <result column="adv_image" property="advImage" jdbcType="VARCHAR" />
+        <result column="auto_id" property="autoId" jdbcType="INTEGER" />
+        <result column="goods_count" property="goodsCount" jdbcType="INTEGER" />
+    </resultMap>
+
+	<!-- 根据分类Id获取分类编码 -->
+	<select id="selectOfCatCode" resultType="string">
+		select cat_code from shop_goods_cat where cat_id=#{catId}
+	</select>
+
+    <!-- 根据排序查询所有的商品分类 -->
+    <select id="selectGoodsCatList" resultMap="baseResultModel">
+        select
+        *
+        from shop_goods_cat
+        where 1=1 
+        <if test="name != null">
+			and name like '%${name}%'
+		 </if>
+		 <if test="catLevel != null and catLevel == 1">
+			and parent_id = 0
+		 </if>
+		 <if test="catLevel != null and catLevel == 2">
+			and length(cat_code) = 6
+		 </if>
+		 <if test="catLevel != null and catLevel == 3">
+			and length(cat_code) = 9
+		 </if>
+        order by cat_order ,cat_id asc
+    </select>
+    <!-- 根据排序查询所有可见的商品分类 -->
+    <select id="selectGoodsCatListVisible" resultMap="baseResultModel">
+        select
+        *
+        from shop_goods_cat
+         where disable=0
+        order by cat_order ,cat_id asc
+    </select>
+
+    <!-- 根据父id查询分类 -->
+    <select id="selectGoodsCatListByParentId" resultType="map">
+        select
+        cat_id as catId,
+        name,
+        parent_id AS parentId,
+        cat_order AS catOrder
+        from shop_goods_cat
+        where disable = 0 and parent_id = #{parentId}
+        ORDER BY cat_order ASC
+    </select>
+    
+    <select id="queryGoodsCatByCatId" resultType="map">
+        SELECT
+		  t1.cat_id AS catId,
+		  t1.name,
+		  t1.parent_id AS parentId,
+		  t1.`disable`,
+		  t1.cat_order AS catOrder,
+		  t1.`image` AS image,
+		  IFNULL(t2.name, '顶级分类') AS parentName
+		FROM
+		  shop_goods_cat t1
+		  LEFT JOIN shop_goods_cat t2
+		    ON t1.`parent_id` = t2.`cat_id`
+		WHERE t1.cat_id = #{id}
+    </select>
+</mapper>

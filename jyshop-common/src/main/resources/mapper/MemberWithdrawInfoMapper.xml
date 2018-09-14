@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.MemberWithdrawInfoDao">
+	<!-- 根据memberid查询银行卡列表 -->
+	<select id="selectWithDrawalsByMEmberId" resultType="map" >
+		select 
+		 	member_id as memberId,
+		 	open_bank as openBank,
+		 	account_name as accountName,
+		 	account_no as accountNo,
+		 	is_default as isDefault,
+		 	card_type as cardType,
+		 	abbreviation,
+		 	bank_image as bankImage
+		  from shop_member_withdraw_info 
+		 where draw_type =2 
+		   and is_binding =0 
+		   and member_id = #{memberId} 
+		   ORDER BY create_time
+	</select>
+	
+	
+	<!-- 银行卡解除绑定 -->
+	<update id="updateBankCardUnbind">
+		update shop_member_withdraw_info 
+		   set is_binding = 1 
+		 where member_id = #{memberId}
+		   and account_no = #{accountNo}
+	</update>
+	<!-- 设置默认银行卡 -->
+	<update id="updateDefaultBankCard">
+		update shop_member_withdraw_info 
+           set is_default = IF(account_no = #{accountNo} and is_binding = 0 ,1,0) 
+           where member_id = #{memberId} and account_no = #{accountNo} and draw_type =2
+	</update>
+</mapper>

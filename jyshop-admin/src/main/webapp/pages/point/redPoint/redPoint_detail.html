@@ -1,0 +1,101 @@
+<form id="submitForm" class="form-horizontal">
+
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="weixinFace"><font
+			color="red">*</font>客户头像：</label>
+		<div class="col-sm-8">
+			<img type="text" name="weixinFace" th:src="${memberInfo.weixinFace}" width='50'
+				height='50' readonly="readonly" style="border: none" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="nickname"><font
+			color="red">*</font>昵称：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="nickname" name="nickname"
+				readonly="readonly" th:value="${memberInfo.nickname}" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="identityId"><font
+			color="red">*</font>身份：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" readonly="readonly"
+				th:if="${memberInfo.identityId==1}" th:value="店长" />
+			<input class="form-control" type="text" readonly="readonly"
+				th:if="${memberInfo.identityId==2}" th:value="普通用户" />
+			<input class="form-control" type="text" readonly="readonly"
+				th:if="${memberInfo.identityId==3}" th:value="代理" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="memberId"><font
+			color="red">*</font>客户编号：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="memberId" name="memberId"
+				readonly="readonly" th:value="${memberInfo.memberId}" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="point"><font
+			color="red">*</font>已确认积分：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="point" name="redPoint"
+				readonly="readonly" th:value="${memberInfo.redPoint}" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="redPointUnconfirmed"><font
+			color="red">*</font>待确认积分：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="redPointUnconfirmed"
+				name="redPointUnconfirmed" readonly="readonly"
+				th:value="${memberPointInfo.memberPointUnconfirmed}" />
+		</div>
+	</div>
+
+
+
+
+
+	<div class="table-info">
+		<table class="table table-bordered">
+			<thead>
+				<tr style="text-align: center">
+					<th class="text-center">消费类型</th>
+					<th class="text-center">积分</th>
+					<th class="text-center">时间</th>
+					<th class="text-center">状态</th>
+					<th class="text-center">关联订单号</th>
+					<th class="text-center">关联订单类型</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="memberPoint:${memberPointInfo.memberPointList}" style="text-align: center">
+					<td th:if="${memberPoint.getType==0}" th:text="分佣-首购分润"></td>
+					<td th:if="${memberPoint.getType==1}" th:text="分佣-自购分润"></td>
+					<td th:if="${memberPoint.getType==2}" th:text="分佣-上级分润"></td>
+					<td th:if="${memberPoint.getType==3}" th:text="白积分转换"></td>
+					<td th:if="${memberPoint.getType==4}" th:text="旧商城数据"></td>
+					<td th:text="${memberPoint.point}"></td>
+					<td th:if="${memberPoint.createTime!=null}" 
+						th:text="${#dates.format(memberPoint.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+					<td th:if="${memberPoint.createTime==null}"></td>
+					
+					<td th:if="${memberPoint.pointStatus == null}" th:text="待确认"></td>
+					<td th:if="${memberPoint.pointStatus != null}" th:text="已确认"></td>
+					<td th:text="${memberPoint.orderSn}"></td>
+					
+					<td th:if="${memberPoint.orderType==0 and memberPoint.getType!=3 and memberPoint.getType!=4}" th:text="普通订单"></td>
+					<td th:if="${memberPoint.orderType==1 and memberPoint.getType!=3 and memberPoint.getType!=4}" th:text="礼包订单"></td>
+					<td th:if="${memberPoint.getType==3 or memberPoint.getType==4}" th:text="null"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</form>

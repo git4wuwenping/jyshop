@@ -1,0 +1,80 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+     <jy:odbtn  /> 
+</div>
+<form id="submitForm" class="form-horizontal">
+    <input id="orderId" name="orderId" th:value="${order.orderId}" th:attr="order_id=${order.orderId}" type="text" hidden="hidden" />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel">
+                <div class="panel-heading">
+                    <span class="panel-title">订单信息</span>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                                                                         订单号：<span th:text="${order.orderSn}"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ul class="nav nav-pills bs-tabdrop-example">
+                                <li class="active"><a href="#bs-tabdrop-pill1" data-toggle="tab">基本信息</a></li>
+                                <li><a href="#bs-tabdrop-pill2" data-toggle="tab">订单日志</a></li>
+                                <li><a href="#bs-tabdrop-pill3" data-toggle="tab">收退款日志</a></li>
+                                <li><a href="#bs-tabdrop-pill4" data-toggle="tab">发退货日志</a></li>
+                                <li><a href="#bs-tabdrop-pill5" data-toggle="tab">发票信息</a></li>
+                                <li><a href="#bs-tabdrop-pill6" data-toggle="tab">物流信息</a></li>
+                                <li><a href="#bs-tabdrop-pill7" data-toggle="tab">分佣信息</a></li>
+                            </ul>
+                            <div class="tab-content">
+                            	<!-- 基本信息 -->
+                            	<div th:include="order/detail/basic_info::basic_info" id="bs-tabdrop-pill1" class="tab-pane active"></div>
+
+                                <!-- 订单日志 -->
+                                <div th:include="order/detail/order_log::order_log" id="bs-tabdrop-pill2" class="tab-pane"></div>
+                                
+                                <!-- 收退款日志 -->
+                                <div th:include="order/detail/pay_refund_log::pay_refund_log" id="bs-tabdrop-pill3" class="tab-pane"></div>
+                                
+                                <!-- 发退货日志 -->
+                                <div th:include="order/detail/send_refund_log::send_refund_log" id="bs-tabdrop-pill4" class="tab-pane"></div>
+                                
+                                <!-- 发票 -->
+                                <div th:include="order/detail/receipt_info::receipt_info" id="bs-tabdrop-pill5" class="tab-pane"></div>
+                               
+                                <!-- 物流信息 -->
+                                <div th:include="order/detail/logistics_info::logistics_info" id="bs-tabdrop-pill6" class="tab-pane"></div>
+                                
+                                <!-- 分佣信息 -->
+                                <div th:include="order/detail/profit_info::profit_info" id="bs-tabdrop-pill7" class="tab-pane"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script th:src="@{/static/js/order/order-operate.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+	$(function (){
+ 		var resp=[[${logisticMap}]];
+		if(typeof resp!='undefined' && resp!=null){
+			var logiName = document.getElementById("logiNameInput").value;
+ 			var respData=JSON.parse(resp.resp);
+ 			$("#logisUl").append('<li class="active">'+logiName+'</li><br></br><li class="active">运单号：'+respData.nu+'</li><br></br>');
+			if(respData.data != null && respData.data.length>0){
+				$(respData.data).each(function(index, item){
+					var html='<li class="active"><span>◯</span><span>'+item.time+'</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span>'+item.context+'</span></li><br/>';
+				    //  var html='<li class="active">'+item.time+'</li><li class="active">'+item.context+'</li>'; 
+				     $("#logisUl").append(html);
+				});
+			}
+		}else{
+			var html = '<li class="active">暂无物流信息</li>';
+			$("#logisUl").append(html);
+		}  
+
+ 	})
+ 	
+ 	/*]]>*/
+</script>

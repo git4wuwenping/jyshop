@@ -1,0 +1,106 @@
+<link th:href="@{../css/floor/floor-template.css}" th:rel="stylesheet" />
+<div class="floor_m">
+	<h4>
+		<span th:text="${floorParent.floorName}"></span>
+	</h4>
+</div>
+<div class="floor_rel">
+	<div class="floor">
+		<div th:each="floor:${floorList}">
+			<div class="floor_box" >
+				<div class="catFloorclass" th:if="${floor.floorType == 1}" th:data="${floor.horizontalSize}">
+					<ul class="floorul">
+						<div>
+							<strong><span th:text="${floor.floorName}"></span></strong>(分类楼层)
+							<input th:value="${floor.floorId}" type="hidden" /> <input th:data="${floor.horizontalSize * floor.verticalSize}"
+								onClick="selectGoodsCat(this);" value="编辑+" type="button"></input>
+						</div>
+					</ul>
+
+					<div class="ftab">
+						<div class="ftabone">
+							<div class="classpro">
+								<div class="productone" th:each="goodsCat:${goodsCatList}" th:if="${goodsCat.floorId == floor.floorId}">
+									<div th:if="${goodsCat.floorId == floor.floorId}">
+										<ul>
+											<li class="pronames"><span th:text="${goodsCat.name}"></span>
+											</li>
+											<li><span class="center_span"><p>
+														<img th:src="${goodsCat.image}" width="147" height="147" />
+													</p></span></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				
+				<div class="catFloorclass" th:if="${floor.floorType == 2}" th:data="${floor.horizontalSize}">
+					<ul class="floorul">
+						<div>
+							<strong><span th:text="${floor.floorName}"></span></strong>(商品楼层)
+							<input th:value="${floor.floorId}" type="hidden" /> <input th:data="${floor.horizontalSize * floor.verticalSize}"
+								onClick="selectGoods(this);" value="编辑+" type="button"></input>
+						</div>
+					</ul>
+
+					<div class="ftab">
+						<div class="ftabone">
+							<div class="classpro">
+								<div class="productone" th:each="goods:${goodsList}">
+									<div th:if="${goods.floorId == floor.floorId}">
+										<ul>
+											<li><span class="center_span"><p>
+														<img th:src="${goods.image}" width="147" height="147" />
+													</p></span></li>
+											<li class="pronames"><span th:text="${goods.name}"></span>
+											</li>
+											<li><span class="hui2">市场价：</span> <span
+												class="through hui" th:text="${goods.mktprice}"></span></li>
+											<li><span class="hui2">商城价： </span><strong class="red"
+												th:text="${goods.price}"></strong></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	var selectGoodsCat = function(ele) {
+		var parentId = [[${floorParent.floorId}]];
+		var floorName = $($(ele).parent().find("span")[0]).text();
+		var floorId = $($(ele).parent().find("input")[0]).val();
+		var maxSize = $(ele).attr("data");
+		var pageUrl = "/admin/floor/preEditFloorGoodsCatRel/"+floorId+"?parentId="+parentId+"&maxSize="+maxSize;
+		showModal("编辑【"+floorName+"】分类楼层", pageUrl,800);
+	}
+	
+	var selectGoods = function(ele) {
+		var parentId = [[${floorParent.floorId}]];
+		var floorName = $($(ele).parent().find("span")[0]).text();
+		var floorId = $($(ele).parent().find("input")[0]).val();
+		var maxSize = $(ele).attr("data");
+		var pageUrl = "/admin/floor/preEditFloorGoodsRel/"+floorId+"?parentId="+parentId+"&floorName="+floorName+"&maxSize="+maxSize;
+		showModal("编辑【"+floorName+"】商品楼层", pageUrl,800);
+	}
+	$(function() {
+		//设置每个楼层的宽
+		$(".catFloorclass").each(function(){
+			var horizontalSize = $(this).attr("data");
+			horizontalSize = horizontalSize * 162 + 10;
+			$(this).find(".classpro").each(function(){
+				$(this).width(horizontalSize+"px");
+			});
+		});
+	});
+	/*]]>*/
+</script>

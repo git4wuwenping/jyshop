@@ -1,0 +1,19 @@
+<form id="restSelfFrm" class="form-horizontal">
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="mobile"><font color="red">*</font>手机号：</label>
+		<div class="col-sm-8">
+			<input class="form-control" maxlength="16" type="mobile" id="mobile" placeholder="请输入手机号" />
+			<div id="validation-oldPassword" class="validate-error help-block"></div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+	function submit() {
+		frmValidate();
+		var mobile = $("#mobile").val().Trim();
+		var data = "id="+[[${id}]]+"&mobile="+mobile;
+		ajaxRequest("admin/user/bindMerchant", data);
+    }
+    	/*]]>*/
+</script>

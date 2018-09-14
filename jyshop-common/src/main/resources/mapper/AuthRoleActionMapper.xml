@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.AuthRoleActionDao">
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.AuthRoleAction">
+		<id column="role_id" jdbcType="INTEGER" property="roleId" />
+		<id column="op_id" jdbcType="INTEGER" property="opId" />
+	</resultMap>
+	
+	<!-- 批量添加 -->
+	<insert id="batchInsert">
+		insert into sys_auth_role_action(role_id, op_id) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.roleId}, #{item.opId})
+		</foreach>
+	</insert>
+	
+	<!-- 根据角色Id删除关联权限 -->
+	<delete id="deleteByRoleId">
+		delete from sys_auth_role_action where role_id = #{roleId}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="batchDel">
+		delete from sys_auth_role_action where
+		<foreach collection="list" item="item" index="index" open="(" separator="or" close=")">
+			role_id = #{item.roleId} and op_id = #{item.opId}
+		</foreach>
+	</delete>
+	
+	
+</mapper>

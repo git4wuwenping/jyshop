@@ -1,0 +1,49 @@
+<div th:fragment="activity_info" class="tab-pane active" id="bs-tabdrop-pill2">
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>分享标题：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="shareTitle"
+                   th:value="${entity.shareTitle}" placeholder="请填写分享标题"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>分享描述：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="shareDescribe"
+                   th:value="${entity.shareDescribe}" placeholder="请填写分享描述"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font
+                color="red">*</font>分享图片：</label>
+        <div class="col-sm-8" th:if="${entity.shareImage!=null}" >
+            <img th:src='${entity.shareImage}' width='120px' height='120px'/>
+        </div>
+        <div class="col-sm-8" id="imgPrivew3" th:if="${entity.shareImage==null}" >
+            <a href="javascript:;" class="file">选择文件
+                <input type="file" class="form-control" id="shareImage"  multiple="multiple"/>
+            </a>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="rules"><font
+                color="red">*</font>活动规则：</label>
+        <div class="col-sm-8">
+            <textarea class="form-control" id="rules" name="rules"  rows="3"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>已拼件数：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="alreadyNum" style="width: 24.2%;display:inline"
+            th:value="${entity.alreadyNum}" placeholder="请填写已拼件数"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>排序：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="sort" style="width: 24.2%;display:inline"
+                   th:value="${entity.sort}" placeholder="请填写排序"/>
+        </div>
+    </div>
+</div>

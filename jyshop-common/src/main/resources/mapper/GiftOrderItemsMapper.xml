@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.GiftOrderItemsDao">
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.GiftOrderItems">
+		<id column="item_id" jdbcType="BIGINT" property="itemId" />
+		<result column="order_id" jdbcType="BIGINT" property="orderId" />
+		<result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+		<result column="goods_id" jdbcType="BIGINT" property="goodsId" />
+		<result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+		<result column="goods_image" jdbcType="VARCHAR" property="goodsImage" />
+		<result column="product_id" jdbcType="BIGINT" property="productId" />
+		<result column="product_sn" jdbcType="VARCHAR" property="productSn" />
+		<result column="buy_count" jdbcType="INTEGER" property="buyCount" />
+		<result column="ship_count" jdbcType="INTEGER" property="shipCount" />
+		<result column="goods_price" jdbcType="DECIMAL" property="goodsPrice" />
+		<result column="price" jdbcType="DECIMAL" property="price" />
+		<result column="discount" jdbcType="DECIMAL" property="discount" />
+		<result column="activity_id" jdbcType="INTEGER" property="activityId" />
+		<result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+		<result column="activity_discount" jdbcType="DECIMAL" property="activityDiscount" />
+		<result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
+		<result column="change_product_num" jdbcType="INTEGER" property="changeProductNum" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="com_id" jdbcType="BIGINT" property="comId" />
+		<result column="weight" jdbcType="DECIMAL" property="weight" />
+		<result column="unit" jdbcType="VARCHAR" property="unit" />
+		<result column="evaluate_status" jdbcType="INTEGER" property="evaluateStatus" />
+	</resultMap>
+ 	
+ 	<!-- 根据订单ID与货品Id查询订单货品信息 -->
+ 	<select id="selectByOrderIdAndProductId" resultMap="baseResultModel">
+ 		select 
+ 			* 
+ 		from shop_gift_order_items 
+ 		where order_id=${orderId} and product_id=#{productId}
+ 	</select>
+ 	
+ 	<!-- 根据订单ID查询订单货品列表信息 -->
+ 	<select id="selectByOrderId" resultMap="baseResultModel">
+		select * from shop_gift_order_items where order_id=#{orderId} 
+	</select>
+ 	
+ 	<!-- 批量添加 -->
+	<insert id="batchInsert">
+		insert into shop_gift_order_items(order_id,order_sn,goods_id,goods_name,
+			goods_image,product_id,product_sn,buy_count,goods_price,cost,price,discount,
+			activity_id,activity_name,activity_discount,product_spec,com_id,weight,unit) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.orderId}, #{item.orderSn}, #{item.goodsId}, 
+			 #{item.goodsName}, #{item.goodsImage}, #{item.productId}, #{item.productSn},
+			 #{item.buyCount}, #{item.goodsPrice}, #{item.cost}, #{item.price}, #{item.discount},
+			 #{item.activityId}, #{item.activityName}, #{item.activityDiscount}, #{item.productSpec},
+			 #{item.comId}, #{item.weight}, #{item.unit})
+		</foreach>
+	</insert>
+</mapper>

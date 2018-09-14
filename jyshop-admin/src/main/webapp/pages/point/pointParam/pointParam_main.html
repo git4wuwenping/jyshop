@@ -1,0 +1,96 @@
+<form id="submitForm" class="form-horizontal">
+	<input name="id" th:value="${pointParam.id}" type="hidden" />
+	<div>
+		<div class="form-group">
+			<label class="col-sm-1 control-label">红积分和黄积分的比例：</label> <input
+				type='text' name="redPointScale" style="width: 50px"
+				th:value="${pointParam.redPointScale}" />: <input type='text'
+				name="yellowPointScale" style="width: 50px"
+				th:value="${pointParam.yellowPointScale}" />
+		</div>
+	</div>
+
+	<div>
+		<div class="form-group">
+			<label class="col-sm-1 control-label">申请提现门槛最低：</label> <input
+				type='text' name="withdrawDepositMin" style="width: 80px"
+				th:value="${pointParam.withdrawDepositMin}" />
+		</div>
+	</div>
+
+
+	<div>
+		<div class="form-group">
+			<label class="col-sm-1 control-label">黄积分兑换时间：</label>
+		</div>
+		<div class="form-group">
+			<label class="col-md-1 control-label" for="endTime">开始时间：</label>
+			<div class="col-md-2">
+				<div class='input-group date'>
+					<input type='text' class="form-control" name="yellowConvertBeginStr"
+						th:value="${#dates.format(pointParam.yellowConvertBegin, 'yyyy-MM-dd HH:mm:ss')}" placeholder="有效期" />
+					 <span class="input-group-addon"> <span
+						class="glyphicon glyphicon-calendar"></span>
+					</span> 
+				</div>
+			</div>
+			<label class="col-md-1 control-label" for="endTime">结束时间：</label>
+			<div class="col-md-2">
+				<div class='input-group date'>
+					<input type='text' class="form-control" name="yellowConvertEndStr"
+						th:value="${#dates.format(pointParam.yellowConvertEnd, 'yyyy-MM-dd HH:mm:ss')}" placeholder="有效期" />  <span
+						class="input-group-addon">  <span
+						class="glyphicon glyphicon-calendar"></span>
+					</span> 
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<div class="form-group">
+			<label class="col-sm-1 control-label">云积分比例：</label> <input
+				type='text' name="cloudPointScale" style="width: 50px"
+				th:value="${pointParam.cloudPointScale}" />云积分=1元
+		</div>
+	</div>
+	<input type="button" class="btn btn-labeled btn-primary" value="保存" onclick="saveParams()" />
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	function saveParams() {
+		//frmValidate();
+		$.ajax({
+			url : _urlPath + 'admin/pointParam/editPointParam',
+			method : "POST",
+			data : $('#submitForm').serialize(),
+			dataType : "json",
+			success : function(reslut) {
+				if (reslut.retcode == 0) {
+					$.growl.notice({
+						title : '操作成功',
+						message : reslut.retmsg
+					});
+					//goPage('/admin/pointParam/pointParamMain');
+				} else {
+					$.Err(reslut.retmsg);
+				}
+			}
+		});
+	}
+
+	$(function() {
+		$('.date').datetimepicker({
+			language : 'zh-CN',
+			monthsShort : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			forceParse : 0,
+			showMeridian : 0, //是否显示上下午
+			initialDate : new Date()
+		});
+	});
+	/*]]>*/
+</script>

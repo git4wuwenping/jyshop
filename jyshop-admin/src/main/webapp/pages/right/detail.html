@@ -1,0 +1,72 @@
+<div th:fragment="detail" class="tab-pane" id="bs-tabdrop-pill2" style="width: 100%">
+<form id="submitForm" class="form-horizontal">
+    <input type="hidden" name="id" value="${rightOrder.id}"/>
+    <div class="form-group" >
+        <label class="col-sm-3 control-label">商品信息：</label>
+        <div class="col-sm-8" id="goodsImage">
+            <div class='example col-md-3 col-xs-3' th:each="item:${rightOrder.items}">
+                <p>
+                    <img th:src="${item.goodsImage}" style='width:66px;float:left' class='img-rounded' alt=''/>
+                    <span th:text="${item.goodsName}"></span><br/>
+                    <span th:text="${item.productSpec}"></span><br/>
+                    单价:<span th:text="${item.price}"></span><br/>
+                    数量:<span th:text="${item.buyCount}"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label">维权类型：</label>
+        <!--<div class="col-sm-8" th:switch="${rightOrder.type}">-->
+            <!--<span th:case="'0'" th:text="仅退款"></span>-->
+            <!--<span th:case="'1'" th:text="退货退款"></span>-->
+        <!--</div>-->
+        <div class="col-sm-8">
+            <span th:text="${rightOrder.type}"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label">维权编号：</label>
+        <div class="col-sm-8">
+            <span th:text="${rightOrder.serial}"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label">维权时间：</label>
+        <div class="col-sm-8">
+            <span th:text="${rightOrder.createTime}"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label">退款金额：</label>
+        <div class="col-sm-8">
+            <span th:text="${rightOrder.price}"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label">退款原因：</label>
+        <div class="col-sm-8">
+            <span th:text="${rightOrder.reason}"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label">退换状态：</label>
+        <div class="col-sm-8">
+            <span th:text="${rightOrder.sellerStatus}"></span>
+        </div>
+    </div>
+
+    <div class="form-group" th:if="${rightOrder.rejectReason!=null}">
+        <label class="col-sm-3 control-label">拒绝理由：</label>
+        <div class="col-sm-8">
+            <span th:text="${rightOrder.rejectReason}"></span>
+        </div>
+    </div>
+</form>
+</div>

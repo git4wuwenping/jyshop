@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.WxMsgTemplateRelDao">
+
+	<!-- 批量添加 -->
+	<insert id="batchInsert">
+		insert into shop_wx_msg_template_rel(tpl_id, member_id) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.tplId}, #{item.memberId})
+		</foreach>
+	</insert>
+	
+	<delete id="deleteByTplId">
+		delete from shop_wx_msg_template_rel where tpl_id = #{tplId}
+	</delete>
+	
+	<select id="selectMemberRelByTplId" resultType="map">
+		SELECT
+		  t1.`id`,
+		  t2.`member_id` AS memberId,
+		  t2.`weixin_face` AS weixinFace,
+		  t2.`nickname`,
+		  t2.`identity_id` AS identityId,
+		  t2.`mobile`,
+		  t2.`subscribe`
+		FROM
+		  shop_wx_msg_template_rel t1
+		  LEFT JOIN shop_member t2
+		    ON t1.`member_id` = t2.`member_id`
+		  where t1.`tpl_id`=#{tplId}
+	</select>
+	<select id="selectMemberIdListByTplId" resultType="long">
+		SELECT
+		  t1.`member_id` as memberId
+		FROM
+		  shop_wx_msg_template_rel t1
+		where t1.`tpl_id`=#{tplId}
+	</select>
+	<!--
+	<select id="selectTemplateGoodsIdExceptTemplateId" resultType="string">
+		SELECT
+		  t1.`goods_id` AS goodsId
+		FROM
+		  shop_ensure_template_goods_rel t1
+		  where t1.`template_id` != #{templateId}
+	</select>
+	<select id="selectTemplateGoodsIdByTemplateId" resultType="string">
+		SELECT
+		  t1.`goods_id` AS goodsId
+		FROM
+		  shop_ensure_template_goods_rel t1
+		  where t1.`template_id` = #{templateId}
+	</select>
+	 -->
+</mapper>

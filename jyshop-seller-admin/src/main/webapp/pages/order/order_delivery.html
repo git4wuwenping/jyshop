@@ -1,0 +1,30 @@
+<form id="submitDelivery" class="form-horizontal">
+	<input  name="orderId" th:value="${order.orderId}" type="text" hidden="hidden" />
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="logiId"><font color="red">*</font>快递公司：</label>
+		<div class="col-sm-8">
+			<select class="form-control span2" id="logiId" name="logiId">
+				<option th:each="logi:${logiList}" th:value="${logi.logiId}" th:text="${logi.logiName}" />
+			</select>
+		</div>
+	</div>
+	
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="username"><font color="red">*</font>快递单号：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="logiNo" name="logiNo" placeholder="快递单号"/>
+            <div id="validation-username" class="validate-error help-block"></div>
+        </div>
+    </div> 
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	submit = function(){
+		frmValidate();
+		var data = $("#submitDelivery").serialize();
+		ajaxRequest("/admin/order/orderDelivery", data);
+		goPage("/admin/order/queryOrderDetail/"+$("#orderId").val());
+		
+	}
+	/*]]>*/
+</script>

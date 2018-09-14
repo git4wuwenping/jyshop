@@ -1,0 +1,134 @@
+<form id="submitForm" class="form-horizontal">
+	<input name="id" th:value="${config.id}" hidden="hidden" />
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel">
+
+				<div class="panel-body">
+					<h4>金币价值</h4>
+					<hr />
+					<table>
+						<tr>
+							<td><input type="text" name="coinWorth"
+								th:value="${config.coinWorth}" /></td>
+							<td>金币=</td>
+							<td>1元</td>
+						</tr>
+					</table>
+					<br/>
+					<br/>
+					<br/>
+					<h4>金币发放</h4>
+					<hr />
+					<table>
+						<tr>
+							<td>签到</td>
+							<td><input type="text" name="coinSigninGet"
+								th:value="${config.coinSigninGet}" /></td>
+							<td>金币</td>
+						</tr>
+						<tr>
+							<td>新人注册</td>
+							<td><input type="text" name="coinRegisterGet"
+								th:value="${config.coinRegisterGet}" /></td>
+							<td>金币</td>
+						</tr>
+						<tr>
+							<td>邀请好友</td>
+							<td><input type="text" name="coinInviteGet"
+								th:value="${config.coinInviteGet}" /></td>
+							<td>金币</td>
+						</tr>
+						<tr>
+							<td>关注公众号</td>
+							<td><input type="text" name="coinSubscribeGet"
+								th:value="${config.coinSubscribeGet}" /></td>
+							<td>金币</td>
+						</tr>
+					</table>
+					<br/>
+					<br/>
+					<br/>
+					<h4>金币抽奖</h4>
+					<hr />
+					<table>
+						<tr>
+							<td>每次抽奖消耗</td>
+							<td><input type="text" name="coinLotteryCost"
+								th:value="${config.coinLotteryCost}" /></td>
+							<td>金币</td>
+						</tr>
+					</table>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+	<input type="button" value="保存" onclick="saveParams()" />
+</form>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	function validateParam(){
+		var coinWorth = $("input[name='coinWorth']").val();
+		var coinSigninGet = $("input[name='coinSigninGet']").val();
+		var coinRegisterGet = $("input[name='coinRegisterGet']").val();
+		var coinInviteGet = $("input[name='coinInviteGet']").val();
+		var coinSubscribeGet = $("input[name='coinSubscribeGet']").val();
+		var coinLotteryCost = $("input[name='coinLotteryCost']").val();
+		var r = /^[0-9]*[1-9][0-9]*$/
+		if(!r.test(coinWorth)){
+			$.Err("金币价值需为正整数，请重新填写");
+			return false;
+		}
+		if(!r.test(coinSigninGet)){
+			$.Err("签到金币需为正整数，请重新填写");
+			return false;
+		}
+		if(!r.test(coinRegisterGet)){
+			$.Err("注册金币需为正整数，请重新填写");
+			return false;
+		}
+		if(!r.test(coinInviteGet)){
+			$.Err("邀请金币需为正整数，请重新填写");
+			return false;
+		}
+		if(!r.test(coinSubscribeGet)){
+			$.Err("关注金币需为正整数，请重新填写");
+			return false;
+		}
+		if(!r.test(coinLotteryCost)){
+			$.Err("抽奖金币需为正整数，请重新填写");
+			return false;
+		}
+		return true;
+		
+	}
+	function saveParams() {
+		if(!validateParam()){
+			return;
+		}
+		$.ajax({
+			url : _urlPath + 'admin/coin/editCoinConfig',
+			method : "POST",
+			data : $('#submitForm').serialize(),
+			dataType : "json",
+			success : function(reslut) {
+				if (reslut.retcode == 0) {
+					$.growl.notice({
+						title : '修改成功',
+						message : reslut.retmsg
+					});
+				} else {
+					$("#sumbitBtn").attr("disabled", false);
+					$.Err(reslut.retmsg);
+				}
+			}
+		});
+	}
+	
+	
+
+	/*]]>*/
+</script>

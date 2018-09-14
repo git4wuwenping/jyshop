@@ -1,0 +1,158 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+    <div id="searchForm">
+        <div class="col-md-10" style="display: inline;" >
+            <input type="text" class="form-control search-query"  placeholder="查询条件" style="width: 500px;display: inline;" />
+            <button id="searchBtn"  class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+        </div>
+        <div class="col-md-12" style="text-align: left;">
+            状态：
+            <select class="form-control" id="status" name="status" style="width: 10%;display: inline;">
+                <option value="">==全部状态==</option>
+                <option value='0' text="未开始" >未开始</option>
+                <option value='1' text="进行中" >进行中</option>
+                <option value='2' text="已结束" >已结束</option>
+            </select>
+            类型：
+            <select class="form-control" id="spellType" name="spellType" style="width: 10%;display: inline;">
+                <option value="">==全部类型==</option>
+                <option value='0' text="普通团" >普通团</option>
+                <!--<option value='1' text="夺宝团" >夺宝团</option>
+                <option value='2' text="阶梯团" >阶梯团</option>
+                <option value='2' text="试用团" >试用团</option>
+                <option value='2' text="免费团" >免费团</option>-->
+            </select>
+        </div>
+        <div class="col-md-12" style="text-align: left;padding-bottom: unset;">
+            <div class='col-sm-6' style="width: 220px;">
+                <div class="form-group">
+                    <div class='input-group date'>
+                        <input id="startDate" type='text' class="form-control" name="createStartTime" placeholder="开始时间" />
+                        <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class='col-sm-6' style="width: 220px">
+                <div class="form-group">
+                    <div class='input-group date'>
+                        <input id="endDate" type='text' class="form-control" name="createEndTime" placeholder="结束时间" />
+                        <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-11" style="padding-bottom: 0px;width: 200px;display: flex">
+            <button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:goPage('/admin/spell/addSpellActivity');" ><span class="btn-label icon fa fa-plus"></span>添加拼团活动</button>
+        </div>
+    </div>
+</div>
+<div class="openAppGrid">
+    <div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(function () {
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"activityId",text:"拼团活动ID"},
+                {field:"name",text:"拼团名称"},
+                {field:"image2", text:"拼团图",formatter:function(index, content, data){
+                        return "<img src='"+data.image+"' width='50' height='50' >";
+                    }},
+                {field:"goodsTitle",text:"商品标题" },
+                {field:"spellPrice", text:"拼团价"},
+                {field:"store", text:"活动库存"},
+                {field:"num", text:"成团人数"},
+                {field:"status", text:"状态",formatter:function(index, content, data){
+                        if( content == 0 ){
+                            return "<font color='blue'>未开始</font>";
+                        }
+                        if( content == 1 ){
+                            return "<font color='blue'>进行中</font>";
+                        }
+                        if( content == 2 ){
+                            return "<font color='blue'>已结束</font>";
+                        }
+                    }},
+                {field:"sort", text:"排序"},
+                {field:"realNum", text:"开团数"},
+                {field:"completeNum", text:"成团数"},
+                {field:"spellType", text:"拼团类型",formatter:function(index, content, data){
+                        if( content == 0 ){
+                            return "<font color='blue'>普通团</font>";
+                        }
+                        if( content == 1 ){
+                            return "<font color='blue'>夺宝团</font>";
+                        }
+                        if( content == 2 ){
+                            return "<font color='blue'>阶梯团</font>";
+                        }
+                        if( content == 3 ){
+                            return "<font color='blue'>试用团</font>";
+                        }
+                        if( content == 4 ){
+                            return "<font color='blue'>免费团</font>";
+                        }
+                    }},
+                {field:"startDate", text:"开始时间",formatter:function(index, content, data){
+                        if(typeof content!='undefined' && content!=null && content!='')
+                            return new Date(content).toLocaleString();
+                        else
+                            return "<font color='red'>获取开始时间失败</font>";
+                    }},
+                {field:"endDate", text:"结束时间",formatter:function(index, content, data){
+                        if(typeof content!='undefined' && content!=null && content!='')
+                            return new Date(content).toLocaleString();
+                        else
+                            return "<font color='red'>获取结束时间失败</font>";
+                    }},
+                {field:"lastModify", text:"修改时间",formatter:function(index, content, data){
+                        if(typeof content!='undefined' && content!=null && content!='')
+                            return new Date(content).toLocaleString();
+                        else
+                            return "<font color='red'>获取修改时间失败</font>";
+                    }},
+                {field:"activityId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                        var editUrl = "/admin/spell/addSpellActivity?activityId=" + content;
+                        var delUrl = "/admin/goods/delGoods/" + content;
+                        var salesNoUrl="/admin/goods/goodsSalesNo/" + content;
+                        var salesYesUrl="/admin/goods/goodsSalesYes/" + content;
+
+                        var opDiv = "&nbsp;<a href='javascript:goPage(\""+editUrl+"\");' data-original-title='编辑' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>编辑</i></a>";
+// 						+ "&nbsp;<a href='javascript:showCfm(\"确定删除该商品\", \""+delUrl+"\");'  data-original-title='删除' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+
+                        // if(data.marketEnable==1){
+                        //     opDiv += "&nbsp;<a href='javascript:showCfm(\"确定下架该商品\", \""+salesNoUrl+"\");'  data-original-title='下架' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>下架</i></a>";
+                        // }else{
+                        //     opDiv += "&nbsp;<a href='javascript:showCfm(\"确定上架该商品\", \""+salesYesUrl+"\");'  data-original-title='上架' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>上架</i></a>";
+                        // }
+                        return opDiv;
+                    }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/spell/pageSpellActivityAjax",
+            sort:"activityId",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+
+        $('.date').datetimepicker({
+            language: 'zh-CN',
+            monthsShort: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 0, //是否显示上下午
+            initialDate: new Date()
+        });
+    })
+    /*]]>*/
+</script>

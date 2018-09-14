@@ -1,0 +1,32 @@
+<div th:fragment="profit_info" class="tab-pane" id="bs-tabdrop-pill2" style="width: 100%">
+	<div class="table-info" th:if="${profitList!=null}" >
+	
+    	<table class="table table-bordered">
+        	<thead>
+            	<tr style="text-align:center">
+                	<th class="text-center">分润用户ID</th>
+                    <th class="text-center">分润用户昵称</th>
+                    <th class="text-center">积分类型</th>
+                    <th class="text-center">积分</th>
+                    <th class="text-center">分润获取类型</th>
+                </tr>
+            </thead>
+            <tbody>
+            	 <tr th:each="profit:${profitList}" style="text-align:center">
+                 	<td th:text="${profit.memberId}"></td>
+                    <td th:text="${profit.nickname}"></td>
+                    <td th:if="${profit.pointType==0}" th:text="云积分"></td>
+                    <td th:if="${profit.pointType==1}" th:text="黄积分"></td>
+                    <td th:if="${profit.pointType==2}" th:text="红积分"></td>
+                    <td th:text="${profit.point}"></td>  
+                    <td th:if="${profit.getType==0}" th:text="首购分润"></td>
+                    <td th:if="${profit.getType==1}" th:text="次购分润"></td>
+                    <td th:if="${profit.getType==2}" th:text="上级分润"></td>
+                 </tr>
+            </tbody>
+    	</table>
+	</div>
+	<div th:if="${profitList==null}" >
+    	无数据
+	</div>
+</div>

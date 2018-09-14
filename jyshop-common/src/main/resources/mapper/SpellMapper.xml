@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.SpellDao">
+
+    <select id="getSpellByParams" resultType="map">
+        SELECT
+        s.spell_id as spellId,
+        s.name as name,
+        s.goods_title as goodsTitle,
+        s.spell_price as spellPrice,
+        s.originator_name as originatorName,
+        s.complete_num as completeNum,
+        s.participate_num as participateNum,
+        s.status as status,
+        s.start_date as startDate,
+        s.end_date as endDate,
+        s.complete_date as completeDate
+        FROM shop_spell s
+        where 1=1
+        <if test="text != null">
+            and s.name like '%${text}%' or s.goods_name like '%${text}%'
+        </if>
+        <if test="status != null">
+            and sa.status=#{status}
+        </if>
+        <if test="spellType != null">
+            and sa.spell_type =#{spellType}
+        </if>
+        <if test="startDate != null">
+            <![CDATA[
+            and sa.end_date > #{startDate}
+        ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[
+            and sa.start_date < #{endDate}
+        ]]>
+        </if>
+        order by s.create_date desc
+    </select>
+
+    <select id="getOngoingByActivityId" resultType="map">
+        select
+        s.spell_id as spellId,
+        s.start_date as startDate,
+        s.end_date as endDate,
+        s.complete_num as completeNum,
+        s.participate_num as participateNum,
+        s.originator_id as originatorId,
+        s.originator_name as originatorName,
+        s.originator_face as originatorFace,
+        s.participate_details as participateDetails
+        from shop_spell s
+        where s.status = 1
+        and activity_id = #{activityId}
+    </select>
+
+    <select id="getMyInitiateSpell" resultType="map">
+        select
+            s.spell_id as spellId,
+            s.activity_id as activityId,
+            so.order_id as orderId,
+            s.name as name,
+            s.image2 as image,
+            s.end_date as endDate,
+            s.shop_store_id as shopStoreId,
+            sc.store_name as shopStoreName,
+            s.com_id as comId,
+            sc.com_name as comName,
+            s.goods_id as goodsId,
+            s.goods_title as goodsTitle,
+            s.goods_price as goodsPrice,
+            s.spell_price as spellPrice,
+            i.product_id as productId,
+            i.product_specs as productSpecs,
+            s.complete_num as completeNum,
+            s.participate_num as participateNum,
+            s.status as status,
+            sa.share_title as shareTitle,
+            sa.share_describe as shareDescribe,
+            sa.share_image as shareImage
+        from shop_spell s
+        left join shop_spell_activity sa on s.activity_id = sa.activity_id
+        left join shop_company sc on sc.com_id = s.com_id
+        left join shop_spell_order so on s.spell_id = so.spell_id
+        left join shop_spell_order_items i on so.order_sn = i.order_sn
+        where s.originator_id = #{memberId}
+        and so.member_id = #{memberId}
+    </select>
+
+    <select id="getMyParticipateSpell" resultType="map">
+        select
+            s.spell_id as spellId,
+            s.activity_id as activityId,
+            so.order_id as orderId,
+            s.name as name,
+            s.image2 as image,
+            s.end_date as endDate,
+            s.shop_store_id as shopStoreId,
+            sc.store_name as shopStoreName,
+            s.com_id as comId,
+            sc.com_name as comName,
+            s.goods_id as goodsId,
+            s.goods_title as goodsTitle,
+            s.goods_price as goodsPrice,
+            s.spell_price as spellPrice,
+            i.product_id as productId,
+            i.product_specs as productSpecs,
+            s.complete_num as completeNum,
+            s.participate_num as participateNum,
+            s.status as status,
+            sa.share_title as shareTitle,
+            sa.share_describe as shareDescribe,
+            sa.share_image as shareImage
+        from shop_spell s
+        left join shop_spell_activity sa on s.activity_id = sa.activity_id
+        left join shop_company sc on sc.com_id = s.com_id
+        left join shop_spell_order so on s.spell_id = so.spell_id
+        left join shop_spell_order_items i on so.order_sn = i.order_sn
+        where s.participate_details like '%${memberStr}%'
+        and so.member_id = #{memberId}
+        and so.order_status != 0
+    </select>
+
+    <select id="getSpellDetail" resultType="map">
+        select
+          s.spell_id as spellId,
+          s.image2 as image,
+          s.name as name,
+          s.end_date as endDate,
+          s.goods_id as goodsId,
+          s.goods_price as goodsPrice,
+          s.spell_price as spellPrice,
+          s.participate_num as participateNum,
+          s.complete_num as completeNum,
+          sa.already_num + sa.real_num as alreadyNum,
+          s.participate_details as participateDetails,
+          s.status as status,
+          sa.share_title as shareTitle,
+          sa.share_describe as shareDescribe,
+          sa.share_image as shareImage
+        from shop_spell s
+        left join shop_spell_activity sa on s.activity_id = sa.activity_id
+        where s.spell_id = #{spellId}
+    </select>
+
+    <select id="countMySpellByActivityId" resultType="Integer">
+        select count(*)
+        from shop_spell s
+        where s.status in (0,1,3)
+        and s.originator_id = #{memberId}
+        and s.activity_id = #{activityId}
+    </select>
+</mapper>

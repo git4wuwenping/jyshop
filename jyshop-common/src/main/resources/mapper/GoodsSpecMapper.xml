@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.GoodsSpecDao">
+	
+	<!-- 查询商品规格 -->
+	<select id="selectSpecsByGoodsId" resultMap="specResultMap">
+		
+		SELECT 
+			DISTINCT (sgs.spec_value_id),
+			ss.*,
+			ssv.*
+		FROM shop_goods_spec sgs
+		INNER  JOIN shop_spec ss ON sgs.spec_id=ss.SPEC_ID
+		INNER JOIN shop_spec_values ssv ON sgs.spec_value_id=ssv.spec_value_id
+		WHERE goods_id = #{goodsId}
+	</select>
+	
+	<delete id="deleteByGoodsId">
+		delete from shop_goods_spec where goods_id=#{goodsId}
+	</delete>
+	
+	<!-- 根据货品IDS删除货品类型规格 -->
+	<delete id="deleteByProductIds" >
+		delete from shop_goods_spec where product_id in  
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+		 	#{item}  
+		</foreach>  
+	</delete>
+	
+	<resultMap type="com.qyy.jyshop.vo.SpecVo" id="specResultMap">
+		<id column="spec_id" jdbcType="BIGINT" property="specId" />
+		<result column="spec_name" jdbcType="VARCHAR" property="specName" />
+		<result column="show_type" jdbcType="INTEGER" property="showType" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="sort" jdbcType="INTEGER" property="sort" />
+		<result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+		<result column="com_id" jdbcType="INTEGER" property="comId" />
+		<collection property="specValuesList" ofType="com.qyy.jyshop.model.SpecValues">
+			<id column="spec_value_id" jdbcType="BIGINT" property="specValueId" />
+			<result column="spec_id" jdbcType="BIGINT" property="specId" />
+			<result column="spec_value" jdbcType="VARCHAR" property="specValue" />
+			<result column="spec_image" jdbcType="VARCHAR" property="specImage" />
+			<result column="sort" jdbcType="INTEGER" property="sort" />
+			<result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+		</collection>
+	</resultMap>
+	
+	<select id="querySepcValueByGoodsId" resultType="map">
+		SELECT
+			distinct 
+			t1.spec_id as specId,
+			t2.SPEC_NAME as specName,
+			t3.spec_value_id as specValueId,
+			t3.SPEC_VALUE as specValue
+		FROM
+			shop_goods_spec t1
+		LEFT JOIN shop_spec t2 ON t1.spec_id = t2.spec_id
+		LEFT JOIN shop_spec_values t3 ON t1.spec_value_id = t3.spec_value_id
+		AND t1.spec_id = t3.spec_id
+		where t1.goods_id = #{goodsId}
+		order by t1.spec_id
+	</select>
+</mapper>

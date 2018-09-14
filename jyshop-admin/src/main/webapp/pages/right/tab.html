@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col-sm-12">
+        <ul class="nav nav-pills bs-tabdrop-example">
+            <li class="active"><a href="#bs-tabdrop-pill1" data-toggle="tab">订单信息</a></li>
+            <li th:if="${delivery!=null}"><a href="#bs-tabdrop-pill2" data-toggle="tab">退货物流</a></li>
+        </ul>
+        <div class="tab-content">
+            <!-- 基本信息 -->
+            <div th:include="right/detail::detail" id="bs-tabdrop-pill1" class="tab-pane active"></div>
+
+            <!-- 订单日志 -->
+            <div th:include="right/logi::logi" id="bs-tabdrop-pill2" class="tab-pane"></div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(function (){
+        var resp=[[${logisticMap}]];
+        if(typeof resp!='undefined' && resp!=null){
+            var logiName = document.getElementById("logiNameInput").value;
+            var respData=JSON.parse(resp.resp);
+            $("#logisUl").append('<li class="active">'+logiName+'</li><br></br><li class="active">运单号：'+respData.nu+'</li><br></br>');
+            if(respData.data != null && respData.data.length>0){
+                $(respData.data).each(function(index, item){
+                    var html='<li class="active"><span>◯</span><span>'+item.time+'</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span>'+item.context+'</span></li><br/>';
+                    //  var html='<li class="active">'+item.time+'</li><li class="active">'+item.context+'</li>';
+                    $("#logisUl").append(html);
+                });
+            }
+        }else{
+            var html = '<li class="active">暂无物流信息</li>';
+            $("#logisUl").append(html);
+        }
+
+    })
+
+    /*]]>*/
+</script>

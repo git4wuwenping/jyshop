@@ -1,0 +1,79 @@
+<form id="submitForm" class="form-horizontal">
+	<div class="form-group">
+		<table border="2 !important">
+			<tr id="tr1">
+				<td rowspan="5"><image  name="weixinFace" th:src="${member.weixinFace}" width='50' height='50' readonly="readonly"
+					style="border: none" /></td>
+			</tr>
+			<tr id="tr2" height="40">
+				<td>昵称&nbsp;&nbsp;:&nbsp;&nbsp;<input name="nickname"
+					th:value="${member.nickname}" readonly="readonly"
+					style="border: none" /></td>
+				<td>身份&nbsp;&nbsp;:&nbsp;&nbsp;<input name="identityId"
+					value="店长"  readonly="readonly"
+					style="border: none" /></td>
+				<td>店长二维码&nbsp;&nbsp;:&nbsp;&nbsp;<input name="parentId"
+					th:value="${member.parentId}" readonly="readonly"
+					style="border: none" /></td>
+				<td rowspa="4"></td>
+			</tr>
+			<tr id="tr3" height="40">
+				<td>客户编号&nbsp;&nbsp;:&nbsp;&nbsp;<input id="memId"
+					name="memberId" th:value="${member.memberId}" readonly="readonly"
+					style="border: none" /></td>
+				<td></td>
+				<td rowspan="5">
+					<img name="qRCodePath" th:if="${member.qRCodePath != null}" th:src="${member.qRCodePath}" style="width: 100px;height: 100px" />
+				</td>
+			</tr>
+			<tr id="tr4">
+				<td>余额&nbsp;&nbsp;:&nbsp;&nbsp;<input name="balance"
+					th:value="${member.balance}" readonly="readonly"
+					style="border: none" /></td>
+				<td></td>
+				<td rowspan="3">备注&nbsp;&nbsp;:&nbsp;&nbsp;<textarea rows="10"
+						cols="20" name="remarks" th:value="${member.remarks}"
+						style="height: 100px; width: 270px; resize: none;" /></td>
+			</tr>
+			<tr id="tr5">
+				<td>下级数量&nbsp;&nbsp;:&nbsp;&nbsp;<input name="lowerCount"
+					th:value="${member.lowerCount}" readonly="readonly"
+					style="border: none" /></td>
+				<td></td>
+			</tr>
+			<tr id="tr6">
+				<td></td>
+				<td>注册时间&nbsp;&nbsp;:&nbsp;&nbsp;<input name="regtime"
+					th:value="${member.regtime}" readonly="readonly"
+					style="border: none" /></td>
+				<td></td>
+			</tr>
+		</table>
+		
+		<p>记录列表</p>
+	<div class="row">
+       <div class="col-sm-12">
+           <ul class="nav nav-pills bs-tabdrop-example">
+               <li class="active"><a href="#bs-tabdrop-pill1" data-toggle="tab">交易记录</a></li>
+               <li><a href="#bs-tabdrop-pill2" data-toggle="tab">积分记录</a></li>
+               <li><a href="#bs-tabdrop-pill3" data-toggle="tab">下级信息</a></li>
+           </ul>
+           <div class="tab-content">
+           	<!-- 交易记录 -->
+           	<div th:include="member/detail/transaction_record::transaction_record" id="bs-tabdrop-pill1" class="tab-pane active"></div>
+
+               <!-- 积分记录 -->
+               <div th:include="member/detail/integral_record::integral_record" id="bs-tabdrop-pill2" class="tab-pane"></div>
+               
+               <!-- 下级信息 -->
+               <div th:include="member/detail/lower_level_information::lower_level_information" id="bs-tabdrop-pill3" class="tab-pane"></div>
+           </div>
+       </div>
+   </div>
+ </div>
+</form>
+ <script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+
+	           /*]]>*/
+</script> 

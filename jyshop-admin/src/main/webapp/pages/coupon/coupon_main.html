@@ -1,0 +1,128 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+ 	<div class="col-md-2" style="padding-bottom: 0px;width: 200px;"> 
+ 		<select class="form-control" id='paramSelect' style="width: 90%;display: inline;float:left;" onchange="paramSelect();" > 
+			<option value='' text="查询条件" >==查询条件==</option> 
+			<option value='0' text="供应商名称">优惠券名称</option> 
+	</select>
+ 	</div> 
+  	<div class="col-md-2" style="width: 200px">
+		<input type="text" class="form-control search-query"  placeholder="查询条件" />
+	</div>
+    <div class="col-md-1" style="width: 105px;">
+        <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+    </div>
+    
+    <div class="col-md-11" style="padding-bottom: 0px;width: 200px;display: flex"> 
+ 		<button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:goPage('/admin/coupon/preAddCoupon');" ><span class="btn-label icon fa fa-plus"></span>添加优惠券</button>
+ 	</div> 
+  </div> 
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"cpnId",text:"优惠券ID",style : "text-align:center"},
+                {field:"cpnImg", text:"优惠券图片",
+					style : "text-align:center",
+					formatter : function(index, content,
+							data) {
+						return "<img src='"+content+"' width='50' height='50' >";
+					}
+                },
+                {field:"cpnName", text:"优惠券名称",style : "text-align:center",formatter:function(index, content, data){
+                        if( content.length > 20 ){
+                            return content.substr(0,20)+"...";
+                        }else{
+                            return content;
+						}
+                    }},
+                {field:"cpnType", text:"类型",style : "text-align:center",formatter:function(index, content, data){
+                	if( content == 0 ){
+                    	return "<font color='blue'>分类券</font>";
+                	}else if( content == 1 ){
+                    	return "<font color='blue'>商品券</font>";
+                	}else if( content == 2 ){
+                    	return "<font color='blue'>供应商券</font>";
+                	}
+                }},
+                {field:"grantType", text:"发放类型",style : "text-align:center",formatter:function(index, content, data){
+                	if( content == 0 ){
+                    	return "<font color='blue'>线上发放</font>";
+                	}else if( content == 1 ){
+                    	return "<font color='blue'>线下发放</font>";
+                	}else if( content == 2 ){
+                    	return "<font color='blue'>直接到账</font>";
+                	}else if( content == 2 ){
+                    	return "<font color='blue'>注册赠送</font>";
+                	}
+                }},//0-线上发放1-线下发放2-直接到账3-注册赠送
+                {field:"grantNum",style : "text-align:center", text:"发放数量"},
+                {field:"hasGetNum",style : "text-align:center", text:"已领取"},
+                {field:"hasUseNum",style : "text-align:center", text:"已使用"},
+                {field:"getBeginTime",style : "text-align:center", text:"领取有效期",formatter:function(index, content, data){
+                	var ct = "";
+                	if(typeof data.getBeginTime!='undefined' && data.getBeginTime!=null)
+                		ct = ct + "" + new Date(data.getBeginTime).toLocaleString();
+                	else
+                		ct = ct + "";
+                	if(typeof data.getEndTime!='undefined' && data.getEndTime!=null)
+                		ct = ct + " -- " + new Date(data.getEndTime).toLocaleString();
+                	else
+                		ct = ct + "-";
+                	return ct;
+                }},
+                
+                {field:"cpnId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                    var grantUrl = "/admin/coupon/preGrantCoupon/" + content + "?grantType="+data.grantType;
+                    var editUrl = "/admin/coupon/preEditCoupon/" + content;
+                    var viewUrl = "/admin/coupon/viewCoupon/" + content + "?grantType="+data.grantType;
+                    var delUrl = "/admin/coupon/delCoupon/" + content;
+                    var opDiv = "";
+                    if(data.grantType == 2){
+                    	opDiv += "&nbsp;<a href='javascript:goPage(\""+grantUrl+"\");' data-original-title='发放' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>发放</i></a>";
+                    }else{
+                   		opDiv += "&nbsp;<a href='javascript:showModal(\"发放优惠券\", \""+grantUrl+"\");' data-original-title='发放' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>发放</i></a>";
+                    }
+					opDiv += "&nbsp;<a href='javascript:goPage(\""+viewUrl+"\");' data-original-title='查看' class='btn btn-xs btn-success add-tooltip><i class='fa fa-times'>查看</i></a>";
+					if((data.hasGetNum == 0 && data.hasUseNum == 0 && data.grantType != 2) || (data.grantNum == 0 && data.grantType == 2)){
+						opDiv += "&nbsp;<a href='javascript:goPage(\""+editUrl+"\");' data-original-title='编辑' class='btn btn-xs btn-success add-tooltip><i class='fa fa-times'>编辑</i></a>";
+						opDiv += "&nbsp;<a href='javascript:showCfm(\"删除\", \""+delUrl+"\");' data-original-title='删除' class='btn btn-xs btn-success add-tooltip><i class='fa fa-times'>删除</i></a>";
+					}
+					return opDiv;
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/coupon/pageCouponAjax",
+            sort:"cpnId",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+        
+        $('.date').datetimepicker({
+			language : 'zh-CN',
+			monthsShort : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			forceParse : 0,
+			showMeridian : 0, //是否显示上下午
+			initialDate : new Date()
+		});
+    });
+    function paramSelect(){
+		var param = $('#paramSelect').val();
+		if(param==0){
+			$('.search-query').attr('name','cpnName');
+		}
+	}
+    /*]]>*/
+</script>

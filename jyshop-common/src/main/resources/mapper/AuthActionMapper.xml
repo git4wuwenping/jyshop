@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.AuthActionDao">
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.AuthAction">
+		<id column="op_id" jdbcType="INTEGER" property="opId" />
+		<result column="op_code" jdbcType="VARCHAR" property="opCode" />
+		<result column="op_name" jdbcType="VARCHAR" property="opName" />
+		<result column="op_href" jdbcType="VARCHAR" property="opHref" />
+		<result column="op_seq" jdbcType="INTEGER" property="opSeq" />
+		<result column="op_level" jdbcType="INTEGER" property="opLevel" />
+		<result column="parent_id" jdbcType="INTEGER" property="parentId" />
+		<result column="icon" jdbcType="VARCHAR" property="icon" />
+	</resultMap>
+
+	<!--根据权限Id获取权限信息 -->
+	<select id="selectByOpId" resultMap="baseResultModel">
+		select * from sys_auth_action where op_id = #{OpId} 
+	</select>
+	
+	<!--根据权限值和链接获取权限信息 -->
+	<select id="selectByOpCodeAndOpHref" resultMap="baseResultModel">
+		select * from sys_auth_action where op_code = #{OpCode} and op_href = #{opHref}
+	</select>
+	
+	<!-- 根据角色ID获取权限列表 -->
+	<select id="selectByRoleId" resultMap="baseResultModel">
+		select 
+			saa.*
+		from  sys_auth_role_action sara 
+		inner join sys_auth_action saa ON sara.op_id=saa.op_id
+		where sara.role_id=#{roleId} order by saa.op_level,saa.op_seq asc
+	</select>
+</mapper>

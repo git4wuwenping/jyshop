@@ -1,0 +1,210 @@
+<form id="submitForm" class="form-horizontal">
+	<input name="comId" th:value="${shopStore.comId}" type="text" hidden="hidden" />
+ <input id="shopStoreId" name="shopStoreId"
+		th:value="${shopStore.shopStoreId}" type="text" hidden="hidden" />
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="shopStoreName">店铺名称：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="shopStoreName"
+				name="shopStoreName" th:value="${shopStore.shopStoreName}" />
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="shopStoreInformation">店铺信息：</label>
+		<div class="col-sm-8">
+			<!-- <input class="form-control" type="text" id="shopStoreInformation"
+				name="shopStoreInformation" th:value="${shopStore.shopStoreInformation}" /> -->
+			<textarea class="form-control" name='shopStoreInformation' th:text="${shopStore.shopStoreInformation}" cols='100' rows='4' 
+            id="licenseother" onkeypress="count()" onkeyup="count()"  onblur="count();" 
+            style="width: 100%; height: 125px;resize: none;" onChange="count();"></textarea> 
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<font style="text-align: right;float: right;" size="1px">剩余字符数：
+    		<input readonly="readonly" type="text" size="3" id="result" value="120" style="border:none" /> 
+    	</font>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="shopStoreLogo">店铺logo：</label>
+		<div class="col-sm-8" id="shopStoreLogo">
+				<input type="file" class="form-control"  multiple="multiple" />
+				<div id='imageDiv1' style='display: inline-block; margin-left: 10px; position: relative'>
+					<img id="imgPrivew1" th:src="${shopStore.shopStoreLogo}" width='120px' height='120px' /> 
+					<input type='hidden' name='shopStoreLogo'  />
+				</div>
+				<div id="validation-shopStoreLogo" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="shopStoreTheme">店铺主题：</label>
+		<div class="col-sm-8" id="shopStoreTheme">
+				<input type="file" class="form-control"  multiple="multiple" />
+				<div id='imageDiv2' style='display: inline-block; margin-left: 10px; position: relative'>
+					<img id="imgPrivew2" th:src="${shopStore.shopStoreTheme}" width='120px' height='120px' /> 
+					<input type='hidden' name='shopStoreTheme' />
+				</div>
+				<div id="validation-shopStoreTheme" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="state">状态：</label>
+		<div class="col-sm-8">
+			<div class="radio">
+				<label style="display: inline-block; width: 50px;"> <input
+					value="1" name="state" type="radio" class="ace"
+					th:checked="${shopStore.state==1}?true:false" />停用
+				</label> <label style="display: inline-block; width: 50px;"> <input
+					value="0" name="useable" type="radio" class="ace"
+					th:checked="${shopStore.state==0}?true:false" />启用
+				</label>
+			</div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$("#shopStoreName").on('blur',function(){
+        var shopStoreName = $("#shopStoreName").val();
+        if(typeof shopStoreName == 'undefined' || shopStoreName == null || shopStoreName=='' ){
+        	$(this).val(null)
+			alert('请填写店铺名称!!');
+        	$(".btn").attr("disabled",true);
+		}else{
+			$(".btn").attr("disabled",false);
+		}
+        
+        var shopStoreInformation = $("#licenseother").val();
+        if(typeof shopStoreInformation == 'undefined' || shopStoreInformation == null || shopStoreInformation=='' ){
+        	$(this).val(null)
+			alert('请填写店铺信息!!');
+        	$(".btn").attr("disabled",true);
+		}else{
+			$(".btn").attr("disabled",false);
+		}
+        
+	})
+	
+	 submit = function() {
+		frmValidate();
+		var data = $("#submitForm").serialize();
+		ajaxRequest("/admin/shopStore/editShopStore", data);
+	} 
+	/*图片上传*/
+	$(function() {
+		$('#shopStoreLogo').fileupload({
+            url: _urlPath + "upload/jqUploadImg",
+            dataType: 'html',
+            // 上传完成后的执行逻辑
+            done: function (e, data) {
+                //$("#image").attr("type","hidden");
+                $('#imageDiv1').remove();
+                $("#shopStoreLogo").append("<div id='imageDiv1' style='display: inline-block; margin-left: 10px;position:relative'>" +
+                    "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>" +
+                    "<i class='fa fa-times' onclick='deleteImg1(this)'></i>" +
+                    "</span> " +
+                    "<img src='"+data.result+"' width='120px' height='120px'/>" +
+                    "<input type='hidden' name='shopStoreLogo' value='"+data.result+"'/>" +
+                    "</div>")
+            }
+        });	
+	}); 
+	function deleteImg1(obj) {
+		//$(obj).parent().find('.imgPrivew').attr("src",""); 
+		$('#imageDiv1').remove();
+		//$("#image1").attr("type","file");
+		//todo 根据名称删除服务器图片$(obj).parent().attr("path")
+	}
+	
+	$(function() {
+		$('#shopStoreTheme').fileupload({
+            url: _urlPath + "upload/jqUploadImg",
+            dataType: 'html',
+            // 上传完成后的执行逻辑
+            done: function (e, data) {
+                //$("#image").attr("type","hidden");
+                $('#imageDiv2').remove();
+                $("#shopStoreTheme").append("<div id='imageDiv2' style='display: inline-block; margin-left: 10px;position:relative'>" +
+                    "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>" +
+                    "<i class='fa fa-times' onclick='deleteImg2(this)'></i>" +
+                    "</span> " +
+                    "<img src='"+data.result+"' width='120px' height='120px'/>" +
+                    "<input type='hidden' name='shopStoreTheme' value='"+data.result+"'/>" +
+                    "</div>")
+            }
+        });	
+	}); 
+	function deleteImg2(obj) {
+		//$(obj).parent().find('.imgPrivew').attr("src",""); 
+		$('#imageDiv2').remove();
+		//$("#image2").attr("type","file");
+		//todo 根据名称删除服务器图片$(obj).parent().attr("path")
+	}
+	//店铺名称校验
+	$("#shopStoreName").on('blur',function(){
+		var success = '<font id="fontId" style="color: green;">店铺名可以使用</font>';
+		//var error = '<font id="fontId" style="color: red;">店铺名已存在!!</font>';
+		var error ='';
+		$.ajax({
+			type:"POST",
+			data:{"shopStoreName":$(this).val()},
+			url:_urlPath+"admin/shopStore/checkShopStoreName",
+			success:function(result){	
+				  if(result.retcode==2){
+					error = "<font id='fontId' style='color: red;'>"+result.retmsg+"'</font>'"
+					$("#fontId").remove();
+					$("#shopStoreName").after(error);
+					$("#sumbitBtn").attr("disabled", true); 
+				}else{
+					$("#fontId").remove();
+					$("#shopStoreName").after(success);
+					$("#sumbitBtn").attr("disabled", false);
+				}  
+			}
+		})
+	});
+	/* 店铺介绍校验 */
+	$("#licenseother").on('blur',function(){
+		var error ='';
+		$.ajax({
+			type:"POST",
+			data:{"shopStoreInformation":$(this).val()},
+			url:_urlPath+"admin/shopStore/checkShopStoreInformation",
+			success:function(result){	
+				  if(result.retcode==2){
+					error = "<font id='fontId' style='color: red;'>"+result.retmsg+"'</font>'"
+					$("#fontId").remove();
+					$("#licenseother").after(error);
+					$(".btn-primary").attr("disabled", true); 
+				}else{
+					$("#fontId").remove();
+					//$("#shopStoreInformation").after(success);
+					$(".btn-primary").attr("disabled", false);
+				}  
+			}
+		})
+	});
+	function getStringUTFLength(str) { 
+		 var value = str.replace(/[\u4e00-\u9fa5]/g," ");
+		 //将汉字替换为两个空格
+		 return value.length; 
+		} 
+		function leftUTFString(str,len) { 
+		 if(getStringUTFLength(str)<=len) { 
+		  return str; 
+		 }
+		 var value = str.substring(0,len); 
+		 while(getStringUTFLength(value)>len) { 
+		  value = value.substring(0,value.length-1); 
+		 } 
+		 return value; 
+		} 
+		function count() { 
+		 var len=120;
+		 var value = document.getElementById("licenseother").value; 
+		 if(getStringUTFLength(value)>=len) {  
+		  document.getElementById("licenseother").value = leftUTFString(document.getElementById("licenseother").value,len); 
+		 } 
+		 document.getElementById("result").value = len-getStringUTFLength(document.getElementById("licenseother").value); 
+		} 
+	/*]]>*/
+</script>

@@ -1,0 +1,166 @@
+<div th:fragment="basic_info" class="tab-pane active" id="bs-tabdrop-pill1">
+    <style type="text/css">
+        .file {
+            position: relative;
+            display: inline-block;
+            background: #D0EEFF;
+            border: 1px solid #99D3F5;
+            border-radius: 4px;
+            padding: 4px 12px;
+            overflow: hidden;
+            color: #1E88C7;
+            text-decoration: none;
+            text-indent: 0;
+            line-height: 20px;
+        }
+        .file input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+        }
+        .file:hover {
+            background: #AADFFD;
+            border-color: #78C3F3;
+            color: #004974;
+            text-decoration: none;
+        }
+    </style>
+    <input type="hidden" name="goodsId" th:value="${entity.goodsId}"/>
+    <input type="hidden" name="bargainId" th:value="${entity.bargainId}"/>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font
+                color="red">*</font>砍价活动类型：</label>
+        <div class="col-sm-8">
+            <select class="form-control" name="bargainType" style="width: 30%;display: inline;">
+                <option value="0" th:selected ="${0 == entity.bargainType}?true:false">常规砍价</option>
+                <option value="1" th:selected ="${1 == entity.bargainType}?true:false">共享砍价</option>
+                <option value="2" th:selected ="${2 == entity.bargainType}?true:false">免单砍价</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font
+                color="red">*</font>活动截至：</label>
+        <div class='col-sm-8'>
+            <input type='text' class="form-control date" name="endDateStr"
+                   th:value="${entity.endDate}? ${#dates.format(entity.endDate, 'yyyy-MM-dd HH:mm')}" placeholder="请选择活动截至" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>砍价任务时间：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="takeDate"
+                   th:value="${entity.takeDate}" placeholder="单位:最小24小时"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>商品关联：</label>
+        <div class="form-inline col-sm-8">
+            <input class="form-control" style="width: 90%;" readonly="true" type="text"
+                   th:value="${goodsName}" name="guanlian"/>
+            <a href="javascript:showModal('添加关联商品', '/admin/bargain/select','860px')" data-original-title='审核'
+               th:if="${entity.isOpen}!=1" class='btn btn-xs btn-info add-tooltip'>选择</a>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>商品标题：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="title"
+                   th:value="${entity.title}" placeholder="请填写商品标题" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font
+                color="red">*</font>活动图片：</label>
+        <div class="col-sm-8" th:if="${entity.image!=null}" >
+            <img th:src='${entity.image}' width='120px' height='120px'/>
+        </div>
+        <div class="col-sm-8" id="imgPrivew1" th:if="${entity.image==null}" >
+            <a href="javascript:;" class="file">选择文件
+                <input type="file" class="form-control" id="image"  multiple="multiple"/>
+            </a>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>商品原价：</label>
+        <!--<div class="col-sm-8">-->
+        <div class='form-inline col-sm-8'>
+            <input class="form-control" type="text" name="goodsPrice"
+                   th:value="${entity.goodsPrice}" placeholder="请填写商品原价" />&nbsp;元
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>砍价标靶：</label>
+        <div class="form-inline col-sm-8">
+            <input class="form-control" type="text" name="targetPrice"
+                   th:value="${entity.targetPrice}" placeholder="请填写砍价标靶" />&nbsp;元
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font
+                color="red">*</font>砍价首刀(随机范围)：</label>
+        <div class="form-inline col-sm-8" style="width: 66%;padding-left: 15px;padding-bottom: 11px;">
+            <input type='text' style="width: 26%;" class="form-control"
+                   th:value="${entity.firstPriceMin}" name="firstPriceMin" placeholder="最小值"/>&nbsp;元 -
+            <input type='text' style="width: 26%;" class="form-control"
+                   th:value="${entity.firstPriceMax}" name="firstPriceMax" placeholder="最大值"/>&nbsp;元
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font
+                color="red">*</font>是否首刀：</label>
+        <div class="col-sm-8">
+            <div class="form-inline" style="padding-bottom: 11px;">
+                <input th:checked="${1 == entity.isFirst} or ${null == entity.isFirst}?true:false" value="1" name="isFirst"
+                       type="radio" class="ace" />是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input th:checked="${0 == entity.isFirst}?true:false" value="0" name="isFirst"
+                       type="radio" class="ace" />否
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font
+                color="red">*</font>砍价方式：</label>
+        <div class="col-sm-8">
+            <div class="form-inline" style="padding-bottom: 11px;">
+                <input th:checked="${0 == entity.bargainMode} or ${null == entity.isFree}?true:false" value="0" name="bargainMode"
+                       type="radio" class="ace" />每次砍掉&nbsp;
+                <input type='text' style="width: 26%" th:value="${0 == entity.bargainMode}?${entity.priceMin}:''" name="priceMinx" class="form-control" placeholder="固定金额"/>&nbsp;元
+            </div>
+            <div class="form-inline" style="padding-bottom: 11px;">
+                <input th:checked="${1 == entity.bargainMode}?true:false" value="1" name="bargainMode"
+                       type="radio" class="ace" />每次随机砍掉（范围）
+                <input type='text' style="width: 26%;" class="form-control" name="priceMin"
+                       th:value="${1 == entity.bargainMode}?${entity.priceMin}:''" placeholder="最小值"/>&nbsp;元 -
+                <input type='text' style="width: 26%;" class="form-control" name="priceMax"
+                       th:value="${1 == entity.bargainMode}?${entity.priceMax}:''" placeholder="最大值"/>
+            </div>
+        </div>
+    </div>
+    <div class="form-group" id="md">
+        <label class="col-sm-3 control-label">免单模式：</label>
+        <div class="col-sm-9">
+            <div class="form-inline" style="padding-bottom: 11px;">
+                <input th:checked="${1 == entity.isFree} or ${null == entity.isFree}?true:false" value="1" name="isFree"
+                       type="radio" class="ace" />发起砍价人享免单
+            </div>
+            <div class="form-inline">
+                免单条件：累计帮忙砍价人实付金额大于&nbsp;<input type='text' style="width: 16%;" class="form-control" name="freePrice"
+                th:value="${entity.freePrice}" placeholder="固定金额"/>&nbsp;元，邀请者享受免单。
+            </div>
+        </div>
+    </div>
+
+</div>

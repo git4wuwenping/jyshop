@@ -1,0 +1,70 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+  <select class="form-control" id='paramSelect' style="width: 10%;display: inline;float:left;" onchange="paramSelect();" > 
+			<option value='' text="查询条件" >==查询条件==</option> 
+			<option value='1' text="商品名称">商品名称</option> 
+			<option value='0' text="sn号" >sn号</option> 
+	</select>
+  	<div class="col-md-10" style="display: inline;" >
+		<input type="text" class="form-control search-query"  placeholder="查询条件" style="width: 500px;display: inline;" />
+        <button id="searchBtn"  class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+	</div>
+ 	<div class="col-md-2" style="padding-bottom: 0px;width: 200px;"> 
+ 		<input type="hidden" name="comId" th:value="${comId}" />
+ 	</div> 
+    
+    <div class="col-md-12" style="text-align: left;padding-bottom: unset;">
+		店铺：<input id="shopStoreId" name="shopStoreName" />
+    </div>
+    
+  </div> 
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"goodsSn",text:"商品货号",width:150},
+                {field:"image",text:"商品图片",formatter:function(index, content, data){
+                		return "<img src='"+data.image+"' width='50' height='50' >";
+                }},
+                {field:"name",text:"商品名称" },
+                {field:"shopStoreName", text:"店铺",width:200,style:"text-align:center"},
+                {field:"store", text:"可用库存",style:"text-align:center"},
+                {field:"creationTime", text:"更新时间",width:200,formatter:function(index, content, data){
+                	if(typeof content!='undefined' && content!=null)
+                		return new Date(content).toLocaleString();
+                	else
+                		return "";
+                }},
+                {field:"goodsId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+					var editUrl = "/admin/store/preEditStore/" + content;
+					var opDiv = "&nbsp;<a href='javascript:showModal(\"编辑\", \""+editUrl+"\");'data-original-title='编辑' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>编辑</i></a>";
+					
+					return opDiv;
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/store/pageStoreAjax",
+            sort:"lastModify",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+		
+	function paramSelect(){
+		var param = $('#paramSelect').val();
+		if(param==1){
+			$('.search-query').attr('name','name');
+		}else if(param==0){
+			$('.search-query').attr('name','goodsSn');
+		}
+	}
+    /*]]>*/
+</script>

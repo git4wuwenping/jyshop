@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.ShopStoreDao">
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.ShopStore">
+		<id column="shop_store_id" jdbcType="INTEGER" property="shopStoreId" />
+		<result column="shop_store_name" jdbcType="VARCHAR" property="shopStoreName" />
+		<result column="shop_store_information" jdbcType="VARCHAR" property="shopStoreInformation" />
+		<result column="shop_store_logo" jdbcType="VARCHAR" property="shopStoreLogo" />
+		<result column="shop_store_theme" jdbcType="VARCHAR" property="shopStoreTheme" />
+		<result column="com_id" jdbcType="INTEGER" property="comId" />
+	</resultMap>
+	
+	<resultMap type="com.qyy.jyshop.model.ShopStore" id="baseResultModel2" >
+		<id column="shop_store_id" jdbcType="INTEGER" property="shopStoreId" />
+		<result column="shop_store_name" jdbcType="VARCHAR" property="shopStoreName" />
+		<result column="shop_store_information" jdbcType="VARCHAR" property="shopStoreInformation" />
+		<result column="shop_store_logo" jdbcType="VARCHAR" property="shopStoreLogo" />
+		<result column="shop_store_theme" jdbcType="VARCHAR" property="shopStoreTheme" />
+		<result column="com_id" jdbcType="INTEGER" property="comId" />
+		
+		<collection property="goodsList" javaType="java.util.List" ofType="com.qyy.jyshop.model.Goods" >
+			<id column="goods_id" property="goodsId" jdbcType="BIGINT" />
+	        <result column="goods_sn" property="goodsSn" jdbcType="VARCHAR" />
+	        <result column="name" property="name" jdbcType="VARCHAR" />
+	        <result column="brand_id" property="brandId" jdbcType="INTEGER" />
+	        <result column="cat_id" property="catId" jdbcType="INTEGER" />
+	        <result column="com_id" property="comId" jdbcType="INTEGER" />
+	        <result column="type_id" property="typeId" jdbcType="INTEGER" />
+	        <result column="goods_type" property="goodsType" jdbcType="VARCHAR" />
+	        <result column="unit" property="unit" jdbcType="VARCHAR" />
+	        <result column="weight" property="weight" jdbcType="DECIMAL" />
+	        <result column="market_enable" property="marketEnable" jdbcType="SMALLINT" />
+	        <result column="brief" property="brief" jdbcType="VARCHAR" />
+	        <result column="intro" property="intro" jdbcType="LONGVARCHAR" />
+	        <result column="price" property="price" jdbcType="DECIMAL" />
+	        <result column="cost" property="cost" jdbcType="DECIMAL" />
+	        <result column="mktprice" property="mktprice" jdbcType="DECIMAL" />
+	        <result column="params" property="params" jdbcType="LONGVARCHAR" />
+	        <result column="specs" property="specs" jdbcType="LONGVARCHAR" />
+	        <result column="have_spec" property="haveSpec" jdbcType="SMALLINT" />
+	        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	        <result column="last_modify" property="lastModify" jdbcType="TIMESTAMP" />
+	        <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+	        <result column="buy_count" property="buyCount" jdbcType="INTEGER" />
+	        <result column="disabled" property="disabled" jdbcType="SMALLINT" />
+	        <result column="store" property="store" jdbcType="INTEGER" />
+	        <result column="point" property="point" jdbcType="INTEGER" />
+	        <result column="sort" property="sort" jdbcType="INTEGER" />
+	        <result column="grade" property="grade" jdbcType="INTEGER" />
+	        <result column="image" property="image" jdbcType="VARCHAR" />
+	        <result column="alarm_num" property="alarmNum" jdbcType="INTEGER" />
+	        <result column="isgroupbuy" property="isgroupbuy" jdbcType="SMALLINT" />
+	        <result column="sales_volume" property="salesVolume" jdbcType="INTEGER" />
+	        <result column="volume" property="volume" jdbcType="DECIMAL" />
+	        <result column="SHIP_ID" property="shipId" jdbcType="INTEGER" />
+	        <result column="SHIP_TYPE" property="shipType" jdbcType="VARCHAR" />
+	        <result column="SHIP_AMOUNT" property="shipAmount" jdbcType="DECIMAL" />
+		</collection>
+	</resultMap>
+	<!-- 校验店铺名 -->
+	<select id="selectShopStoreByName" resultType="int" >
+		select count(1) from shop_store where shop_store_name = #{shopStoreName}
+	</select>
+	<!-- 查询店铺下商品和订单数量 -->
+	<select id="selectGoodsAndOrderCountsById" resultType="map" >
+		 (SELECT 
+				'goodsCount' as type ,COUNT(1) as counts
+			from 
+				shop_goods a 
+			
+			LEFT JOIN shop_store b on a.shop_store_id = b.shop_store_id 
+			where b.shop_store_id = #{shopStoreId} )
+		 UNION ALL
+		 (SELECT 
+				'orderCount'as type,COUNT(1) as  counts
+			from shop_order_items a 
+			LEFT JOIN shop_goods b on a.GOODS_ID = b.goods_id
+			LEFT JOIN shop_store c on b.shop_store_id = c.shop_store_id
+			where c.shop_store_id = #{shopStoreId});
+	</select>
+	<select id="findStoreByComId" resultType="com.qyy.jyshop.model.ShopStore" >
+		select 
+			ss.shop_store_id as shopStoreId,
+			<if test="shopStoreId==0 and comId == 0">
+				'巨柚自营' as shopStoreName,
+			</if>
+			ss.shop_store_name as shopStoreName,
+			ss.shop_store_information as shopStoreInformation,
+			ss.shop_store_logo as shopStoreLogo,
+			ss.shop_store_theme as shopStoreTheme
+		from 
+			shop_store ss ,shop_company sc 
+		where 1=1 
+		<if test="comId != null and comId != 0 and shopStoreId==0">
+			and ss.com_id = sc.com_id 
+			and ss.com_id = #{comId}
+		</if>
+		<if test="shopStoreId != null and comId == 0 and shopStoreId != 0">
+			and ss.shop_store_id = #{shopStoreId}
+		</if> 
+	</select>
+	<!-- 根据条件查询店铺列表 -->
+	<select id="selectShopStoreByParams" resultType="map">
+		select  
+			a.shop_store_id as shopStoreId,
+			a.shop_store_name as shopStoreName,
+			a.state,
+			a.create_time as createTime
+		from shop_store a where 1=1
+		<if test="comId != null">
+			and a.com_id=#{comId}
+		</if>
+		<if test="comIds != null">
+			and a.com_id!=#{comIds}
+		</if>
+		<if test="shopStoreName != null and shopStoreName != ''">
+			and a.shop_store_name like '%${shopStoreName}%'
+		</if>
+		 order by a.last_modify desc
+	</select>
+	<!-- 查询所有直营店铺 -->
+	<select id="findAllDirShopStores" resultType="com.qyy.jyshop.model.ShopStore">
+		select 
+			shop_store_id as shopStoreId,
+			shop_store_name as shopStoreName
+		from shop_store where com_id = #{comId} and state = 0;
+	</select>
+	<select id="selectShopStoreById" resultType="com.qyy.jyshop.model.ShopStore" >
+		select 
+			  shop_store_id as shopStoreId,
+			  shop_store_name as shopStoreName,
+			  shop_store_information as shopStoreInformation,
+			  shop_store_logo as shopStoreLogo,
+			  shop_store_theme as shopStoreTheme,
+			  com_id as comId 
+		from shop_store where shop_store_id = #{shopStoreId}
+	</select>
+	
+	<select id="findStoreByStoreId" resultMap="baseResultModel" >
+		select * from shop_store where shop_store_id = #{shopStoreId}
+	</select>
+	
+	<select id="selectGoodListByShopId" resultMap="baseResultModel2" >
+		select 
+			b.shop_store_name,
+    		a.name,
+    		a.brand_id,
+    		a.price,
+    		a.image
+    	from shop_goods a, shop_store b 
+    	where a.shop_store_id = b.shop_store_id 
+    	and b.shop_store_id = #{shopStoreId}
+	</select>
+	
+	<update id="updateStoreById"   >
+		update shop_store  set 
+		shop_store_name = #{shopStoreName},
+		shop_store_information = #{shopStoreInformation},
+		shop_store_logo = #{shopStoreLogo},
+		shop_store_theme = #{shopStoreTheme},
+		com_id = #{comId} 
+		where shop_store_id = #{shopStoreId}
+	</update>
+	
+	<update id="isDisabledExamine">
+		update 
+			shop_store 
+		set
+			state = #{state}
+		where shop_store_id = #{shopStoreId}
+	</update>
+</mapper>

@@ -1,0 +1,64 @@
+<div class="page-header"
+	style="padding: 10px 20px; margin: -18px 0px 0px">
+	<div id="searchForm">
+		<div class="col-md-3" style="text-align: left; padding-bottom: unset">
+			<button id="addBtn" class="btn btn-labeled btn-primary"
+				onclick="javascript:showModal('添加标签', '/admin/ensureTag/preAddEnsureTag', 450);">
+				<span class="btn-label icon fa fa-plus"></span>添加标签
+			</button>
+		</div>
+	</div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$(function() {
+		$("#openAppGrid")
+				.sgrid(
+						{
+							columns : [
+									{
+										field : "tagName",
+										text : "标签名称",
+										style : "text-align:center"
+									},
+									{
+										field : "tagOrder",
+										text : "排序",
+										width : 50,
+										style : "text-align:center"
+									},
+									{
+										field : "id",
+										text : "操作",
+										style : "text-align:center",
+										width : 200,
+										formatter : function(index, content,
+												data) {
+											var editUrl = "/admin/ensureTag/preEditEnsureTag/"
+													+ content;
+											var delUrl = "/admin/ensureTag/delEnsureTag/"
+													+ content;
+											return "<a href='javascript:showModal(\"编辑\", \""
+													+ editUrl
+													+ "\");' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>编辑</i></a>"
+													+ "&nbsp;<a href='javascript:showCfm(\"确定删除该记录\", \""
+													+ delUrl
+													+ "\");' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+										}
+									} ],
+							cls : "",
+							url : _urlPath
+									+ "admin/ensureTag/pageEnsureTagAjax",
+							sort : "tagOrder",
+							order : "desc",
+							pagination : true,
+							onLoad : function() {
+								$(".add-tooltip").tooltip();
+							}
+						});
+	});
+	/*]]>*/
+</script>

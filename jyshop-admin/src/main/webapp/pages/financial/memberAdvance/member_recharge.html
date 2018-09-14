@@ -1,0 +1,151 @@
+<div class="row">
+	<div class="col-sm-12">
+		<div class="panel">
+			<div class="panel-heading">
+				<span class="panel-title">会员信息</span>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="tab-content">
+							<div class="col-sm-6 tab-pane active" id="bs-tabdrop-pill1">
+								<form id="baseForm">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">用户头像：</label>
+										<div class="col-sm-8">
+											<img type="text" name="weixinFace"
+												th:src="${member.weixinFace}" width='50' height='50'
+												readonly="readonly" style="border: none" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="memberId">用户ID：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="memberId"
+												readonly="readonly" name="memberId"
+												th:value="${member.memberId}" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="uname"><font
+											color="red">*</font>用户名：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="uname"
+												readonly="readonly" name="uname" th:value="${member.uname}" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="uname"><font
+											color="red">*</font>当前预存款：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="uname"
+												readonly="readonly" name="uname"
+												th:value="${member.advance}" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">充值金额(增/减)</label>
+										<div class="col-sm-4">
+											<input class="form-control" type="text" id="rmb" />
+										</div>
+										<input type="button" class="btn btn-danger" value="确认充值"
+											onclick="javascript:memberRecharge();"></input>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="uname"><font
+											color="red">*</font>充值备注：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="adminRemark"
+												name="adminRemark" placeholder="请输入备注信息" />
+										</div>
+									</div>
+
+								</form>
+
+
+							<hr />
+							</div>
+							<div class="col-sm-12">
+								<div class="table-info">
+									<table class="table table-bordered">
+										<thead>
+											<tr style="text-align: center">
+												<th class="text-center">交易时间</th>
+												<th class="text-center">业务摘要</th>
+												<th class="text-center">存入金额</th>
+												<th class="text-center">存入前余额</th>
+												<th class="text-center">存入后余额</th>
+												<th class="text-center">支付方式</th>
+												<th class="text-center">订单号</th>
+												<th class="text-center">管理备注</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:if="${payLogList.size() != 0}"
+												th:each="payLog:${payLogList}" style="text-align: center">
+												<td th:if="${payLog.payTime != null}" th:text="${#dates.format(payLog.payTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+												<td th:if="${payLog.payTime == null}" th:text="null"></td>
+												<td th:text="${payLog.remark}"></td>
+												<td th:text="${payLog.payMoney}"></td>
+												<td th:text="${payLog.advanceBefore}"></td>
+												<td th:text="${payLog.advanceAfter}"></td>
+												<td th:if="${payLog.methodId == 10}">admin代充</td>
+												<td th:if="${payLog.methodId == 1}">微信</td>
+												<td th:if="${payLog.methodId == 2}">支付宝</td>
+												<td
+													th:if="${payLog.methodId != 10 and payLog.methodId != 1 and payLog.methodId != 2}">其他</td>
+												<td th:text="${payLog.orderSn}"></td>
+												<td th:text="${payLog.adminRemark}"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+
+	function memberRecharge() {
+		var reg = /^-?\d+(\.\d{0,2})?$/;
+		//alert(reg.test($("#rmb").val())+" "+$("#rmb").val());
+		if (!reg.test($("#rmb").val()) || $("#rmb").val() == 0) {
+			$.Err("请输入正确的金额");
+			return false;
+		}
+
+		var url = "/admin/financialMgr/memberAdvance/recharge?memberId="
+				+ $("#memberId").val() + "&rmb=" + $("#rmb").val()
+				+ "&adminRemark=" + $("#adminRemark").val();
+		if (_urlPath != "/")
+			url = _urlPath + url;
+		$.Cfm("确认给该用户充值预存款吗？", function() {
+			$.ajax({
+				url : url,
+				type : "post",
+				dataType : "json",
+				success : function(req) {
+					if (req.retcode == 0) {
+						goPage("/admin/financialMgr/memberAdvance/preRecharge/"
+								+ $("#memberId").val());
+						$.Suc(req.retmsg);
+					} else {
+						$.Err(req.retmsg);
+					}
+				}
+			});
+		});
+	}
+
+	/*]]>*/
+</script>

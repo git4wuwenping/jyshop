@@ -1,0 +1,62 @@
+<form id="submitForm" class="form-horizontal">
+	<input id="goodsInputId" hidden="true"  name = "goodsId" th:value="${goodsId}"  />
+	<div class="table-info">
+	    <table class="table table-bordered" id="productStoreTable" >
+	    	<thead >
+	    		<tr style="text-align:center" >
+					<th class="text-center">sn</th>
+					<th class="text-center">规格</th>
+					<th class="text-center" style="width: 10%">可用库存</th>
+				</tr>
+	    	</thead>
+	    	<tbody id="productStoreTbody" >
+	    		<tr th:each="goodsStore:${goodsStoreList}" style="text-align: center"  >
+	    			<td  th:text="${goodsStore.goodsSn}"></td>
+	    			<td  th:text="${goodsStore.specValue}"></td>
+	    			<td id="td3">
+	    				<input class="input1" hidden="true" name="storeId" th:value="${goodsStore.storeId}" style="text-align: center"  />
+	    				<input class="input2" name="usableStore" th:value="${goodsStore.usableStore}" style="text-align: center" />
+	    			</td>
+	    		</tr>
+	    	</tbody>
+	    </table>
+	    
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		
+	 submit = function() {
+        var data = [];
+       	var mytable1 = document.getElementById('productStoreTbody').getElementsByClassName("input1"); 
+    	var mytable2 = document.getElementById('productStoreTbody').getElementsByClassName("input2");
+       	for(var i=0;i<mytable1.length; i++){
+       		for(var j=i;j<=i; j++){
+	       		data.push({"storeId":mytable1[i].value,"usableStore":mytable2[j].value});
+       		}
+        } 
+       	data.push({"goodsId":$("#goodsInputId").val()})
+        var dataJson = JSON.stringify(data);
+		//ajaxRequest("/admin/store/editStore", dataJson); 
+		  $.ajax({
+			cache : false,
+			type : "POST",
+			url : _urlPath + 'admin/store/editStore',
+			data:{"dataJson":dataJson},
+			dataType:"json",
+			success : function(reslut) { 
+				if (reslut.retcode == 0) {
+                    $.growl.notice({title:'操作成功', message: reslut.retmsg });
+                    goPage('/admin/store/storeMain');
+                    $(".closeBtn").click();
+                }else {
+                    $("#sumbitBtn").attr("disabled",false);
+                    $.Err(reslut.retmsg);
+                }
+			}
+		});  
+		
+	} 
+	
+/*]]>*/
+</script>

@@ -1,0 +1,20 @@
+<form id="submitForm" class="form-horizontal">
+	<input type="hidden"  name="typeId" th:value="${goodsType.typeId}" />
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="typeName"><font color="red">*</font>类型名称：</label>
+        <div class="col-sm-8">
+			<input class="form-control" type="text" id="typeName" name="typeName" th:value="${goodsType.typeName}" placeholder="请填写类型名称" />
+            <div id="validation-rolename" class="validate-error help-block"></div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		submit = function(){
+			frmValidate();
+			var data = $("#submitForm").serialize();
+			ajaxRequest("/admin/goodstype/editGoodsType", data);
+		}
+	/*]]>*/
+</script>

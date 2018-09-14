@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.DlyTypeDao">
+
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.DlyType">
+		<!-- WARNING - @mbggenerated -->
+		<id column="type_id" property="typeId" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="com_id" property="comId" jdbcType="INTEGER" />
+		<result column="is_same" property="isSame" jdbcType="INTEGER" />
+		<result column="first_weight" property="firstWeight" jdbcType="DECIMAL" />
+		<result column="additional_weight" property="additionalWeight" jdbcType="DECIMAL" />
+		<result column="first_weight_price" property="firstWeightPrice" jdbcType="DECIMAL" />
+		<result column="additional_weight_price" property="additionalWeightPrice" jdbcType="DECIMAL" />
+		<result column="disabled" property="disabled" jdbcType="SMALLINT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<collection property="dlyTypeAreaList" column="type_id" javaType="ArrayList" 
+			ofType="com.qyy.jyshop.model.DlyTypeArea" 
+			select="com.qyy.jyshop.dao.DlyTypeAreaDao.selectByTypeId" />
+	</resultMap>
+
+	<!-- 根据模板Id获取配送模板 -->
+	<select id="selectByTypeId" resultMap="baseResultModel">
+		select * from shop_dly_type where type_id=#{typeId} and disabled=1
+	</select>
+	
+	<!-- 根据供应商Id获取配送模板 -->
+	<select id="selectByComId" resultMap="baseResultModel">
+		select * from shop_dly_type where com_id=#{comId} and disabled=1
+	</select>
+	
+	<select id="selectDlyTypeByParams" resultType="map">
+		select
+		type_id AS typeId,
+		name,
+		com_id AS comId,
+		is_same AS isSame,
+		first_weight AS firstWeight,
+		additional_weight AS additionalWeight,
+		first_weight_price AS firstWeightPrice,
+		additional_weight_price AS additionalWeightPrice,
+		disabled AS disabled,
+		create_time AS createTime
+		from shop_dly_type
+		<where>
+			<if test="comId != null">
+				com_id=#{comId}
+			</if>
+		</where>
+	</select>
+
+</mapper>

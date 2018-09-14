@@ -1,0 +1,86 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+  <input type="hidden" name="comId" th:value="${comId}" />
+ 	<div class="col-md-2" style="padding-bottom: 0px;width: 200px;"> 
+ 		<select class="form-control" id='paramSelect' style="width: 90%;display: inline;float:left;" onchange="paramSelect();" > 
+			<option value='' text="查询条件" >==查询条件==</option> 
+			<option value='1' text="店铺名称">店铺名称</option> 
+	</select>
+ 	</div> 
+  	<div class="col-md-2" style="width: 200px">
+		<input type="text" class="form-control search-query"  placeholder="查询条件" />
+	</div>
+    <div class="col-md-1" style="width: 105px;">
+        <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+    </div>
+    <div class="col-md-12" style="text-align: left;padding-bottom: unset;display:flex">
+    <div class="col-md-11" style="padding-bottom: 0px;width: 200px;display: flex"> 
+ 		<button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:goPage('/admin/shopStore/preAddShopStore');" ><span class="btn-label icon fa fa-plus"></span>添加店铺</button>
+ 	</div> 
+  </div> 
+</div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"#",text:"序号"},
+                {field:"shopStoreId",text:"店铺ID", sortColumn:"id",width:80, style:"text-align:center"},
+                {field:"shopStoreName", text:"店铺名称",width:150, style:"text-align:center"},
+                {field:"goodsCount", text:"商品数",width:90, style:"text-align:center"},
+                {field:"orderCount", text:"订单数",width:90, style:"text-align:center"},
+                {field:"state", text:"状态",formatter:function(index, content, data){
+                    return content == 0 ? "<font color='blue'>正常</font>" : "<font color='red'>停用</font>";
+                }},
+                {field:"createTime", text:"创建时间",formatter:function(index, content, data){
+                	if(typeof content!='undefined' && content!=null)
+                		return new Date(content).toLocaleString();
+                	else
+                		return "";
+                }},
+                {field:"shopStoreId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                	if(99 == data.roleId){
+                		return "禁止操作超级管理员";
+                	}else{
+	                    var editUrl = "/admin/shopStore/preEditShopStore/" + content;
+	                    var staNoUrl = "/admin/shopStore/disabledNo/" + content;
+	                    var staYesUrl = "/admin/shopStore/disabledYes/" + content;
+	                    var deletUrl = "/admin/shopStore/deleteShopStore/" + content;
+	                    /* var opDiv = "";	
+	                     return opDiv + "&nbsp;<a href='javascript:showModal(\"编辑供应商\", \""+editUrl+"\");' data-original-title='编辑' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>编辑</i></a>"
+	                        + "&nbsp;<a href='javascript:showCfm(\"停用\", \""+staUrl+"\");'  data-original-title='停用' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>停用</i></a>";
+	                     */
+	                    var opDiv = "&nbsp;<a href='javascript:showModal(\"编辑店铺\", \""+editUrl+"\");' data-original-title='编辑' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>编辑</i></a>";
+						if(data.state==1){
+							opDiv += "&nbsp;<a href='javascript:showCfm(\"启用\", \""+staYesUrl+"\");' data-original-title='启用' class='btn btn-xs btn-success add-tooltip><i class='fa fa-times'>启用</i></a>";
+						}else{
+							opDiv += "&nbsp;<a href='javascript:showCfm(\"停用\", \""+staNoUrl+"\");'  data-original-title='停用' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>停用</i></a>";
+						}
+						opDiv += "&nbsp;<a href='javascript:showCfm(\"删除店铺\", \""+deletUrl+"\");'  data-original-title='删除店铺' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+						return opDiv;
+	                }
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/shopStore/pageShopStoreAjax",
+            sort:"shopStoreId",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+		
+    function paramSelect(){
+		var param = $('#paramSelect').val();
+		if(param==1){
+			$('.search-query').attr('name','shopStoreName');
+		}
+	}
+    /*]]>*/
+</script>

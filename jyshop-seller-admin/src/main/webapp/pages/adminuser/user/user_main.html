@@ -1,0 +1,73 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+  	<div class="col-md-2" style="width: 200px">
+		<input type="text" class="form-control search-query" name="username" placeholder="用户名" />
+	</div>
+ 	<div class="col-md-2" style="padding-bottom: 0px;width: 200px;"> 
+ 		<select class="form-control" name="roleId" onchange="javascript:formSubmit();"> 
+			<option value="">==所属角色==</option>
+			<option th:each="role:${roleList}" th:value="${role.roleId}" th:text="${role.cname}" /> 
+ 		</select> 
+ 	</div> 
+    <div class="col-md-1" style="width: 105px;">
+        <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+    </div>
+    <div class="col-md-3" style="text-align: left;padding-bottom: unset">
+        <button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:showModal('添加用户', '/admin/user/preAddUser');" ><span class="btn-label icon fa fa-plus"></span>添加用户</button>
+    </div>
+  </div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"id",text:"用户ID", sortColumn:"id"},
+                {field:"username", text:"用户名称"},
+                {field:"cname", text:"所属角色",},
+                {field:"mobile", text:"商家手机号", },
+                {field:"email", text:"电子邮箱"},
+                {field:"useable", text:"是否可用",formatter:function(index, content, data){
+                    return content == 0 ? "<font color='blue'>可用</font>" : "<font color='red'>禁用</font>";
+                }},
+                {field:"loginIp", text:"最后登录IP"},
+                {field:"loginTime", text:"最后登陆时间",formatter:function(index, content, data){
+                	if(typeof content!='undefined' && content!=null && content!='')
+                		return new Date(content).toLocaleString();
+                	else
+                		return "<font color='red'>暂未登陆过</font>";
+                }},
+                {field:"addTime", text:"创建时间",formatter:function(index, content, data){
+                	if(typeof content!='undefined' && content!=null)
+                		return new Date(content).toLocaleString();
+                }},
+                {field:"id", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                	if(99 == data.roleId){
+                		return "禁止操作超级管理员";
+                	}else{
+	                    var editUrl = "/admin/user/preEditUser/" + content;
+	                    var resetPwdUrl = "/admin/user/editResetPwd/" + content;
+	                    var delUrl = "/admin/user/delUser/" + content;
+	                    var bindUrl = "/admin/user/preBindMerchant/" + content;
+	                    var opDiv = "";	
+	                    return opDiv + "&nbsp;<a href='javascript:showModal(\"更新用户\", \""+editUrl+"\");' data-original-title='修改' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改</i></a>"
+	                        + "&nbsp;<a href='javascript:showCfm(\"确定要重置密码?\", \""+resetPwdUrl+"\");' data-original-title='重置密码' class='btn btn-xs btn-success add-tooltip'><i class='fa fa-repeat'>重置密码</i></a>"
+	                        + "&nbsp;<a href='javascript:showCfm(\"确定删除该用户\", \""+delUrl+"\");'  data-original-title='删除' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+                	}
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/user/pageUserAjax",
+            sort:"id",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+    /*]]>*/
+</script>

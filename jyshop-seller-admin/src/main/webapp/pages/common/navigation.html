@@ -1,0 +1,51 @@
+<div th:fragment="main-navbar" id="main-navbar" class="navbar navbar-inverse" role="navigation">
+	<!-- <div id="main-menu-toggle">
+		<i class="navbar-icon fa fa-bars icon"></i><span class="hide-menu-text">点这里隐藏菜单</span>
+		<img th:src="@{../images/user-head-default.png}" />
+	</div>  -->
+	<div class="navbar-inner">
+		<div class="navbar-header">
+			<img th:src="@{../images/logo.png}" />
+			<a th:href="@{#}" class="navbar-brand" style="font-size:18px;color:#fff;">巨柚后台管理系统</a>
+			<!-- <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar-collapse">
+				<i class="navbar-icon fa fa-bars"></i>
+			</button> -->
+		</div>
+		<div id="main-navbar-collapse" class="collapse navbar-collapse main-navbar-collapse">
+			<div> 
+				<div class="marquee">
+					<!-- <span class='spans'><img alt="" src="../../static/images/defau.png" /></span><span>做领航旗舰，展清雅雄风！</span> -->
+					<button class='btn' style='margin-top:35px' onclick="javaScript:backgo()">返回</button>
+					
+				</div>
+				<!-- top-nav --> 
+				<!-- <ul class="nav navbar-nav">
+					<li th:each="authAction:${authActionMenu}"  >
+		                <a  th:href="'javascript:goPageMenu(\''+${authAction.opHref}+'\',\''+${authAction.opId}+'\')'" 
+		                	class="dropdown-toggle" 
+		                	th:text="${authAction.opName}">
+		                </a>
+		        	</li>
+				</ul> -->
+				<!--right-title  -->
+				<div class="right clearfix">
+					<ul class="nav navbar-nav pull-right right-navbar-nav">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle user-menu" data-toggle="dropdown" id="showHeadImg">
+								<img th:src="@{../images/user-head-default.png}" /><span th:text="${loginUser.username}" />
+							</a>
+							<ul class="dropdown-menu">
+								<li><a th:href="'javascript:showModal(\'修改密码\',\'admin/user/preEditPassword/'+${loginUser.id}+'\')'">
+								<i class="dropdown-icon fa fa-cog"></i>&nbsp;&nbsp;修改密码</a></li>
+								<li class="divider"></li>
+<!-- 								<li><a href="javascript:index()"><i class="dropdown-icon fa fa-home"></i>&nbsp;&nbsp;Druid监控</a></li> -->
+								<li><a href="javascript:logout()"><i class="dropdown-icon fa fa-power-off"></i>&nbsp;&nbsp;退出</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>

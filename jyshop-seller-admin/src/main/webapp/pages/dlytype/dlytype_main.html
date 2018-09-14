@@ -1,0 +1,44 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+    <div class="col-md-3" style="text-align: left;padding-bottom: unset">
+        <button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:goPage('/admin/dlyType/preAddDlyType');"><span class="btn-label icon fa fa-plus"></span>添加配送方式</button>
+    </div>
+  </div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"typeId", text:"配送方式ID", sortColumn:"typeId", style:"text-align:center"},
+                {field:"name", text:"配送方式名称", style:"text-align:center"},
+                {field:"firstWeight", text:"首重", style:"text-align:center"},
+                {field:"firstWeightPrice", text:"首重费用", style:"text-align:center"},
+                {field:"additionalWeight", text:"续重", style:"text-align:center"},
+                {field:"additionalWeightPrice", text:"续重费用", style:"text-align:center"},
+                {field:"disabled", text:"是否可用",style:"text-align:center", formatter:function(index, content, data){
+                        return content == 1 ? "<font color='blue'>可用</font>" : "<font color='red'>不可用</font>";
+                }},
+                {field:"typeId", text:"操作", style:"text-align:center", formatter:function(index, content, data){
+                	var editUrl = "/admin/dlyType/preEditDlyType/" + content;
+                    var delUrl = "/admin/dlyType/delDlyType/" + content;
+                    return "<a href='javascript:goPage(\""+editUrl+"\");' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改</i></a>"
+                        + "&nbsp;<a href='javascript:showCfm(\"确定删除该配送方式\", \""+delUrl+"\");' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+                	
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/dlyType/pageDlyTypeAjax",
+            sort:"typeId",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+    /*]]>*/
+</script>

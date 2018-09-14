@@ -1,0 +1,55 @@
+<div th:fragment="main-menu" id="main-menu" role="navigation">
+	<div id="main-menu-inner">
+		<!-- <div class="menu-content top" id="menu-content-demo">
+		    <div>
+		        <div class="text-bg"><span th:text="${loginUser.username}" class="text-semibold"/></div>
+		        <img th:src="@{../images/user-head-default.png}" />
+		        <div class="btn-group">
+		        	巨柚商城系统
+		            <a th:href="'javascript:showModal(\'修改密码\',\'admin/user/preEditPassword/'+${loginUser.id}+'\')'" data-original-title="修改密码" class="btn btn-xs btn-primary btn-outline dark add-tooltip"><i class="fa fa-cog"></i></a>
+		            <a href="javascript:logout()" data-original-title="退出" class="btn btn-xs btn-danger btn-outline dark add-tooltip"><i class="fa fa-power-off"></i></a>
+		            <a href="javascript:index()" data-original-title="Druid监控" class="btn btn-xs btn-danger btn-outline dark add-tooltip"><i class="fa fa-home fa-fw"></i></a>
+		        </div>
+		        <a href="#" class="close">&times;</a>
+		    </div>
+		</div> -->
+		<!-- left下拉内容 -->
+		<ul class="navigation">
+			<li th:each="authAction:${authActionMenu}" class="mm-dropdown">
+                <a th:href="'javascript:goPageMenu(\''+${authAction.opHref}+'\',\''+${authAction.opId}+'\')'"  
+                	class="dropdown-toggle"
+                	th:text="${authAction.opName}"
+                >
+                </a>
+                <ul>
+				    <li class="mm-dropdown" th:each="childAuthAction:${authAction.authActionList}" >
+				        <a href="#"><span class="mm-text" th:text="${childAuthAction.opName}" /></a>
+				        <ul>
+				            <li th:each="childAuthAction:${childAuthAction.authActionList}" th:attr="opCode=${childAuthAction.opCode}" >
+				                <a  th:href="'javascript:goPage(\''+${childAuthAction.opHref}+'\')'">
+				                	
+				                	<span class="mm-text" th:text="${childAuthAction.opName}" />
+				                </a>
+				        	</li>
+				        </ul>
+				    </li>
+				</ul>
+			</li>
+		</ul>
+		
+		<!-- 左边二级菜单 -->
+		<!-- <ul class="navigation">
+		    <li class="mm-dropdown" th:each="authAction:${authActionList}" th:attr="opCode=${authAction.opCode}" >
+		        <a href="#"><i th:class="'menu-icon fa '+${authAction.icon}"></i><span class="mm-text" th:text="${authAction.opName}" /></a>
+		        <ul>
+		            <li th:each="childAuthAction:${authAction.authActionList}" th:attr="opCode=${childAuthAction.opCode}" >
+		                <a tabindex="-1" th:href="'javascript:goPage(\''+${childAuthAction.opHref}+'\')'">
+		                	<i th:class="'menu-icon fa '+${childAuthAction.icon}"></i>
+		                	<span class="mm-text" th:text="${childAuthAction.opName}" />
+		                </a>
+		        	</li>
+		        </ul>
+		    </li>
+		</ul> -->
+	</div>
+</div>

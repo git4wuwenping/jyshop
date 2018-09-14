@@ -1,0 +1,148 @@
+<div th:fragment="basic_info" class="tab-pane active" id="bs-tabdrop-pill1">
+    <input type="hidden" name="goodsId" th:value="${entity.goodsId}"/>
+    <input type="hidden" name="activityId" th:value="${entity.activityId}"/>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">拼团类型：</label>
+        <div class="col-sm-8">
+            <select class="form-control" name="spellType" style="width: 30%;display: inline;"  >
+                <option value="0" th:selected ="${0 == entity.spellType}?true:false">普通团</option>
+                <!--<option value="1" th:selected ="${1 == entity.spellType}?true:false">夺宝团</option>
+                <option value="2" th:selected ="${2 == entity.spellType}?true:false">阶梯团</option>
+                <option value="3" th:selected ="${3 == entity.spellType}?true:false">试用团</option>
+                <option value="4" th:selected ="${4 == entity.spellType}?true:false">免费团</option>-->
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font
+                color="red">*</font>拼团活动时间：</label>
+        <div class='col-sm-8'>
+            <input type='text' class="form-control date" name="startDateStr" style="width: 24.2%;display:inline"
+                   th:value="${entity.startDate}? ${#dates.format(entity.startDate, 'yyyy-MM-dd HH:mm')}" placeholder="请选择活动开始时间" />至
+            <input type='text' class="form-control date" name="endDateStr" style="width: 24.2%;display:inline"
+                   th:value="${entity.endDate}? ${#dates.format(entity.endDate, 'yyyy-MM-dd HH:mm')}" placeholder="请选择活动结束时间" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">成团周期：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="cycle" style="width: 24.2%;display:inline"
+                   th:value="${entity.cycle}"/>小时（不填默认成团时间为活动结束时间）
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>拼团活动名称：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="name" th:value="${entity.name}"
+                   placeholder="请填写拼团活动名称"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>商品信息：</label>
+        <div class="form-inline col-sm-8">
+            <input class="form-control" style="width: 90%;" readonly="true" type="text"
+                   th:value="${goodsName}" name="goodsName"/>
+            <a href="javascript:showModal('添加商品', '/admin/spell/selectGoods','860px')"
+                class='btn btn-xs btn-info add-tooltip'>选择</a>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>商品标题（拼团）：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="goodsTitle" th:value="${entity.goodsTitle}"
+                   placeholder="请填写商品标题"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font
+                color="red">*</font>活动图片1：</label>
+        <div class="col-sm-8" th:if="${entity.image1!=null}" >
+            <img th:src='${entity.image1}' width='120px' height='120px'/>
+        </div>
+        <div class="col-sm-8" id="imgPrivew1" th:if="${entity.image1==null}" >
+            <a href="javascript:;" class="file">选择文件
+                <input type="file" class="form-control" id="image1"  multiple="multiple"/>
+            </a>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font
+                color="red">*</font>活动图片2：</label>
+        <div class="col-sm-8" th:if="${entity.image2!=null}" >
+            <img th:src='${entity.image2}' width='120px' height='120px'/>
+        </div>
+        <div class="col-sm-8" id="imgPrivew2" th:if="${entity.image2==null}" >
+            <a href="javascript:;" class="file">选择文件
+                <input type="file" class="form-control" id="image2"  multiple="multiple"/>
+            </a>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="disabled">推荐：</label>
+        <div class="col-sm-8">
+            <div class="radio">
+                <label style="display: inline-block; width: 50px;"> <input
+                        th:checked="true" value="1" name="recommended" type="radio"
+                        class="ace" />是
+                </label> <label style="display: inline-block; width: 50px;"> <input
+                    value="0" name="recommended" type="radio" class="ace" />否
+            </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>原市场价：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="goodsPrice" style="width: 24.2%;display:inline"
+                   th:value="${entity.goodsPrice}" placeholder="请填写原市场价"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>拼团价：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="spellPrice" style="width: 24.2%;display:inline"
+                   th:value="${entity.spellPrice}" placeholder="请填写拼团价"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>活动库存：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="store" style="width: 24.2%;display:inline"
+                   th:value="${entity.store}" placeholder="请填写活动库存"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>拼团人数：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="num" style="width: 24.2%;display:inline"
+                   th:value="${entity.num}" placeholder="请填写拼团人数"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><font color="red">*</font>商品描述：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" name="goodsDescribe"
+                   th:value="${entity.goodsDescribe}" placeholder="请填写商品描述"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="store"><font
+                color="red">*</font>邮费模板：</label>
+        <div class="col-sm-9" style='display:flex'>
+            <select class="form-control" name="dlyTypeId" style='flex:2;'>
+                <option value="0"  selected="true" >请选择邮费模板 </option>
+                <option th:each="dlyType:${dlyTypeList}"
+                        th:value="${dlyType.typeId}" th:text="${dlyType.name}" />
+            </select>
+            <font style="color:red;flex:1;margin-top:5px">(没设置模板的按包邮计算)</font>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">开团次数限制：</label>
+        <div class="col-sm-8">
+            每个用户可开团的次数
+            <input class="form-control" type="text" name="limited" style="width: 7%;display:inline"
+                   th:value="${entity.limited}"/>次，最小为1次。
+        </div>
+    </div>
+</div>

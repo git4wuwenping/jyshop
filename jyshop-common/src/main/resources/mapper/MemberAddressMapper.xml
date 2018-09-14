@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.MemberAddressDao">
+
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.MemberAddress">
+		<id column="addr_id" jdbcType="BIGINT" property="addrId" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+		<result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+		<result column="city_id" jdbcType="VARCHAR" property="cityId" />
+		<result column="city_name" jdbcType="VARCHAR" property="cityName" />
+		<result column="district_id" jdbcType="VARCHAR" property="districtId" />
+		<result column="district_name" jdbcType="VARCHAR" property="districtName" />
+		<result column="address_detail" jdbcType="VARCHAR" property="addressDetail" />
+		<result column="zip" jdbcType="VARCHAR" property="zip" />
+		<result column="tel" jdbcType="VARCHAR" property="tel" />
+		<result column="mobile" jdbcType="VARCHAR" property="mobile" />
+		<result column="def_addr" jdbcType="TINYINT" property="defAddr" />
+	</resultMap>
+
+	<!-- 查询默认地址省ID -->
+	<select id="selectDefOfProvinceId" resultType="string">
+		select province_id from shop_member_address where member_id=#{memberId} and def_addr=1
+	</select>
+	
+	<!-- 查询默认地址市ID -->
+	<select id="selectDefOfCityId" resultType="string">
+		select city_id from shop_member_address where member_id=#{memberId} and def_addr=1
+	</select>
+	
+	<!-- 查询地址省ID -->
+	<select id="selectOfProvinceId" resultType="string">
+		select province_id from shop_member_address where addr_id=#{addrId}
+	</select>
+	
+	<!-- 查询地址市ID -->
+	<select id="selectOfCityId" resultType="string">
+		select city_id from shop_member_address where addr_id=#{addrId}
+	</select>
+	
+	<!-- 获取用户收货地址 -->
+	<select id="selectByAddrIdAndMemberId" resultMap="baseResultModel">
+		select * from shop_member_address where addr_id=#{addrId} and member_id=#{memberId}
+	</select>
+	
+	<!-- 获取用户收货地址 -->
+	<select id="selectByMemberId" resultMap="baseResultModel">
+		select * from shop_member_address where member_id=#{memberId} order by def_addr desc
+	</select>
+	
+	<!-- 修改用户的所有收货地址为非默认地址-->
+	<update id="updateNoDefAddr">
+		update shop_member_address set def_addr=0 where member_id=#{memberId}
+	</update>
+	
+	<!-- 修改默认地址 -->
+	<update id="updateDefAddr">
+		update shop_member_address set def_addr=#{defAddr} where addr_id=#{addrId} and  member_id=#{memberId}
+	</update>
+	
+	<!-- 删除收货地址 -->
+	<delete id="deleteMemberAddress">
+		delete from shop_member_address where addr_id=#{addrId} and member_id=#{memberId}
+	</delete>
+	
+	
+	<!-- 批量删除 -->
+	<delete id="batchDel">
+		delete from shop_member_address where
+		<foreach collection="list" item="item" index="index" open="(" separator="or" close=")">
+			addr_id=#{item.addrId} and member_id=#{item.memberId}
+		</foreach>
+	</delete>
+</mapper>

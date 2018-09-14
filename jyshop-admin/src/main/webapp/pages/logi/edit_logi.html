@@ -1,0 +1,27 @@
+<form id="submitForm" class="form-horizontal">
+	<input name="logiId" th:value="${logi.logiId}" type="text" hidden="hidden" />
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="logiCode"><font color="red">*</font>物流公司代码：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="logiCode" name="logiCode" th:value="${logi.logiCode}"/>
+            <div id="validation-rolename" class="validate-error help-block"></div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="logiName"><font color="red">*</font>物流公司名称：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="logiName" name="logiName" th:value="${logi.logiName}"/>
+            <div id="validation-cname" class="validate-error help-block"></div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	submit = function(){
+		frmValidate();
+		var data = $("#submitForm").serialize();
+		ajaxRequest("/admin/logi/editLogi", data);
+	}
+	/*]]>*/
+</script>

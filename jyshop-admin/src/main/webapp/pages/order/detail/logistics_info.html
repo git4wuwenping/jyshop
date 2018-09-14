@@ -1,0 +1,20 @@
+<div th:fragment="logistics_info" class="tab-pane" id="bs-tabdrop-pill6" style="width: 100%">
+	<div class="col-sm-6">
+		<div class="panel-group panel-group-info" id="accordion-danger-example">
+			<div class="panel">
+				<div class="panel-collapse in">
+					<div class="panel-body" th:if="${logisticMap!=null}">
+						<input id="respInput" type="text" th:value = "${logisticMap.resp}" hidden="true" />
+						<input id="logiNameInput" type="text" th:value = "${logisticMap.logiName}" hidden="true" />
+							<ul id="logisUl" class="table-condensed" style="padding: unset; margin: unset"  >
+			             	</ul>
+						</div>
+					<div class="panel-body" th:if="${logisticMap==null}">
+							<ul id="logisUl" class="table-condensed" style="padding: unset; margin: unset"  >
+			             	</ul>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

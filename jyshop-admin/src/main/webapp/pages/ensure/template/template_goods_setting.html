@@ -1,0 +1,117 @@
+<div class="page-header"
+	style="padding: 10px 20px; margin: -18px 0px 0px">
+	<div id="searchForm">
+		<input id="templateId" th:value="${template.id}" type="hidden"/> 
+		<input id="templateName" th:value="${template.templateName}" type="hidden"/> 
+		<div class="col-md-3" style="text-align: left; padding-bottom: unset">
+			 <a href="javascript:showMyModal('添加关联商品', '/admin/ensureTemplate/selectGoods', '1200px');" class="btn btn-info">关联商品</a>
+			 <a href="javascript:goPage('/admin/ensureTemplate/ensureTemplateMain');" class="btn btn-info">返回</a>
+		</div>
+		<div class="col-md-12" style="text-align: right; padding-bottom: unset">
+			<a href="javascript:delAllTagRel();" class="btn btn-danger add-tooltip"><i class="fa fa-times">清除所有关联商品</i></a>
+		</div>
+	</div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	function showMyModal(title, url, width, height){
+		if(undefined == height){
+			height = "auto";
+		}
+		if(_urlPath!="/")
+			url=_urlPath+url
+		url = url + "?templateId="+$("#templateId").val();
+		$.Mod({
+	    	title: title,
+	    	url: url,
+			width: width,
+			height: height
+		});
+	}
+	
+	function delAllTagRel(){
+		url = "/admin/ensureTemplate/delAllTemplateGoodsRel/" + $("#templateId").val();
+		if(_urlPath!="/")
+			url=_urlPath+url;
+		$.Cfm("确认清除所有关联商品吗？",function(){
+	        $.ajax({
+	            url:  url,
+	            type:"post",
+	            dataType:"json",
+	            success: function (req){
+	                if (req.retcode == 0) {
+	                    $("#openAppGrid").sgrid("refresh");
+	                    $.Suc(req.retmsg);
+	                } else {
+	                    $.Err(req.retmsg);
+	                }
+	            }
+	        });
+	    });
+	}
+	$(function() {
+		$("#openAppGrid")
+				.sgrid(
+						{
+							columns : [
+									{
+										field : "goodsId",
+										text : "商品id",
+										style : "text-align:center",
+										width : 200
+									},
+									{
+										field : "goodsImage",
+										text : "商品图片",
+										width : 300,
+										style : "text-align:center",
+										formatter : function(index, content,
+												data) {
+											return "<img src='"+content+"' width='50' height='50' >";
+										}
+									},
+									{
+										field : "goodsName",
+										text : "商品名称",
+										style : "text-align:center"
+									},
+									{
+										field : "id",
+										text : "保障模板",
+										width : 300,
+										style : "text-align:center",
+										formatter : function(index, content,
+												data) {
+											return $("#templateName").val();
+										}
+									},
+									{
+										field : "id",
+										text : "操作",
+										style : "text-align:center",
+										width : 200,
+										formatter : function(index, content,
+												data) {
+											var delUrl = "/admin/ensureTemplate/delTemplateGoodsRel/"
+													+ content;
+											return "<a href='javascript:showCfm(\"确定删除该关联记录\", \""
+													+ delUrl
+													+ "\");' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+										}
+									} ],
+							cls : "",
+							url : _urlPath
+									+ "admin/ensureTemplate/pageTemplateGoodsRelAjax/"+$("#templateId").val(),
+							sort : "id",
+							order : "desc",
+							pagination : true,
+							onLoad : function() {
+								$(".add-tooltip").tooltip();
+							}
+						});
+	});
+	/*]]>*/
+</script>

@@ -1,0 +1,55 @@
+<form id="submitForm" class="form-horizontal">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel">
+				<div class="panel-heading">
+					<span class="panel-title">商品信息</span>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-sm-12">
+							<ul class="nav nav-pills bs-tabdrop-example">
+								<li class="active"><a href="#bs-tabdrop-pill1"
+									data-toggle="tab">基本信息</a></li>
+								<li><a href="#bs-tabdrop-pill2" data-toggle="tab">相册</a></li>
+								<li><a href="#bs-tabdrop-pill3" data-toggle="tab">规格</a></li>
+							</ul>
+							<div class="tab-content">
+							
+								<!-- 商户商品基本信息 -->
+								<div th:include="goods/detail/com_basic_info::com_basic_info" id="bs-tabdrop-pill1" class="tab-pane active" style="width: 66%"></div>
+								
+								<!-- 相册 -->
+								<div th:include="goods/detail/goods_gallery::goods_gallery" id="bs-tabdrop-pill2" class="tab-pane" style="width: 66%"></div>
+								
+								<!-- 规格 -->
+								<div th:include="goods/detail/goods_spec::goods_spec" id="bs-tabdrop-pill3" class="tab-pane" style="width: 66%"></div>
+
+							</div>
+						</div>
+					</div>
+					<div align="center">
+						<input id="sumbitBtn" type="button" class="btn btn-primary" value="返回"></input>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		
+		$("#sumbitBtn").click(function(){
+        	goPage('/admin/goods/comGoodsMain');
+		})
+
+
+		initUeditor("content");
+		var introUE = UE.getEditor("content");
+		introUE.ready(function(){
+			var intro = $("#intro").text();
+			introUE.setContent(intro);
+		});
+
+	/*]]>*/
+</script>

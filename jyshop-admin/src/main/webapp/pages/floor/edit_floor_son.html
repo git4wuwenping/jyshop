@@ -1,0 +1,179 @@
+<form id="submitForm" class="form-horizontal">
+	<div class="col-md-6">
+		<h2>
+			<strong><span th:text="${fatherFloor.floorName}"></span></strong>
+		</h2>
+
+		<a href="javascript:addFloor();" data-original-title="删除"
+			class="btn btn-primary"><i class="fa">添加楼层</i></a>
+	</div>
+	
+	<div class="table-info">
+		<table class="table table-bordered">
+			<thead>
+				<tr style="text-align: center">
+					<th class="text-center">楼层ID</th>
+					<th class="text-center">楼层名称</th>
+					<th class="text-center">楼层类型</th>
+					<th class="text-center">横向尺寸</th>
+					<th class="text-center">纵向尺寸</th>
+					<th class="text-center">楼层排序</th>
+					<th class="text-center">是否可见</th>
+					<th class="text-center">操作</th>
+				</tr>
+			</thead>
+			<tbody id="tbody">
+				<div th:if="${floorList.size() != 0}">
+					<tr th:each="floor:${floorList}" style="text-align: center">
+						<td th:text="${floor.floorId}"></td>
+						<td><input th:value="${floor.floorName}"
+							style="width: 100px;" /></td>
+						<td><select class="form-control"
+							style="width: 100%; display: inline;">
+								<option value='1' text="分类楼层"
+									th:selected="${floor.floorType == 1}">分类楼层</option>
+								<option value='2' text="商品楼层"
+									th:selected="${floor.floorType == 2}">商品楼层</option>
+								<option value='3' text="品牌楼层"
+									th:selected="${floor.floorType == 3}">品牌楼层</option>
+						</select></td>
+						<td><input th:value="${floor.horizontalSize}"
+							style="width: 50px;" /></td>
+						<td><input th:value="${floor.verticalSize}"
+							style="width: 50px;" /></td>
+						<td><input th:value="${floor.floorOrder}"
+							style="width: 50px;" /></td>
+						<td><select class="form-control"
+							style="width: 100%; display: inline;">
+								<option value='0' text="可见" th:selected="${floor.disable == 0}">可见</option>
+								<option value='1' text="隐藏" th:selected="${floor.disable == 1}">隐藏</option>
+						</select></td>
+						<td>
+						<input type="button" class="btn btn-xs btn-danger" onClick="deleteFloor(this)" value="删除"/>
+						</td>
+					</tr>
+				</div>
+			</tbody>
+		</table>
+	</div>
+	
+</form>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	submit = function() {
+		var isOk = 0;
+		var floorIds = [];
+		var floorNames = [];
+		var floorTypes = [];
+		var horizontalSizes = [];
+		var verticalSizes = [];
+		var floorOrders = [];
+		var disables = [];
+		$("#tbody").children("tr").each(function() {
+			var i = 0;
+			$(this).children("td").each(function() {
+				var eleValue = "";
+				switch (i) {
+				case 0:
+					eleValue = $(this).text();
+					floorIds.push(eleValue);
+					break;
+				case 1:
+					eleValue = $($(this).children()[0]).val();
+					floorNames.push(eleValue);
+					break;
+				case 2:
+					//$('#testSelect option:selected') .val();//选中的值
+					eleValue = $($(this).children()[0]).children("option:selected").val();
+					floorTypes.push(eleValue);
+					break;
+				case 3:
+					eleValue = $($(this).children()[0]).val();
+					if(eleValue > 5){
+						$(".modal-err-div").show();
+					    $(".modal-err-span").html("宽度尺寸不能超过5");
+					    isOk = isOk + 1;
+					}
+					horizontalSizes.push(eleValue);
+					break;
+				case 4:
+					eleValue = $($(this).children()[0]).val();
+					if(eleValue > 2){
+						$(".modal-err-div").show();
+					    $(".modal-err-span").html("高度尺寸不能超过2");
+					    isOk = isOk + 1;
+					}
+					verticalSizes.push(eleValue);
+					break;
+				case 5:
+					eleValue = $($(this).children()[0]).val();
+					floorOrders.push(eleValue);
+					break;
+				case 6:
+					eleValue = $($(this).children()[0]).children("option:selected").val();
+					disables.push(eleValue);
+					break;
+				default:
+					break;
+				}
+				i = i + 1;
+			});
+		});
+		if(isOk != 0){
+			return;
+		}
+		var saveUrl = "/admin/floor/saveFloorSon";
+		if(_urlPath!="/")
+			saveUrl=_urlPath+saveUrl;
+		$.ajax({
+			url : saveUrl,
+			data : {
+				"floorId[]" : floorIds,
+				"floorName[]" : floorNames,
+				"floorType[]" : floorTypes,
+				"horizontalSize[]" : horizontalSizes,
+				"verticalSize[]" : verticalSizes,
+				"floorOrder[]" : floorOrders,
+				"disable[]" : disables,
+				"fatherFloorId" : [[${fatherFloor.floorId}]]
+			},
+			type : "post",
+			dataType : "json",
+			success : function(req) {
+				if (req.retcode == 0) {
+					$(".closeBtn").click();
+					$.Mod.Close(req.retmsg);
+				} else {
+					modalErr(req.retmsg);
+				}
+			}
+		});
+	}
+	addFloor = function() {
+		var opDiv = "<tr style='text-align: center'>"
+				+ "<td>***</td>"
+				+ "<td><input style='width: 100px;'></td>"
+				+ "<td><select class='form-control' style='width: 100%; display: inline;'>"
+				+ "<option value='1' text='分类楼层'>分类楼层</option>"
+				+ "<option value='2' text='商品楼层'>商品楼层</option>"
+				+ "<option value='3' text='品牌楼层'>品牌楼层</option>"
+				+ "</select></td>"
+				+ "<td><input style='width: 50px;' value='4'></td>"
+				+ "<td><input style='width: 50px;' value='2'></td>"
+				+ "<td><input style='width: 50px;' value='1'></td>"
+				+ "<td><select class='form-control' style='width: 100%; display: inline;'>"
+				+ "<option value='0' text='可见'>可见</option>"
+				+ "<option value='1' text='隐藏'>隐藏</option>"
+				+ "</select></td>"
+				+ "<td>"
+				+ "<input type='button' class='btn btn-xs btn-danger' onclick='deleteFloor(this)' value='删除'>"
+				+ "</td>" + "</tr>";
+		$("#tbody").append(opDiv);
+	}
+
+	deleteFloor = function(ele) {
+		$(ele).parent().parent().remove();
+	}
+	/*]]>*/
+</script>

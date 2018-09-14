@@ -1,0 +1,61 @@
+<form class="form-horizontal" role="form" id="resetFrm">
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="frIds">关联分类</label>
+		<div class="col-sm-8">
+			<select multiple="multiple" size="${#lists.size(relList)}"
+				name="frIds" id="frIds">
+				<option th:each="rel:${relList}" th:value="${rel.catId}"
+					th:text="${rel.catName}"
+					th:selected="${1 == rel.status}?true:false" />
+			</select>
+		</div>
+	</div>
+</form>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	jQuery(function($){
+	    $("select[name='frIds']").bootstrapDualListbox({
+	    	moveAllLabel: "全部选中",
+	    	removeAllLabel: "全部移除",
+	    	infoTextEmpty: "没有记录",
+	    	infoText: "{0}条记录",
+	    	selectedListLabel: "已拥有分类",
+	    	nonSelectedListLabel: "未拥有分类",
+	    	showFilterInputs: false,
+	    	filterPlaceHolder: "过滤",
+	    	selectorMinimalHeight: 200,
+	    	infoTextFiltered: "<span class='label label-purple label-lg'>Filtered</span>"
+	    });
+	});
+	submit = function(){
+		if($("#frIds").val() == null){
+			modalErr("未选择分类");
+			return;
+		}
+		if($("#frIds").val().length > [[${maxSize}]]){
+			modalErr("超过了最大个数"+[[${maxSize}]]+"个");
+			return;
+		}
+		var floorId = [[${floorId}]];
+		var url = "/admin/floor/saveFloorGoodsCatRel";		
+		if(_urlPath!="/")
+			url=_urlPath+url;
+		$.ajax({
+	        url: url,
+	        data: {"floorId":floorId,
+	        	"frIds":$("#frIds").val()},
+	        type: "post",
+	        dataType:"json",
+	        success: function (req){
+	            if (req.retcode == 0) {
+	            	goPage("/admin/floor/preEditFloorRel/"+[[${parentId}]]);
+	                $.Mod.Close(req.retmsg);
+	            } else {
+	                modalErr(req.retmsg);
+	            }
+	        }
+	    });
+	}
+	/*]]>*/
+</script>

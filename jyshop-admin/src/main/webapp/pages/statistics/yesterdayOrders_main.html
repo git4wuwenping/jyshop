@@ -1,0 +1,89 @@
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+        	columns:[
+                     {field:"orderId",text:"订单ID", sortColumn:"orderId"},
+                     {field:"orderSn", text:"订单编号"},
+                     {field:"orderStatus", text:"订单状态",formatter:function(index, content, data){
+                     	if(typeof content!='undefined' && content!=null && content!=''){
+                     		if(content==-9)
+                         		return "<font color='red'>己取消</font>";
+                         	else if(content==-8)
+                         		return "<font color='red'>己退款</font>";
+                         	else if(content==-7)
+                         		return "<font color='red'>己退货</font>";
+                         	else if(content==-6)
+                             	return "<font color='red'>已换货</font>";
+                             else if(content==-5)
+                             	return "<font color='red'>退货被拒绝</font>";
+                             else if(content==-4)
+                             	return "<font color='red'>换货被拒绝</font>";
+                             else if(content==-3)
+                             	return "<font color='red'>申请退款</font>";
+                             else if(content==-2)
+                                 return "<font color='red'>申请退货</font>";
+                             else if(content==-1)
+                                 return "<font color='red'>申请换货</font>";
+                             else if(content==0)
+                             	return "<font color='blue'>未付款/新订单</font>";
+                             else if(content==1)
+                             	return "<font color='blue'>已付款,待分配</font>";
+                             else if(content==2)
+                                 return "<font color='blue'>已分配,待确定</font>";
+                             else if(content==3)
+                                 return "<font color='blue'>配货中</font>";
+                          	else if(content==4)
+                                 return "<font color='blue'>部分发货</font>";
+                             else if(content==5)
+                                 return "<font color='blue'>已发货,待收货</font>";
+                             else if(content==6)
+                                 return "<font color='blue'>已收货</font>";
+                             else if(content==7)
+                                	return "<font color='blue'>已完成</font>";
+                             else if(content==8)
+                                 return "<font color='red'>作废</font>";
+                             else
+                         		return "<font color='red'>无效的订单状态</font>";
+                     	}else
+                     		return "<font color='red'>无效订单状态</font>";
+                     }},
+                     {field:"comName", text:"店铺"},
+                     {field:"goodsAmount", text:"商品总额"},
+                     {field:"discount", text:"优惠金额"},
+                     {field:"shipAmount", text:"运费"},
+                     {field:"orderAmount", text:"订单总额"},
+                     {field:"createTime", text:"下单时间",formatter:function(index, content, data){
+                     	if(typeof content!='undefined' && content!=null && content!='')
+                     		return new Date(content).toLocaleString();
+                     	else
+                     		return "<font color='red'>获取下单时间失败</font>";
+                     }},
+                     {field:"shipType", text:"配送方式"},
+                     {field:"paymentName", text:"支付方式"},
+                     {field:"isReceipt", text:"是否索要发票",formatter:function(index, content, data){
+                     	if(content!='1')
+                     		return "<font color='green'>有</font>";
+                     	else
+                     		return "<font color='red'>没有</font>";
+                     }},
+                     {field:"orderId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                     	var detailUrl = "/admin/order/queryOrderDetail/" + content;
+     	                return "<a href='javascript:goPage(\""+detailUrl+"\");' data-original-title='订单详情' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>订单详情</i></a>";
+                     }}
+                 ],
+                 cls: "",
+                 url: _urlPath + "admin/statistics/yesterdayOrders",
+                 sort:"orderId",
+                 order:"desc",
+                 pagination:true,
+                 onLoad:function(){
+                     $(".add-tooltip").tooltip();
+                 }
+        });
+    });
+    /*]]>*/
+</script>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.AuthUserDao">
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.AuthUser">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="username" jdbcType="VARCHAR" property="username" />
+		<result column="name" jdbcType="CHAR" property="name" />
+		<result column="password" jdbcType="VARCHAR" property="password" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="useable" jdbcType="VARCHAR" property="useable" />
+		<result column="role_id" jdbcType="INTEGER" property="roleId" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="com_id" jdbcType="INTEGER" property="comId" />
+		<result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+		<result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+		<result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
+	</resultMap>
+	
+	<!-- 根据用户名获取用户信息 -->
+	<select id="selectByUsername" resultMap="baseResultModel">
+		select 
+			*
+		from sys_auth_user sau 
+		where sau.username = #{username}
+	</select>
+	
+	<!-- 根据角色Id获取用户信息 -->
+	<select id="selectByRoleId" resultMap="baseResultModel">
+		select    
+			*
+		from sys_auth_user sau 
+		where sau.role_id = #{roleId}
+	</select>
+	
+	<!-- 根据供应商Id获取用户信息 -->
+	<select id="selectByComId" resultMap="baseResultModel">
+		select    
+			*
+		from sys_auth_user sau 
+		where sau.com_id = #{comId}
+	</select>
+	<!-- 绑定用户角色 -->
+	<update id="bindUserRole">
+		update sys_auth_user set role_id = #{roleId} where id = #{id} and role_id!=99
+	</update>
+	<!-- 根据供应商ID修改用户信息 -->
+	<update id="updateUserById">
+		update sys_auth_user set username = #{username} ,password = #{password} ,useable = #{useable}
+		 where com_id = #{comId}
+	</update>
+</mapper>

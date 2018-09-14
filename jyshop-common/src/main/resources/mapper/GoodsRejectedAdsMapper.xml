@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.GoodsRejectedAdsDao">
+
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.GoodsRejectedAds">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="num" jdbcType="VARCHAR" property="num" />
+		<result column="sjr" jdbcType="VARCHAR" property="sjr" />
+		<result column="tel" jdbcType="VARCHAR" property="tel" />
+		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="used" jdbcType="VARCHAR" property="used" />
+	</resultMap>
+
+	<!-- 根据排序查询所有的退货地址 -->
+	<select id="pageList" resultMap="baseResultModel">
+		select
+			t.id     ,
+			t.num    ,
+			t.sjr    ,
+			t.tel    ,
+			t.address,
+			t.used
+		from shop_goods_rejected_ads t
+		where 1=1
+		<if test="comId != null and comId != ''">
+			and t.com_id = #{comId}
+		</if>
+		<if test="sjr != null and sjr != ''">
+			and t.sjr like '%${sjr}%'
+		</if>
+		<if test="sortName != null and sortName != ''">
+			<if test="sortOrder != null and sortOrder != ''">
+				ORDER BY LENGTH(t.${sortName}) ${sortOrder},t.${sortName} ${sortOrder}
+			</if>
+		</if>
+	</select>
+
+	<!-- 更新默认退货地址-->
+	<update id="updateForUsed">
+		update shop_goods_rejected_ads set used=0 where id=#{id}
+	</update>
+
+</mapper>

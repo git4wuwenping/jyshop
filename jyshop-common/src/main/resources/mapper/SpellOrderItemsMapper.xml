@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.SpellOrderItemsDao">
+
+    <select id="getItemsByOrderId" resultType="com.qyy.jyshop.model.SpellOrderItems">
+        select *
+        from shop_spell_order_items
+        where order_id = #{orderId}
+    </select>
+</mapper>

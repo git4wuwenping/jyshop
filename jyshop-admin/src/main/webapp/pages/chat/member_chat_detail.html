@@ -1,0 +1,137 @@
+<div class="row">
+	<div class="col-sm-12">
+		<div class="panel">
+			<div class="panel-heading">
+				<span class="panel-title">咨询信息</span>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="tab-content">
+						
+						
+							<div class="col-sm-6 tab-pane active" id="bs-tabdrop-pill1" >
+									<div class="form-group" >
+										<label class="col-sm-3 control-label">用户头像：</label>
+										<div class="col-sm-8">
+											<img type="text" name="weixinFace"
+												th:src="${member.weixinFace}" width='50' height='50'
+												readonly="readonly" style="border: none" />
+										</div>
+									</div>
+									
+				
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="memberId">用户ID：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="memberId"
+												readonly="readonly" name="memberId"
+												th:value="${member.memberId}" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="uname"><font
+											color="red">*</font>用户名：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="uname"
+												readonly="readonly" name="uname" th:value="${member.uname}" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="uname"><font
+											color="red">*</font>昵称：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="nickname"
+												readonly="readonly" name="nickname"
+												th:value="${member.nickname}" />
+										</div>
+									</div>
+							</div>
+								<div class="col-md-1" style="width: 150px;display: inline;float: right;">
+									<button id="exportBtn" class="btn btn-labeled btn-success">
+										<span class="btn-label icon fa fa-download"></span>导出信息
+									</button>
+								</div>
+						
+						</div>
+					</div>
+				</div>
+				<div id="searchForm" >
+					<input type="hidden" name="memberId" th:value="${member.memberId}" />
+				</div>
+				<div class="openAppGrid" style='width:100%;'>
+						<div id="openAppGrid"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"sendType",text:"发送人",formatter:function(index, content, data){
+                	if(content==0)
+                		return data.nickname;
+                	else
+                		return data.csName;
+                }},
+                {field:"message", text:"发送内容"},
+                {field:"createTime", text:"发送时间",formatter:function(index, content, data){
+                	if(typeof content!='undefined' && content!=null && content!='')
+                		return new Date(content).toLocaleString();
+                	else
+                		return "<font color='red'>获取发送时间</font>";
+                }},
+                {field:"sendType",text:"接收人",formatter:function(index, content, data){
+                	if(content==0)
+                		return data.csName;
+                	else
+                		return data.nickname;
+                }},
+                {field:"sendType", text:"发送类型",formatter:function(index, content, data){
+                	if(content==0)
+                		return "用户咨询";
+                	else
+                		return "<font color='red'>客服回复</font>";
+                }},
+                {field:"sendType", text:"查看状态",formatter:function(index, content, data){
+                	if(content==0){
+                		if(data.csSee==0)
+                			return "客服己查看";
+                		else
+                			return "<font color='red'>客服未查看</font>";
+                	}else{
+                		if(data.memberSee==0)
+                			return "用户己查看";
+                		else
+                			return "<font color='red'>用户未查看</font>";
+                	}
+                }},
+            ],
+            cls: "",
+            url: _urlPath + "admin/chat/pageMemberChatAjax",
+            sort:"id",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+
+
+    });
+	//导出
+	$("#exportBtn").click(function() {
+		 $.Cfm('导出到excel',function(){
+		    var data = getExportParam("searchForm");
+		    //alert(data)
+		    location.href = '/admin/chat/exportChatToExcel?'+data;
+		}); 
+	});
+
+    /*]]>*/
+</script>

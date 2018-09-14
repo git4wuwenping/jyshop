@@ -1,0 +1,69 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+    <div id="searchForm">
+        <div class="col-md-2" style="width: 200px">
+            <input type="text" class="form-control search-query" name="floorName" placeholder="专题名称" />
+        </div>
+        <div class="col-md-1" style="width: 120px;">
+            <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+        </div>
+        <div class="col-md-3" style="text-align: left;padding-bottom: unset">
+            <button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:showModal('添加专题', '/admin/floor/preAddFloor');" ><span class="btn-label icon fa fa-plus"></span>添加专题</button>
+        </div>
+    </div>
+</div>
+<div class="openAppGrid">
+    <div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"floorId",text:"专题ID", sortColumn:"floorId", style:"text-align:center"},
+                {field:"floorName", text:"专题名称", style:"text-align:center"},
+                /* {field:"floorOrder", text:"排序", style:"text-align:center"},
+                {field:"floorType", text:"楼层类型", style:"text-align:center",formatter:function(index, content, data){
+                	if(content == 1){
+                		return "分类楼层"
+                	}else if(content == 2){
+                		return "商品楼层"
+                	}else if(content == 3){
+                		return "品牌楼层"
+                	}
+                	
+                    return content == 0 ? "<font color='blue'>可用</font>" : "<font color='red'>禁用</font>";
+                }},
+                {field:"floorSize", text:"楼层横向尺寸", style:"text-align:center"},
+                {field:"disable", text:"是否可用", style:"text-align:center",formatter:function(index, content, data){
+                    return content == 0 ? "<font color='blue'>可用</font>" : "<font color='red'>禁用</font>";
+                }}, */
+                {field:"floorId", text:"编辑",width:80, style:"text-align:center", formatter:function(index, content, data){
+                    var editFloorUrl = "/admin/floor/preEditFloorSon/" + content;
+                    var opDiv = "";
+                    return opDiv + "&nbsp;<a href='javascript:showModal(\"编辑子楼层\", \""+editFloorUrl+"\",900);' data-original-title='修改子楼层' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改子楼层</i></a>";
+                }},
+                {field:"floorId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                    var editUrl = "/admin/floor/preEditFloor/" + content;
+                    var delUrl = "/admin/floor/delFloor/" + content;
+                    var opDiv = "";
+                    return opDiv + "&nbsp;<a href='javascript:showModal(\"修改楼层\", \""+editUrl+"\");' data-original-title='修改' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改</i></a>"
+                        + "&nbsp;<a href='javascript:showCfm(\"确定删除该楼层\", \""+delUrl+"\");'  data-original-title='删除' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+                }},
+                {field:"floorId", text:"编辑模版",width:80, style:"text-align:center", formatter:function(index, content, data){
+                    var editUrl = "/admin/floor/preEditFloorRel/" + content;
+                    var opDiv = "";
+                    return opDiv + "&nbsp;<a href='javascript:goPage(\""+editUrl+"\");' class='btn btn-xs btn-primary add-tooltip'><i class='fa fa-times'>模版编辑</i></a>";
+                 }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/floor/pageFloorAjax",
+            sort:"id",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+    /*]]>*/
+</script>

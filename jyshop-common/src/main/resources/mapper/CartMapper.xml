@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.CartDao">
+	
+	
+	<select id="selectCartList" resultType="map">
+		<!-- select 
+        	sg.mktprice,
+        	sp.name, 
+            sp.store, 
+            sp.specs, 
+            sp.price, 
+            sp.goods_id AS goodsId, 
+            sc.cart_id AS cartId,
+            sc.product_id AS productId,
+            sc.buy_count AS buyCount, 
+            sg.image,
+            sg.com_id as comId,
+            scom.store_name as comName 
+		 from shop_cart sc  
+        inner join shop_product sp on sc.product_id=sp.product_id  
+        inner join shop_goods sg on sc.goods_id=sg.goods_id  
+        inner join shop_company scom on scom.com_id=sg.com_id  
+        where sp.is_usable=1 and sc.member_id=#{memberId} 
+          and sg.market_enable=#{marketEnable} 
+        order by sc.cart_id desc -->
+ 			select 
+        			sg.mktprice,
+        			sp.name, 
+					sp.store, 
+					sp.specs, 
+					sp.price, 
+					sp.goods_id AS goodsId, 
+					sc.cart_id AS cartId,
+					sc.product_id AS productId,
+					sc.buy_count AS buyCount, 
+					sg.image,
+					sg.com_id as comId,
+					IFNULL(ss.shop_store_id,0) as shopStoreId,
+					IF((sg.com_id=0 and sg.shop_store_id =0),'巨柚自营',ss.shop_store_name)as comName
+			 from shop_cart sc  
+	        inner join shop_product sp on sc.product_id=sp.product_id  
+	        inner join shop_goods sg on sc.goods_id=sg.goods_id  
+	        inner join shop_company scom on scom.com_id=sg.com_id  
+			LEFT  JOIN shop_store ss ON IF(sg.com_id = 0 ,sg.shop_store_id = ss.shop_store_id,scom.com_id = ss.com_id)
+	        where sp.is_usable=1 and sc.member_id=#{memberId} 
+	          and sg.market_enable=#{marketEnable} order by sc.cart_id desc
+	</select>
+	
+	<!-- 修改某会员的购物车货品购买数量-->
+	<update id="updateCartOfBuyCount">
+		update shop_cart set buy_count=#{buyCount} where member_id=#{memberId} and product_id=#{productId}
+	</update>
+	
+	<!-- 增加某会员的购物车货品购买数量-->
+	<update id="updateCartOfAddCount">
+		update shop_cart set buy_count=buy_count+#{buyCount} where member_id=#{memberId} and product_id=#{productId}
+	</update>
+	
+	<!-- 批量删除 -->
+	<delete id="batchDel">
+		delete from shop_cart where
+		<foreach collection="list" item="item" index="index" open="(" separator="or" close=")">
+			cart_id = #{item.cartId} and member_id = #{item.memberId}
+		</foreach>
+	</delete>
+	
+</mapper>

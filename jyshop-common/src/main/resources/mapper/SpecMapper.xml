@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.SpecDao">
+	
+	<!-- 根据供应商ID获取规格列表 -->
+	<select id="selectByComId" resultMap="baseResultModel">
+		select * from shop_spec where com_id=#{comId}
+	</select>
+	
+	<!-- 根据规格IDS获取规格列表 -->
+	<select id="selectBySpecIds" resultMap="baseResultModelAndChild">
+		select * from shop_spec where spec_id in  
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">  
+		 	#{item}  
+		</foreach>  
+	</select>
+	
+	<!-- 根据规格ID获取规格信息 -->
+	<select id="selectComSpecBySpecId" resultMap="baseResultModelAndChild">
+		select * from shop_spec where spec_id=#{specId} and com_id=#{comId}
+	</select>
+	<!-- 根据商品规格值查询商品 -->
+	<select id="selectGoodBySpecValueId" resultType="Integer" >
+		select 
+		     count(1) 
+		 from 
+			 shop_spec_values a ,
+			 shop_goods_spec b,
+			 shop_goods c 
+	    where 
+	         a.SPEC_VALUE_ID = b.spec_value_id 
+		 AND b.goods_id = c.goods_id 
+		 AND a.SPEC_VALUE_ID = #{specValueId}
+	</select>
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.Spec">
+		<id column="spec_id" jdbcType="BIGINT" property="specId" />
+		<result column="spec_name" jdbcType="VARCHAR" property="specName" />
+		<result column="show_type" jdbcType="INTEGER" property="showType" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="sort" jdbcType="INTEGER" property="sort" />
+		<result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+		<result column="com_id" jdbcType="INTEGER" property="comId" />
+	</resultMap>
+	
+	<resultMap id="baseResultModelAndChild" type="com.qyy.jyshop.model.Spec">
+		<id column="spec_id" jdbcType="BIGINT" property="specId" />
+		<result column="spec_name" jdbcType="VARCHAR" property="specName" />
+		<result column="show_type" jdbcType="INTEGER" property="showType" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="sort" jdbcType="INTEGER" property="sort" />
+		<result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+		<result column="com_id" jdbcType="INTEGER" property="comId" />
+		<collection property="specValueList" column="spec_id" javaType="ArrayList" 
+			ofType="com.qyy.jyshop.model.SpecValues" select="com.qyy.jyshop.dao.SpecValuesDao.selectBySpecId" />
+	</resultMap>
+
+	<resultMap type="com.qyy.jyshop.vo.SpecVo" id="specResultMap">
+		<id column="spec_id" jdbcType="BIGINT" property="specId" />
+		<result column="spec_name" jdbcType="VARCHAR" property="specName" />
+		<result column="show_type" jdbcType="INTEGER" property="showType" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="sort" jdbcType="INTEGER" property="sort" />
+		<result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+		<result column="com_id" jdbcType="INTEGER" property="comId" />
+		<collection property="specValuesList" ofType="com.qyy.jyshop.model.SpecValues">
+			<id column="spec_value_id" jdbcType="BIGINT" property="specValueId" />
+			<result column="spec_id" jdbcType="BIGINT" property="specId" />
+			<result column="spec_value" jdbcType="VARCHAR" property="specValue" />
+			<result column="spec_image" jdbcType="VARCHAR" property="specImage" />
+			<result column="sort" jdbcType="INTEGER" property="sort" />
+			<result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+		</collection>
+	</resultMap>
+
+	<!-- 查询商品规格 -->
+	<select id="selectSpecsByGpId" resultMap="specResultMap">
+		SELECT
+		DISTINCT (sgs.spec_value_id),
+		ss.*,
+		ssv.*
+		FROM shop_giftpackage_spec sgs
+		INNER  JOIN shop_spec ss ON sgs.spec_id=ss.SPEC_ID
+		INNER JOIN shop_spec_values ssv ON sgs.spec_value_id=ssv.spec_value_id
+		WHERE gp_id = #{gpId}
+	</select>
+
+</mapper>

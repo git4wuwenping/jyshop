@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.MemberChatDao">
+
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.MemberChat">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="nickname" jdbcType="VARCHAR" property="nickname" />
+		<result column="member_face" jdbcType="VARCHAR" property="memberFace" />
+		<result column="message" jdbcType="LONGVARCHAR" property="message" />
+		<result column="send_type" jdbcType="SMALLINT" property="sendType" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+		<result column="cs_id" jdbcType="INTEGER" property="csId" />
+		<result column="cs_name" jdbcType="VARCHAR" property="csName" />
+		<result column="cs_uname" jdbcType="VARCHAR" property="csUname" />
+		<result column="member_see" jdbcType="SMALLINT" property="memberSee" />
+		<result column="cs_see" jdbcType="SMALLINT" property="csSee" />
+	</resultMap>
+	
+	<!-- 获取用户最后咨询列表 -->
+	<select id="selectByLatest" parameterType="map" resultType="map">
+		SELECT 
+			* 
+		FROM (
+			SELECT 
+			smc.member_id as memberId,
+			smc.nickname,
+			smc.message,
+			smc.create_time as createTime 
+			FROM shop_member_chat smc
+			left join shop_member sm on smc.member_id=sm.member_id 
+			<trim prefix="where" prefixOverrides="and">
+				com_id=#{comId} 
+				<if test="memberId!=null and memberId!=''">
+					and sm.member_id=#{memberId} 
+				</if>
+				<if test="nickname!=null and nickname!=''">
+					and nick_name like '%${nickName}%'
+				</if>
+			</trim> 
+			ORDER BY smc.id DESC 
+		) mc
+		GROUP BY mc.memberId 
+	</select>
+	
+	<!-- 查询用户咨询记录 -->
+	<select id="selectMemberChatByParams" parameterType="map" resultType="map">
+		SELECT 
+			smc.member_id AS memberId,
+		    smc.nickname,
+		    smc.member_face as memberFace,
+		    smc.message,
+		    smc.create_time AS createTime,
+		    smc.send_type as sendType,
+		    smc.cs_name as csName,
+		    smc.member_see as memberSee,
+		    smc.cs_see as csSee
+		FROM shop_member_chat smc
+		left join shop_member sm on smc.member_id=sm.member_id 
+		<trim prefix="where" prefixOverrides="and">
+			com_id=#{comId} 
+			<if test="memberId!=null and memberId!=''">
+				and smc.member_id=#{memberId} 
+			</if>
+			<if test="nickname !=null and nickname !=''">
+				and smc.nickname=#{nickname} 
+			</if>
+			<if test="createTime!=null and createTime!=''">
+				and TO_DAYS(smc.create_time)=TO_DAYS(#{createTime})
+			</if>
+		</trim> 
+		ORDER BY smc.create_time DESC 
+	</select>
+	
+	<!-- 根据条件导出咨询信息 -->
+	<select id="queryExportMemberChatData" resultType="map">
+		SELECT 
+				CASE
+				WHEN smc.send_type = 0 THEN smc.nickname 
+				WHEN smc.send_type = 1 THEN smc.cs_name  END as sender,
+		    smc.message,
+		    smc.create_time AS createTime,
+				CASE
+				WHEN smc.send_type = 0 THEN smc.cs_name  
+				WHEN smc.send_type = 1 THEN smc.nickname END as recipient,
+				CASE
+				WHEN smc.send_type = 0 THEN '用户咨询' 
+				WHEN smc.send_type = 1 THEN '客服回复'  END as sendType,
+				CASE
+				WHEN smc.send_type = 0 THEN IF(smc.cs_see=0,'客服己查看','客服未查看')
+				WHEN smc.send_type = 1 THEN IF(smc.member_see=0,'用户己查看','用户未查看')
+				END as checkStatus
+		FROM shop_member_chat smc
+		left join shop_member sm on smc.member_id=sm.member_id 
+		<trim prefix="where" prefixOverrides="and">
+			com_id=#{comId} 
+			<if test="memberId!=null and memberId!=''">
+				and smc.member_id=#{memberId} 
+			</if>
+			<if test="nickname !=null and nickname !=''">
+				and smc.nickname=#{nickname} 
+			</if>
+			<if test="createTime!=null and createTime!=''">
+				and TO_DAYS(smc.create_time)=TO_DAYS(#{createTime})
+			</if>
+		</trim> 
+		ORDER BY smc.create_time DESC 
+	</select>
+	
+	<!-- 查询用户未读信息 -->
+	<select id="selectByUnreadInfo">
+		select * FROM shop_member_chat where memberId=#{memberId} and member_see=1
+	</select>
+	
+</mapper>

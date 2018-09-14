@@ -1,0 +1,156 @@
+<div class="page-header"
+	style="padding: 10px 20px; margin: -18px 0px 0px">
+	<div id="searchForm">
+		<div class="col-md-2" style="width: 200px">
+			<input type="text" class="form-control search-query" name="title"
+				placeholder="标题" />
+		</div>
+		<div class="col-md-2" style="padding-bottom: 0px; width: 160px;">
+			<select class="form-control" name="type"
+				onchange="javascript:formSubmit();">
+				<option value="">广告类型</option>
+				<option value="0">图片</option>
+				<option value="1">flash</option>
+			</select>
+		</div>
+		<div class="col-md-1" style="width: 120px;">
+			<button id="searchBtn" class="btn btn-labeled btn-info"
+				onclick="javascript:formSubmit();">
+				<span class="btn-label icon fa fa-search"></span>搜索
+			</button>
+		</div>
+		<div class="col-md-3" style="text-align: left; padding-bottom: unset">
+			<button id="addBtn" class="btn btn-labeled btn-primary"
+				onclick="javascript:showModal('添加广告位', '/admin/adv/preAddAdvSpace');">
+				<span class="btn-label icon fa fa-plus"></span>添加广告位
+			</button>
+		</div>
+	</div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	//弹出确认框
+	function showMyCfm(title, url) {
+		
+		if (_urlPath != "/")
+			url = _urlPath + url;
+		$.ajax({
+			url : url,
+			type : "post",
+			dataType : "json",
+			success : function(req) {
+				if (req.retcode == 0) {
+					$("#openAppGrid").sgrid("refresh");
+				}
+			}
+		});
+		//});
+	}
+	$(function() {
+		$("#openAppGrid")
+				.sgrid(
+						{
+							columns : [
+									{
+										field : "id",
+										text : "广告位ID",
+										style : "text-align:center"
+									},
+									{
+										field : "name",
+										text : "广告标识",
+										style : "text-align:center"
+									},
+									{
+										field : "title",
+										text : "广告位标题",
+										style : "text-align:center"
+									},
+									{
+										field : "type",
+										text : "广告位类型",
+										width : 80,
+										style : "text-align:center",
+										formatter : function(index, content,
+												data) {
+											return content == "0" ? "图片"
+													: "flash";
+										}
+									},
+									{
+										field : "width",
+										text : "宽度",
+										style : "text-align:center"
+									},
+									{
+										field : "height",
+										text : "高度",
+										style : "text-align:center"
+									},
+									{
+										field : "used",
+										text : "状态",
+										width : 80,
+										style : "text-align:center",
+										formatter : function(index, content,
+												data) {
+											var updateUsedUrl = "/admin/adv/updateAdvSpaceUsed/"
+													+ data.id;
+											var opDiv = "";
+											if (content == 0) {
+												return opDiv
+														+ "&nbsp;已开启"
+														+ "&nbsp;<a href='javascript:showMyCfm(\"停用\", \""
+														+ updateUsedUrl
+														+ "\");'  data-original-title='停用' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>停用</i></a>";
+											} else {
+												return opDiv
+														+ "&nbsp;已停用"
+														+ "&nbsp;<a href='javascript:showMyCfm(\"开启\", \""
+														+ updateUsedUrl
+														+ "\");'  data-original-title='开启' class='btn btn-xs btn-primary add-tooltip'><i class='fa fa-anchor'>开启</i></a>";
+
+											}
+										}
+									},
+									{
+										field : "id",
+										text : "操作",
+										width : 80,
+										style : "text-align:center",
+										formatter : function(index, content,
+												data) {
+											var editUrl = "/admin/adv/preEditAdvSpace/"
+													+ content;
+											var delUrl = "/admin/adv/delAdvSpace/"
+													+ content;
+											var adUrl = "/admin/adv/prePageAdv?advSpaceId="
+													+ content ;
+											var opDiv = "";
+											return opDiv
+													+ "&nbsp;<a href='javascript:showModal(\"修改广告位\", \""
+													+ editUrl
+													+ "\");' data-original-title='修改' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改</i></a>"
+													+ "&nbsp;<a href='javascript:showCfm(\"删除广告位会把该广告位下的广告一并删除，确定删除吗？\", \""
+													+ delUrl
+													+ "\");'  data-original-title='删除' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>"
+													+ "&nbsp;<a href='javascript:goPage(\""
+													+ adUrl
+													+ "\");' class='btn btn-xs btn-info'><i class='ace-icon fa fa-th-list'>修改广告列表</i></a>";
+										}
+									} ],
+							cls : "",
+							url : _urlPath + "admin/adv/pageAdvSpaceAjax",
+							sort : "id",
+							order : "desc",
+							pagination : true,
+							onLoad : function() {
+								$(".add-tooltip").tooltip();
+							}
+						});
+	});
+	/*]]>*/
+</script>

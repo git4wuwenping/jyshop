@@ -1,0 +1,57 @@
+<div class="openAppGrid" >
+	<div id="openAppGrid" style="text-align: center;" ></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"weixinFace", text:"头像",formatter:function(index, content, data){
+                		return "<img src='"+data.weixinFace+"' width='50' height='50' >";
+                }},
+                {field:"memberId",text:"用户ID", sortColumn:"id"},
+                {field:"nickname", text:"昵称"},
+                {field:"identityId", text:"身份",formatter:function(index, content, data){
+                	if(data.identityId == 0){
+                		return "<font color='black'>代理</font>";
+                	}
+                	if(data.identityId == 1){
+                		return "<font color='black'>店长</font>";
+                	}
+                	if(data.identityId == 2){
+                		return "<font color='black'>普通客户</font>";
+                	}
+               	}},
+                {field:"mobile", text:"手机号", },
+                {field:"subscribe", text:"是否关注公众号",formatter:function(index, content, data){
+                    return content == 0 ? "<font color='blue'>已关注</font>" : "<font color='red'>未关注</font>";
+                }},
+                {field:"balance", text:"余额"},
+                {field:"amount", text:"累计交易金额"},
+                {field:"tradeTime", text:"交易次数"},
+                {field:"parentId", text:"上级ID"},
+                {field:"state", text:"状态",formatter:function(index, content, data){
+                    return content == 0 ? "<font color='blue'>正常</font>" : "<font color='red'>冻结</font>";
+                }},
+                {field:"memberId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                	if(99 == data.roleId){
+                		return "禁止操作超级管理员";
+                	}else{
+	                    var detUrl = "/admin/member/preDetaileMember/" + content;
+	                    var opDiv = "";	
+	                    return opDiv + "&nbsp;<a href='javascript:goPage( \""+detUrl+"\");' data-original-title='详情' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>详情</i></a>";
+                	}
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/statistics/newShopkeeperYesterday",
+            sort:"id",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+    /*]]>*/
+</script>

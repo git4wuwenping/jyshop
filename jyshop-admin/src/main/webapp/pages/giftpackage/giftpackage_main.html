@@ -1,0 +1,69 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+	<div id="searchForm">
+		<div class="col-md-2" style="width: 200px">
+			<input type="text" class="form-control search-query" name="gpName" placeholder="礼包名称" />
+		</div>
+		<div class="col-md-1" style="width: 120px;">
+			<button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+		</div>
+		<div class="col-md-3" style="text-align: left;padding-bottom: unset">
+			<button id="addBtn" class="btn btn-labeled btn-primary" onclick="javascript:goPage('/admin/giftPackage/preAddGiftPackage');" ><span class="btn-label icon fa fa-plus"></span>添加礼包</button>
+		</div>
+	</div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"gpId",text:"礼包ID", sortColumn:"goodsId"},
+                {field:"gpSn",text:"礼包货号"},
+                {field:"gpName",text:"礼包名称" },
+                {field:"price", text:"销售价"},
+/*                {field:"store", text:"总库存"},*/
+                {field:"createTime", text:"创建时间",formatter:function(index, content, data){
+                	if(typeof content!='undefined' && content!=null)
+                		return new Date(content).toLocaleString();
+                	else
+                		return "";
+                }},
+                {field:"marketEnable", text:"是否可用",formatter:function(index, content, data){
+                	if( content == 1 ){
+                    	return "<font color='blue'>上架</font>";
+                	}
+                	if( content == -1 ){
+                    	return "<font color='red'>下架</font>";
+                	}
+                }},
+                {field:"sort", text:"排序"},
+                {field:"gpId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+					var editUrl = "/admin/giftPackage/preEditGiftPackage/" + content;
+					var delUrl = "/admin/giftPackage/delGiftPackage/" + content;
+					var salesYesUrl="/admin/giftPackage/giftPackageSalesYes/" + content;
+					var salesNoUrl="/admin/giftPackage/giftPackageSalesNo/" + content;
+					
+					var opDiv = "&nbsp;<a href='javascript:goPage(\""+editUrl+"\");' data-original-title='编辑' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>编辑</i></a>";
+// 						+ "&nbsp;<a href='javascript:showCfm(\"确定删除该礼包\", \""+delUrl+"\");'  data-original-title='删除' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+					if(data.marketEnable==1){
+						opDiv += "&nbsp;<a href='javascript:showCfm(\"确定下架该商品\", \""+salesNoUrl+"\");'  data-original-title='下架' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>下架</i></a>";
+					}else{
+						opDiv += "&nbsp;<a href='javascript:showCfm(\"确定上架该商品\", \""+salesYesUrl+"\");'  data-original-title='上架' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>上架</i></a>";
+					}
+					return opDiv;
+                }}
+            ],
+            cls: "",
+            url: _urlPath + "admin/giftPackage/pageGiftPackageAjax",
+            sort:"gpId",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+    });
+    /*]]>*/
+</script>

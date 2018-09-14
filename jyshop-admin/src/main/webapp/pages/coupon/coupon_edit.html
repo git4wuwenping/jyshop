@@ -1,0 +1,678 @@
+<form id="submitForm" class="form-horizontal">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel">
+				<div class="panel-heading">
+					<span class="panel-title">编辑优惠券</span>
+				</div>
+				<div class="panel-body">
+					<ul class="nav nav-pills bs-tabdrop-example">
+						<li class="active"><a href="#bs-tabdrop-pill1"
+							data-toggle="tab">优惠券基本信息</a></li>
+						<li id="goodsTab"><a href="#bs-tabdrop-pill2"
+							data-toggle="tab">优惠券可使用商品</a></li>
+						<li id="catTab"><a href="#bs-tabdrop-pill3" data-toggle="tab">优惠券可用分类</a></li>
+						<li id="comTab"><a href="#bs-tabdrop-pill4" data-toggle="tab">优惠券可用供应商</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="col-sm-12 tab-pane active" id="bs-tabdrop-pill1">
+							<div class="panel">
+								<input type="hidden" name="cpnId" th:value="${coupon.cpnId}"/>
+								<input type="hidden" name="cpnSn" th:value="${coupon.cpnSn}"/>
+								<div class="panel-heading">
+									<span class="panel-title">基本信息</span>
+								</div>
+								<div class="panel-body">
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="cpnName"><font
+											color="red">*</font>优惠券名称：</label>
+										<div class="col-sm-3">
+											<input class="form-control" type="text" id="cpnName"
+												name="cpnName" placeholder="请填写优惠券名称" th:value="${coupon.cpnName}" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label"><font
+											color="red">*</font>发放类型：</label>
+										<div class="col-sm-8">
+											<div class="radio">
+												<label style="display: inline-block; width: 80px;">
+													<input th:checked="${coupon.grantType == 0}" value="0" name="grantType"
+													type="radio" class="ace" onclick="javascript:clickGrantTypeRadio(0);"  />线上发放
+												</label> <label style="display: inline-block; width: 80px;">
+													<input th:checked="${coupon.grantType == 1}" value="1" name="grantType" type="radio" class="ace" onclick="javascript:clickGrantTypeRadio(1);"/>线下发放
+												</label> <label style="display: inline-block; width: 80px;">
+													<input th:checked="${coupon.grantType == 2}" value="2" name="grantType" type="radio" class="ace" onclick="javascript:clickGrantTypeRadio(2);"/>直接到账
+												</label> <label style="display: inline-block; width: 80px;">
+													<input th:checked="${coupon.grantType == 3}" value="3" name="grantType" type="radio" class="ace" onclick="javascript:clickGrantTypeRadio(3);"/>注册赠送
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label"><font
+											color="red">*</font>优惠劵类型：</label>
+										<div class="col-sm-8">
+											<div class="radio">
+												<label style="display: inline-block; width: 100px;">
+													<input th:checked="${coupon.cpnType == 0}" value="0" name="cpnType" type="radio" class="ace"
+													onclick="javascript:clickCpnTypeRadio(0);" />指定分类券
+												</label> <label style="display: inline-block; width: 100px;">
+													<input th:checked="${coupon.cpnType == 1}" value="1" name="cpnType" type="radio" class="ace"
+													onclick="javascript:clickCpnTypeRadio(1);" />指定商品券
+												</label> <label style="display: inline-block; width: 100px;">
+													<input th:checked="${coupon.cpnType == 2}" value="2" name="cpnType" type="radio" class="ace"
+													onclick="javascript:clickCpnTypeRadio(2);" />指定供应商券
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label"><font
+											color="red">*</font>优惠劵图片：</label>
+										<div class="col-sm-8">
+								            <div class="imgPrivew" id="imgPrivew">
+								                <div id="fileuploaddiv" style="display: none">
+								                    <input id="fileupload" type="file" name="files[]" multiple="multiple" />
+								                    <p class="help-block">请上传优惠劵图片.</p>
+								                </div>
+								                <div style='display: inline-block; margin-left: 10px;position:relative'>
+								                    <span class='deleteImg' style='position: absolute; right:3px; top: 3px' th:path='${coupon.cpnImg}'>
+								                        <i class='fa fa-times' onclick='deleteImg(this)'></i>
+								                    </span>
+								                    <img alt="图片" th:src="${coupon.cpnImg}" width='120px' height='120px'/>
+								                    <input type='hidden' name='cpnImg' th:value='${coupon.cpnImg}'/>
+								                </div>
+								            </div>
+							        	</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="discountPrice"><font
+											color="red">*</font>抵扣金额：</label>
+										<div class="col-sm-3">
+											<input class="form-control" type="text" id="discountPrice"
+												name="discountPrice" placeholder="请填写抵扣金额" th:value="${coupon.discountPrice}" />
+										</div>
+									</div>
+
+									<div class="form-group" id="_limitGet">
+										<label class="col-sm-3 control-label" for="limitGet"><font
+											color="red">*</font>每人限领：</label>
+										<div class="col-md-2"
+											style="padding-bottom: 0px; width: 160px;">
+											<select class="form-control" name="limitGet">
+												<option value="1">1</option>
+												<option value="2">2</option>
+												<option value="3">3</option>
+												<option value="4">4</option>
+												<option value="5">5</option>
+												<option value="6">6</option>
+												<option value="7">7</option>
+												<option value="8">8</option>
+												<option value="9">9</option>
+												<option value="10">10</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group" id="_grantNum">
+										<label class="col-sm-3 control-label" for="grantNum"><font
+											color="red">*</font>发放数量：</label>
+										<div class="col-sm-3">
+											<input class="form-control" type="text" id="grantNum"
+												name="grantNum" placeholder="请填写发放数量" th:value="${coupon.grantNum}"/>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="getBeginTime"><font
+											color="red">*</font>领取起始时间：</label>
+										<div class="col-sm-3">
+											<div class='input-group date'>
+												<input type='text' class="form-control" name="getBeginTime" th:value="${#dates.format(coupon.getBeginTime, 'yyyy-MM-dd HH:mm:ss')}"
+													placeholder="领取起始时间" /> <span class="input-group-addon">
+													<span class="glyphicon glyphicon-calendar"></span>
+												</span>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="getEndTime"><font
+											color="red">*</font>领取截至时间：</label>
+										<div class="col-sm-3">
+											<div class='input-group date'>
+												<input type='text' class="form-control" name="getEndTime" th:value="${#dates.format(coupon.getEndTime, 'yyyy-MM-dd HH:mm:ss')}"
+													placeholder="领取截至时间" /> <span class="input-group-addon">
+													<span class="glyphicon glyphicon-calendar"></span>
+												</span>
+											</div>
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label"><font
+											color="red">*</font>使用期限：</label>
+										<div class="col-sm-8">
+											<div class="radio">
+												<label style="display: inline-block; width: 100px;">
+													<input th:checked="${coupon.useType == 0}" value="0" name="useType" type="radio" class="ace"
+													onclick="javascript:clickUseTypeRadio(0);" />按日期
+												</label> <label style="display: inline-block; width: 200px;">
+													<input th:checked="${coupon.useType == 1}" value="1" name="useType" type="radio" class="ace"
+													onclick="javascript:clickUseTypeRadio(1);" />按领取日期有效天数
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="useBeginTime"></label>
+										<div class='col-sm-8' id="useTime0">
+											<input type='text' class="form-control date" name="useBeginTime" th:if="${coupon.useBeginTime == null}" style="width: 24.2%;display:inline" value="" placeholder="使用有效起始时间" />
+											<input type='text' class="form-control date" name="useBeginTime" th:if="${coupon.useBeginTime != null}" style="width: 24.2%;display:inline" th:value="${#dates.format(coupon.useBeginTime, 'yyyy-MM-dd HH:mm:ss')}" placeholder="使用有效起始时间" />
+											至
+								            <input type='text' class="form-control date" name="useEndTime" th:if="${coupon.useEndTime == null}" style="width: 24.2%;display:inline" value="" placeholder="使用有效截止时间"/>
+											<input type='text' class="form-control date" name="useEndTime" th:if="${coupon.useEndTime != null}" style="width: 24.2%;display:inline" th:value="${#dates.format(coupon.useEndTime, 'yyyy-MM-dd HH:mm:ss')}" placeholder="使用有效截止时间"/>
+								        </div>										
+										<div class="col-sm-3" id="useTime1">
+											<input class="form-control" type="text" id="effectiveDate" th:value="${coupon.effectiveDate}"
+												name="effectiveDate" placeholder="请填写有效天数" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel">
+								<div class="panel-heading">
+									<span class="panel-title">订单满多少金额可使用优惠劵</span>
+								</div>
+								<div class="panel-body">
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="minAmount"><font
+											color="red">*</font>最低消费金额：</label>
+										<div class="col-sm-3">
+											<input class="form-control" type="text" id="minAmount" th:value="${coupon.minAmount}"
+												name="minAmount" placeholder="请填写最低消费金额" />
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+
+							<div class="panel">
+								<div class="panel-heading">
+									<span class="panel-title">备注信息</span>
+								</div>
+								<div class="panel-body">
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="remark"><font
+											color="red">*</font>备注：</label>
+										<div class="col-sm-8">
+											<textarea class="form-control" id="remark" name="remark"
+												rows="3"></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+
+						<div class="col-sm-12 tab-pane" id="bs-tabdrop-pill2">
+							<div class="panel">
+								<div class="panel-heading">
+									<span class="panel-title">选择优惠的商品(<font color="red">如果没选择则全部商品都优惠</font>)
+									</span>
+								</div>
+								<div class="panel-body">
+										<div class="col-md-3" style="text-align: left; padding-bottom: unset">
+											 <a href="javascript:selectGoodsPage();" class="btn btn-info">点击添加商品</a>
+											 <a href="javascript:delAllRel(1);" class="btn btn-danger add-tooltip"><i class="fa fa-times">清除所有</i></a>
+										</div>
+										
+										
+										<div class="openAppGrid">
+											<div id="openGoodsGrid"></div>
+										</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-sm-12 tab-pane" id="bs-tabdrop-pill3">
+							<div class="panel">
+								<div class="panel-heading">
+									<span class="panel-title">选择优惠的分类 </span>
+								</div>
+								<div class="panel-body">
+										<div class="col-md-3" style="text-align: left; padding-bottom: unset">
+											 <a href="javascript:selectCatPage();" class="btn btn-info">点击添加分类</a>
+											 <a href="javascript:delAllRel(0);" class="btn btn-danger add-tooltip"><i class="fa fa-times">清除所有</i></a>
+										</div>
+										
+										
+										<div class="openAppGrid">
+											<div id="openCatGrid"></div>
+										</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-sm-12 tab-pane" id="bs-tabdrop-pill4">
+							<div class="panel">
+								<div class="panel-heading">
+									<span class="panel-title">选择优惠的供应商 </span>
+								</div>
+								<div class="panel-body">
+										<div class="col-md-3" style="text-align: left; padding-bottom: unset">
+											 <a href="javascript:selectComPage();" class="btn btn-info">点击添加供应商</a>
+											 <a href="javascript:delAllRel(2);" class="btn btn-danger add-tooltip"><i class="fa fa-times">清除所有</i></a>
+										</div>
+										
+										
+										<div class="openAppGrid">
+											<div id="openComGrid"></div>
+										</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div align="center">
+					<button id="sumbitBtn" class="btn btn-primary">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	           
+	function clickGrantTypeRadio(data){
+		//0-线上发放1-线下发放2-直接到账3-注册赠送 
+		if (data == 0) {
+			$("#_limitGet").show();
+			$("#_grantNum").show();
+		} else if (data == 1) {
+			$("#_limitGet").show();
+			$("#_grantNum").show();
+		} else if (data == 2) {
+			$("#_limitGet").hide();
+			$("#_grantNum").hide();
+		} else if (data == 3) {
+			$("#_limitGet").hide();
+			$("#_grantNum").hide();;
+		}
+		
+	}
+
+	function clickCpnTypeRadio(data) {
+		if (data == 0) {
+			$("#catTab").show();
+			$("#goodsTab").hide();
+			$("#comTab").hide();
+		} else if (data == 1) {
+			$("#goodsTab").show();
+			$("#catTab").hide();
+			$("#comTab").hide();
+		} else if (data == 2) {
+			$("#comTab").show();
+			$("#goodsTab").hide();
+			$("#catTab").hide();
+		}
+	}
+
+	function clickUseTypeRadio(data) {
+		if (data == 0) {
+			$("#useTime0").show();
+			$("#useTime1").hide();
+		} else if (data == 1) {
+			$("#useTime1").show();
+			$("#useTime0").hide();
+		}
+	}
+	
+	function delAllRel(relType){
+		url = "/admin/coupon/delAllRel?cpnSn=" + [[${coupon.cpnSn}]] ;
+		if(_urlPath!="/")
+			url=_urlPath+url;
+		$.Cfm("确认清除所有吗？",function(){
+	        $.ajax({
+	            url:  url,
+	            type:"post",
+	            dataType:"json",
+	            success: function (req){
+	                if (req.retcode == 0) {
+	                	if(relType == 1){
+	                		$("#openGoodsGrid").sgrid("refresh");
+	                	}else if(relType == 0){
+	                		$("#openCatGrid").sgrid("refresh");
+	                	}else if(relType == 2){
+	                		$("#openComGrid").sgrid("refresh");
+	                	}
+	                    $.Suc(req.retmsg);
+	                } else {
+	                    $.Err(req.retmsg);
+	                }
+	            }
+	        });
+	    });
+	}
+	
+	function selectGoodsPage(){
+		var url = '/admin/coupon/selectGoods?cpnSn='+[[${coupon.cpnSn}]] ;
+		showModal('选择商品', url ,'1200px');
+		
+	}
+	
+	function selectCatPage(){
+		var url = '/admin/coupon/selectCat?cpnSn='+[[${coupon.cpnSn}]] ;
+		showModal('选择分类', url ,'800px');
+		
+	}
+	
+	function selectComPage(){
+		var url = '/admin/coupon/selectCom?cpnSn='+[[${coupon.cpnSn}]] ;
+		showModal('选择供应商', url ,'1200px');
+		
+	}
+
+	$(function() {
+		clickGrantTypeRadio([[${coupon.grantType}]]);
+		clickCpnTypeRadio([[${coupon.cpnType}]]);
+		clickUseTypeRadio([[${coupon.useType}]]);
+		$("#remark").html([[${coupon.remark}]]);
+		$("#openGoodsGrid")
+		.sgrid(
+				{
+					columns : [
+							{
+								field : "goodsId",
+								text : "商品id",
+								style : "text-align:center",
+								width : 200
+							},
+							{
+								field : "goodsImage",
+								text : "商品图片",
+								width : 300,
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									return "<img src='"+content+"' width='50' height='50' >";
+								}
+							},
+							{
+								field : "goodsName",
+								text : "商品名称",
+								style : "text-align:center"
+							},
+							{
+								field : "id",
+								text : "操作",
+								style : "text-align:center",
+								width : 200,
+								formatter : function(index, content,
+										data) {
+									var delUrl = "/admin/coupon/delRel/"
+											+ content;
+									return "<a href='javascript:showCfm(\"确定删除该关联记录\", \""
+											+ delUrl
+											+ "\");' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+								}
+							} ],
+					cls : "",
+					url : _urlPath
+							+ "admin/coupon/pageRelAjax?cpnSn="+[[${coupon.cpnSn}]]+"&relType=1",
+					sort : "id",
+					order : "desc",
+					pagination : true,
+					onLoad : function() {
+						$(".add-tooltip").tooltip();
+					}
+				});
+		$("#openCatGrid")
+		.sgrid(
+				{
+					columns : [
+							{
+								field : "catId",
+								text : "分类ID",
+								style : "text-align:center",
+								width : 200
+							},
+							{
+								field : "catImage",
+								text : "分类图片",
+								width : 300,
+								style : "text-align:center",
+								formatter : function(index, content,
+										data) {
+									return "<img src='"+content+"' width='50' height='50' >";
+								}
+							},
+							{
+								field : "catName",
+								text : "分类名称",
+								style : "text-align:center"
+							},
+							{
+								field : "id",
+								text : "操作",
+								style : "text-align:center",
+								width : 200,
+								formatter : function(index, content,
+										data) {
+									var delUrl = "/admin/coupon/delRel/"
+											+ content;
+									return "<a href='javascript:showCfm(\"确定删除该关联记录\", \""
+											+ delUrl
+											+ "\");' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+								}
+							} ],
+					cls : "",
+					url : _urlPath
+							+ "admin/coupon/pageRelAjax?cpnSn="+[[${coupon.cpnSn}]]+"&relType=0",
+					sort : "id",
+					order : "desc",
+					pagination : true,
+					onLoad : function() {
+						$(".add-tooltip").tooltip();
+					}
+				});
+		$("#openComGrid")
+		.sgrid(
+				{
+					columns : [
+							{
+								field : "comId",
+								text : "供应商ID",
+								style : "text-align:center",
+								width : 200
+							},
+							{
+								field : "storeName",
+								text : "店铺名称",
+								style : "text-align:center"
+							},
+							{
+								field : "comName",
+								text : "供应商名称",
+								style : "text-align:center"
+							},
+							{
+								field : "id",
+								text : "操作",
+								style : "text-align:center",
+								width : 200,
+								formatter : function(index, content,
+										data) {
+									var delUrl = "/admin/coupon/delRel/"
+											+ content;
+									return "<a href='javascript:showCfm(\"确定删除该关联记录\", \""
+											+ delUrl
+											+ "\");' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+								}
+							} ],
+					cls : "",
+					url : _urlPath
+							+ "admin/coupon/pageRelAjax?cpnSn="+[[${coupon.cpnSn}]]+"&relType=2",
+					sort : "id",
+					order : "desc",
+					pagination : true,
+					onLoad : function() {
+						$(".add-tooltip").tooltip();
+					}
+				});
+		
+		$('#fileupload').fileupload({
+            url: _urlPath + "upload/jqUploadImg",
+            dataType: 'html',
+            done: function (e, data) {
+                $("#fileuploaddiv").css("display","none");
+                $("#imgPrivew").append("<div style='display: inline-block; margin-left: 10px;position:relative'>" +
+                    "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>" +
+                    "<i class='fa fa-times' onclick='deleteImg(this)'></i>" +
+                    "</span> " +
+                    "<img src='"+data.result+"' width='120px' height='120px'/>" +
+                    "<input type='hidden' name='cpnImg' value='"+data.result+"'/>" +
+                    "</div>")
+            },
+        });
+
+		
+
+		$('#submitForm')
+				.bootstrapValidator(
+						{
+							message : 'This value is not valid',
+							feedbackIcons : {
+								valid : 'glyphicon glyphicon-ok',
+								invalid : 'glyphicon glyphicon-remove',
+								validating : 'glyphicon glyphicon-refresh'
+							},
+							fields : {
+								cpnName : {
+									validators : {
+										notEmpty : {
+											message : '请输入优惠券名称'
+										}
+									}
+								},
+								discountPrice : {
+									validators : {
+										notEmpty : {
+											message : '请输入抵扣金额'
+										},
+										regexp : {
+											regexp : /^\d+(\.\d+)?$/,
+											message : '请输入非负的数字~'
+										}
+									}
+								},
+								grantNum : {
+									validators : {
+										notEmpty : {
+											message : '请输入发放数量'
+										},
+										regexp : {
+											regexp : /^\d+(\.\d+)?$/,
+											message : '请输入非负的数字~'
+										}
+									}
+								},
+								/* getBeginTime : {
+									validators : {
+										notEmpty : {
+											message : '请输入有效期'
+										},
+										regexp : {
+											regexp : /^(?:19|20)[0-9][0-9]-(?:(?:0[1-9])|(?:1[0-2]))-(?:(?:[0-2][1-9])|(?:[1-3][0-1])) (?:(?:[0-2][0-3])|(?:[0-1][0-9])):[0-5][0-9]$/,
+											message : '请输入正确的时间格式~'
+										}
+									}
+								},
+								getEndTime : {
+									validators : {
+										notEmpty : {
+											message : '请输入有效期'
+										},
+										regexp : {
+											regexp : /^(?:19|20)[0-9][0-9]-(?:(?:0[1-9])|(?:1[0-2]))-(?:(?:[0-2][1-9])|(?:[1-3][0-1])) (?:(?:[0-2][0-3])|(?:[0-1][0-9])):[0-5][0-9]$/,
+											message : '请输入正确的时间格式~'
+										}
+									}
+								}, */
+								minAmount : {
+									validators : {
+										notEmpty : {
+											message : '请输入最低消费金额'
+										},
+										regexp : {
+											regexp : /^\d+(\.\d+)?$/,
+											message : '请输入非负的数字~'
+										}
+									}
+								}
+							}
+						});
+
+		$("#sumbitBtn").click(function() {
+			$('#submitForm').data('bootstrapValidator').validate();
+			if ($('#submitForm').data('bootstrapValidator').isValid()) {
+				var display =$('#useTime0').css('display');
+				if(display == 'none'){
+					$("input[name='useBeginTime']").val($("input[name='getBeginTime']").val());
+					$("input[name='useEndTime']").val($("input[name='getBeginTime']").val());
+				}
+				$("#sumbitBtn").attr("disabled", true);
+				$.ajax({
+					url : _urlPath + 'admin/coupon/editCoupon',
+					method : "POST",
+					data : $('#submitForm').serialize(),
+					dataType : "json",
+					success : function(reslut) {
+						if (reslut.retcode == 0) {
+							$.growl.notice({
+								title : '操作成功',
+								message : reslut.retmsg
+							});
+							goPage('/admin/coupon/couponMain');
+						} else {
+							$.Err(reslut.retmsg);
+						}
+					}
+				});
+			}
+		});
+
+		
+		$('.date').datetimepicker({
+			format: 'yyyy-mm-dd hh:mm:ss',
+			language : 'zh-CN',
+			monthsShort : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			forceParse : 0,
+			showMeridian : 0, //是否显示上下午
+			initialDate : new Date()
+		});
+
+
+	});
+	
+	function deleteImg(obj) {
+        $(obj).parent().parent().remove();
+        $("#fileuploaddiv").css("display","block");
+    }
+	/*]]>*/
+</script>

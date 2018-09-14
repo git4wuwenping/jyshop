@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.FloorDao">
+	<!-- 批量添加 -->
+	<insert id="batchInsert">
+		insert into shop_floor(`parent_id`,
+		`floor_name`,`horizontal_size`,`vertical_size`,`floor_order`,`disable`,`floor_type`,`floor_desc`)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.parentId}, #{item.floorName},
+			#{item.horizontalSize}, #{item.verticalSize}, #{item.floorOrder},
+			#{item.disable}, #{item.floorType}, #{item.floorDesc})
+		</foreach>
+	</insert>
+	
+	<!-- 批量删除 -->
+    <delete id="deleteByFloorIds">
+        delete from shop_floor where floor_id in
+        <foreach item="floorId" collection="list" open="(" separator="," close=")">
+            #{floorId}
+        </foreach>
+    </delete>
+</mapper>

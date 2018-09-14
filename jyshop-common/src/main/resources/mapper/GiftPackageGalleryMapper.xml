@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.GiftPackageGalleryDao" >
+  <resultMap id="BaseResultMap" type="com.qyy.jyshop.model.GiftPackageGallery" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="img_id" property="imgId" jdbcType="INTEGER" />
+    <result column="gp_id" property="gpId" jdbcType="BIGINT" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="isdefault" property="isdefault" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <select id="selectGiftPackageGalleryByGpId" resultMap="BaseResultMap" >
+  	select * from shop_giftpackage_gallery where gp_id = #{gpId}
+  </select>
+</mapper>

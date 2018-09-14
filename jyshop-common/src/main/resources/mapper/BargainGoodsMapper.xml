@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.BargainGoodsDao">
+	<!-- 砍价商品列表 -->
+	<select id="selectBargainGoodsList" resultType="map">
+		SELECT 
+			a.bargain_id as bargainId,
+			a.title,
+			a.goods_id as goodsId,
+			a.bargain_type as bargainType,
+			a.goods_price as goodsPrice,
+			a.target_price as targetPrice ,
+			a.is_first as isFirst ,
+			a.first_price_min as firstPriceMin,
+			a.first_price_max as firstPriceMax,
+			a.bargain_mode as bargainMode,
+			a.image,
+			a.details,
+			a.share_title as shareTitle,
+			a.share_describe as shareDescribe,
+			a.rule,
+				(select 
+					COUNT(x.bargain_id) 
+				FROM shop_bargain_order_items x 
+				LEFT JOIN shop_bargain_order y ON x.order_id = y.order_id
+				LEFT JOIN shop_bargain_goods  z ON x.bargain_id = z.bargain_id
+			   where x.goods_id = z.goods_id 
+			     and y.ORDER_STATUS >=1 
+			     and z.bargain_id = a.bargain_id ) as recipientNum
+		from shop_bargain_goods a 
+		LEFT JOIN shop_goods b on a.goods_id = b.goods_id 
+	   where a.is_open = 1  and b.market_enable =1 
+	   <![CDATA[
+	     and a.start_date <= NOW() 
+	     and a.end_date >=NOW()
+	     ]]>
+	     order by a.create_date desc
+	</select>
+	<!-- 查询砍价商品列表轮播消息 -->
+	<select id="selectBargainCarouselMessage" resultType="map" >
+		SELECT 
+			sm.weixin_face as weixinFace,
+			CONCAT(sm.nickname,"砍价成功啦，",sbg.target_price,"元拿了",sg.`name`) as nickname
+		from shop_bargain_order sbo ,shop_member sm,shop_bargain_order_items sboi
+		LEFT JOIN shop_bargain_goods sbg ON sboi.bargain_id = sbg.bargain_id 
+		LEFT JOIN shop_goods sg ON sbg.goods_id = sg.goods_id 
+	   where sbo.ORDER_STATUS>=1 
+	     and sbo.order_id = sboi.order_id
+		 and (sbo.MEMBER_ID = sm.member_id or FIND_IN_SET(sm.member_id,sboi.member_ids))
+	</select>
+	<!-- 砍价商品详情 -->
+	<select id="selectBargainGoodsDetails" resultType="map">
+		SELECT 
+			a.bargain_id as bargainId,
+			a.title,
+			a.goods_id as goodsId,
+			a.bargain_type as bargainType,
+			a.goods_price as goodsPrice,
+			a.target_price as targetPrice ,
+			a.is_first as isFirst ,
+			a.first_price_min as firstPriceMin,
+			a.first_price_max as firstPriceMax,
+			a.bargain_mode as bargainMode,
+			a.image,
+			a.details,
+			a.share_title as shareTitle,
+			a.share_describe as shareDescribe,
+			a.rule,
+			b.name,
+			a.take_date as takeDate
+		from shop_bargain_goods a 
+		LEFT JOIN shop_goods b on a.goods_id = b.goods_id 
+	   where a.is_open = 1 
+	   	 and b.goods_type =1 
+	   	 and b.market_enable =1 
+	   	 and a.goods_id = #{goodsId} 
+	   	 and a.bargain_id = #{bargainId}
+	</select>
+	
+	<!-- 根据砍价活动ID获取可用的砍价活动 -->
+	<select id="selectByBargainId" resultMap="baseResultModel">
+		select * from shop_bargain_goods 
+		where bargain_id=#{bargainId} and is_open=1
+	</select>
+	
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.BargainGoods">
+		<id column="bargain_id" jdbcType="BIGINT" property="bargainId" />
+		<result column="title" jdbcType="VARCHAR" property="title" />
+		<result column="goods_id" jdbcType="BIGINT" property="goodsId" />
+		<result column="bargain_type" jdbcType="INTEGER" property="bargainType" />
+		<result column="goods_price" jdbcType="DECIMAL" property="goodsPrice" />
+		<result column="target_price" jdbcType="DECIMAL" property="targetPrice" />
+		<result column="is_first" jdbcType="INTEGER" property="isFirst" />
+		<result column="first_price_min" jdbcType="DECIMAL" property="firstPriceMin" />
+		<result column="first_price_max" jdbcType="DECIMAL" property="firstPriceMax" />
+		<result column="bargain_mode" jdbcType="INTEGER" property="bargainMode" />
+		<result column="price_min" jdbcType="DECIMAL" property="priceMin" />
+		<result column="price_max" jdbcType="DECIMAL" property="priceMax" />
+		<result column="is_free" jdbcType="INTEGER" property="isFree" />
+		<result column="free_price" jdbcType="DECIMAL" property="freePrice" />
+		<result column="image" jdbcType="VARCHAR" property="image" />
+		<result column="details" jdbcType="VARCHAR" property="details" />
+		<result column="share_title" jdbcType="VARCHAR" property="shareTitle" />
+		<result column="share_describe" jdbcType="VARCHAR" property="shareDescribe" />
+		<result column="rule" jdbcType="LONGVARCHAR" property="rule" />
+		<result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+		<result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+		<result column="take_date" jdbcType="TIMESTAMP" property="takeDate" />
+		<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+		<result column="is_open" jdbcType="INTEGER" property="isOpen" />
+	</resultMap>
+
+    <select id="pageList" resultType="map">
+        SELECT t.bargainId,t.title,t.bargainType,t.goodsPrice,t.targetPrice,
+                t.image,t.endDate,t.createDate,t.isOpen,t.state,t.num
+          FROM
+            (SELECT t.bargain_id bargainId,t.title title,t.bargain_type bargainType,
+                    t.goods_price goodsPrice,t.target_price targetPrice,t.image,
+                    CASE WHEN is_open=0 THEN '已关闭'
+                    <![CDATA[ WHEN is_open=1 && UNIX_TIMESTAMP(t.end_date)>UNIX_TIMESTAMP(NOW()) THEN '进行中' ]]>
+                    ELSE '已结束' END state,
+                    t.end_date endDate,t.create_date createDate,t.is_open isOpen,i.num
+              FROM
+                shop_bargain_goods t
+              LEFT JOIN
+                shop_goods g
+              ON t.goods_id = g.goods_id
+			  LEFT JOIN
+				(SELECT
+				bargain_id ,count(member_bargain_id) num
+				FROM shop_member_bargain t
+				GROUP BY t.bargain_id) i
+				ON t.bargain_id = i.bargain_id
+              where 1=1
+              <if test="comId != null and comId != ''">
+                  and g.com_id = #{comId}
+              </if>
+              <if test="createStartTime!=null and createStartTime!=''">
+                  <![CDATA[ and t.end_date>=#{createStartTime} ]]>
+              </if>
+              <if test="createEndTime!=null and createEndTime!=''">
+                  <![CDATA[ and t.end_date<=#{createEndTime} ]]>
+              </if>
+            ) t
+        where 1=1
+        <if test="state != null and state != ''">
+            and t.state = #{state}
+        </if>
+		<choose>
+			<when test="sortName != null and sortName !='' and sortOrder != null and sortOrder != ''">
+				ORDER BY LENGTH(t.${sortName}) ${sortOrder},t.${sortName} ${sortOrder}
+			</when>
+			<otherwise>
+				ORDER BY t.createDate desc
+			</otherwise>
+		</choose>
+	</select>
+
+</mapper>

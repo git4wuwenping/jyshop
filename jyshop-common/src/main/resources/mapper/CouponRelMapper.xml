@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.CouponRelDao">
+
+	<!-- 批量添加 -->
+	<insert id="batchInsert">
+		insert into shop_coupon_rel(cpn_sn, rel_id, rel_type) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.cpnSn}, #{item.relId} , #{item.relType})
+		</foreach>
+	</insert>
+	
+	<update id="delRel">
+		delete from shop_coupon_rel where cpn_sn = #{cpnSn}
+		<if test="cpnType != null">
+			and rel_type != #{cpnType}
+		</if>
+	</update>
+	
+	<select id="selectGoodsRel" resultType="map">
+		SELECT
+		  t1.id,
+		  t1.`rel_id` AS goodsId,
+		  t2.`name` AS goodsName,
+		  t2.`image` AS goodsImage
+		FROM
+		  shop_coupon_rel t1
+		  LEFT JOIN shop_goods t2
+		    ON t1.`rel_id` = t2.`goods_id`
+		  where t1.`cpn_sn`=#{cpnSn}
+	</select>
+	
+	<select id="selectCatRel" resultType="map">
+		SELECT
+		  t1.id,
+		  t1.`rel_id` AS catId,
+		  t2.`name` AS catName,
+		  t2.`image` AS catImage
+		FROM
+		  shop_coupon_rel t1
+		  LEFT JOIN shop_goods_cat t2
+		    ON t1.`rel_id` = t2.`cat_id`
+		  where t1.`cpn_sn`=#{cpnSn}
+	</select>
+	
+	<select id="selectComRel" resultType="map">
+		SELECT
+		  t1.id,
+		  t1.`rel_id` AS comId,
+		  t2.`store_name` AS storeName,
+		  t2.`com_name` AS comName
+		FROM
+		  shop_coupon_rel t1
+		  LEFT JOIN shop_company t2
+		    ON t1.`rel_id` = t2.`com_id`
+		  where t1.`cpn_sn`=#{cpnSn}
+	</select>
+	
+	<select id="queryGoodsCatRel" resultType="map">
+		SELECT
+		  t2.`cat_id` AS catId,
+		  t2.`cat_path_name` AS catName
+		FROM
+		  shop_coupon_rel t1
+		  LEFT JOIN shop_goods_cat t2
+		    ON t1.`rel_id` = t2.`cat_id`
+		WHERE t1.cpn_sn = #{cpnSn}
+	</select>
+	<select id="queryGoodsCatList" resultType="map">
+		SELECT
+		  t1.`cat_id` AS catId,
+		  t1.`cat_path_name` AS catName
+		FROM
+		  shop_goods_cat t1
+		WHERE <!-- t1.cat_levle = 3 --> length(t1.cat_code)=9
+		 ORDER BY t1.cat_code ASC
+	</select>
+	
+</mapper>

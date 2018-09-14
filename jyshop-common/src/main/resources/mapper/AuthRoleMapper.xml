@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.AuthRoleDao">
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.AuthRole">
+		<id column="role_id" jdbcType="TINYINT" property="roleId" />
+		<result column="role_name" jdbcType="VARCHAR" property="roleName" />
+		<result column="cname" jdbcType="VARCHAR" property="cname" />
+		<result column="com_id" jdbcType="INTEGER" property="comId" />
+	</resultMap>
+
+	<!-- 根据角色Id获取角色信息 -->
+	<select id="selectByRoleId" resultMap="baseResultModel">
+		select 
+			* 
+		from sys_auth_role sar 
+		where sar.role_id = #{roleId}
+	</select>
+	
+	<!-- 根据角色名获取角色信息 -->
+	<select id="selectByRoleName" resultMap="baseResultModel">
+		select 
+			*
+		from sys_auth_role sar 
+		where sar.role_name = #{roleName}
+	</select>
+	
+	<!-- 根据供应商Id获取角色信息 -->
+	<select id="selectByComId" resultMap="baseResultModel">
+		select 
+			*
+		from sys_auth_role sar 
+		where sar.com_id = #{comId}
+	</select>
+	
+</mapper>

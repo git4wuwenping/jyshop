@@ -1,0 +1,258 @@
+<form id="submitForm" class="form-horizontal">
+    <div class="form-group">
+        <div class="col-sm-8">
+            <div class="checkbox" style="display: inline-block">
+                <label>
+                    <input type="checkbox" class="all_selected"/>
+                    <span class="lbl">全选</span>
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="checkbox" style="display: inline-block" th:each="province:${provinceList}">
+                <label style="width: 500px;">
+	                    <input type="checkbox" name="spec" class="cb_province" th:value="${province.addressId}"/>
+	                    <span class="lbl" th:text="${province.addressName}"></span>
+                </label>
+                <div style="margin-left: 50px;">
+	                <div class="checkbox" style="display: inline-block" th:each="district:${province.addressList}">
+		                <label>
+		                    <input type="checkbox" name="spec" class="cb_district" th:value="${district.addressId}"/>
+		                    <span class="lbl" th:text="${district.addressName}"></span>
+		                </label>
+	            	</div>
+            	</div>
+            	<hr></hr>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var postion = $("input[class='panel_position']").attr("position");
+    //console.log(postion);
+    submit = function(){
+        var districtLabels = "";
+        var districtIds = "";
+        $.each($("input[type='checkbox'][class='cb_district']:checked"),function(){
+            if($(this).attr("disabled")!='disabled'){
+            	districtLabels += $(this).siblings("span").html() + ","
+            	districtIds += $(this).val() + ",";
+            }
+        });
+        $("#"+postion+"").empty();
+        $("#"+postion+"").append(districtLabels.substr(0,districtLabels.length-1));
+        var oldDistrictIds = $("#"+postion+"_DistrictIds").val();
+        var newDistrictIds = districtIds.substr(0,districtIds.length-1);
+        //console.log("newDistrictIds===" + newDistrictIds);
+        //console.log("provinceLabels===" + provinceLabels);
+        $("#"+postion+"_DistrictIds").val(newDistrictIds);
+        $("#"+postion+"_DistrictNames").val(districtLabels.substr(0,districtLabels.length-1));
+        //$("#usedDistrictIds").val(provinceIds.substr(0,provinceIds.length-1))
+        var usedDistrictIdArr = [];
+        var usedDistrictIds = $("#usedDistrictIds").val();
+        if(typeof usedDistrictIds != 'undefined' && usedDistrictIds !='' && usedDistrictIds != null){
+            usedDistrictIdArr = arrayTools.strToArr(usedDistrictIds);
+            console.log("usedDistrictIdArr==" + usedDistrictIdArr);
+        }
+        if(typeof oldDistrictIds != 'undefined' && oldDistrictIds !='' && oldDistrictIds != null){
+            var oldDistrictIdArr = arrayTools.strToArr(oldDistrictIds);
+            for(var i in oldDistrictIdArr){
+                arrayTools.removeFromArr(usedDistrictIdArr, oldDistrictIdArr[i]);
+            }
+        }
+        if(typeof newDistrictIds != 'undefined' && newDistrictIds !='' && newDistrictIds != null){
+            var newDistrictIdArr = arrayTools.strToArr(newDistrictIds);
+            for(var i in newDistrictIdArr){
+                usedDistrictIdArr.push(newDistrictIdArr[i]);
+            }
+        }
+        $("#usedDistrictIds").val(arrayTools.arrayToStr(usedDistrictIdArr));
+        $(".close").click();
+    }
+
+    $(function (){
+        //全选操作
+        $(".all_selected").on("click",function () {
+            if($(this).is(':checked')){
+                $.each($("input[type='checkbox'][class='cb_province']"),function(){
+                	$(this).prop("checked", true);
+                });
+                $.each($("input[type='checkbox'][class='cb_district']"),function(){
+                    $(this).prop("checked", true);
+                });
+            } else {
+                $.each($("input[type='checkbox'][class='cb_province']"),function(){
+                	$(this).prop("checked", false);
+                });
+                $.each($("input[type='checkbox'][class='cb_district']"),function(){
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+        //省份全选操作
+        $(".cb_province").on("click",function () {
+            if($(this).is(':checked')){
+                $(this).parent().next().find("input[type='checkbox'][class='cb_district']").each(function(){
+                	$(this).prop("checked", true);
+                });
+                var cb_flag = 0;
+	        	$.each($("input[type='checkbox'][class='cb_province']"),function(){
+	        		if(!$(this).is(':checked')){
+	        			cb_flag = cb_flag + 1;
+	        			return false;
+	        		}
+                });
+	        	if (cb_flag == 0) {
+	        		$(".all_selected").prop("checked",true);
+				}
+            } else {
+            	$(".all_selected").prop("checked",false);
+            	$(this).parent().next().find("input[type='checkbox'][class='cb_district']").each(function(){
+                	$(this).prop("checked", false);
+                });
+            }
+        });
+        
+        //区县操作
+        $(".cb_district").on("click",function () {
+        	var flag = 0;
+        	var ele = $(this).parent().parent().parent().parent().find("input[type='checkbox'][class='cb_province']");
+        	if(!$(this).is(':checked')){
+        		$(ele).prop("checked",false);
+        		$(".all_selected").prop("checked",false);
+        	}else{
+	        	$(this).parent().parent().parent().parent().find("input[type='checkbox'][class='cb_district']").each(function(){
+	        		if(!$(this).is(':checked')){
+	        			flag = flag + 1;
+	        			return false;
+	        		}
+	        	});
+	        	if (flag == 0) {
+	        		$(ele).prop("checked",true);
+				}else{
+	        		$(ele).prop("checked",false);
+				}
+	        	
+	        	
+	        	var cb_flag = 0;
+	        	$.each($("input[type='checkbox'][class='cb_province']"),function(){
+	        		if(!$(this).is(':checked')){
+	        			cb_flag = cb_flag + 1;
+	        			return false;
+	        		}
+                });
+	        	if (cb_flag == 0) {
+	        		$(".all_selected").prop("checked",true);
+				}else{
+					$(".all_selected").prop("checked",false);
+				}
+        	}
+        });
+    });
+
+    var arrayTools ={
+
+        /*数组转为字符串，用逗号隔开*/
+        arrayToStr: function arrayToStr(arr) {
+            var str = "";
+            for(var i in arr)
+                str += arr[i] + ",";
+            str = str.substr(0,str.length-1);
+            return str;
+        },
+
+        /*字符串转为数组，用逗号切割*/
+        strToArr: function strToArr(str) {
+            var arr = [];
+            if(str.indexOf(",") > -1)
+                arr = str.split(",");
+            else
+                arr.push(str)
+            return arr;
+        },
+        /*往数组中添加元素*/
+        pushToArr: function pushToArr(arr, obj) {
+            if(Array.isArray(arr)){
+                if(arr.length == 0){
+                    arr.push(obj);
+                } else {
+                    for(var i in arr){
+                        if(arr[i] == obj){
+                            break;
+                        }
+                        if(i == arr.length - 1){
+                            arr.push(obj);
+                        }
+                    }
+                }
+                return arr;
+            }
+        },
+        /*是否存在于数组中*/
+        isInArr: function isInArr(arr, obj) {
+            if(Array.isArray(arr)){
+                if(arr.length == 0){
+                    return false;
+                } else {
+                    for(var i in arr){
+                        if(arr[i] == obj){
+                            return true;
+                        }
+                        if(i == arr.length - 1){
+                            return false;
+                        }
+                    }
+                }
+                return false;
+            }
+        },
+        /*往数组中移除元素*/
+        removeFromArr: function removeFromArr(arr, obj) {
+            if(Array.isArray(arr)){
+                var index = arr.indexOf(obj);
+                if(index > -1){
+                    arr.splice(index, 1);
+                }
+                return arr;
+            }
+        },
+        /*清空数组*/
+        arrEmpty: function arrEmpty(arr){
+            if(Array.isArray(arr)){
+                arr.splice(0,arr.length);
+            }
+        }
+    }
+
+    init.push(function () {
+        arrayTools.init();
+    });
+
+    //初始化
+    var usedDistrictIds = $("#usedDistrictIds").val();
+    var selectedDistrictIdArr = [];
+    var selectedDistrictIds = $("#"+postion+"_DistrictIds").val();
+    //console.log("selectedDistrictIds====" + selectedDistrictIds);
+    if(typeof usedDistrictIds != 'undefined' && usedDistrictIds !='' && usedDistrictIds != null ){
+        var usedDistrictIdArr = arrayTools.strToArr(usedDistrictIds);
+        for(var i in usedDistrictIdArr){
+            //使用过的设置选中
+            $("input[type='checkbox'][value='"+usedDistrictIdArr[i]+"']").attr("checked","checked");
+        }
+        //console.log("usedDistrictIdArr==" + usedDistrictIdArr);
+        if(typeof selectedDistrictIds != 'undefined' && selectedDistrictIds !='' && selectedDistrictIds != null ){
+            selectedDistrictIdArr = arrayTools.strToArr(selectedDistrictIds);
+        }
+        //遍历所有选中的checkbox  判断是否在当前为panel选中
+        for(var i in usedDistrictIdArr){
+            //alert(arrayTools.isInArr(selectedDistrictIdArr, usedDistrictIdArr[i]));
+            if(arrayTools.isInArr(selectedDistrictIdArr, usedDistrictIdArr[i])){
+                $("input[type='checkbox'][value='"+usedDistrictIdArr[i]+"']").attr("disabled", false);
+            } else{
+                $("input[type='checkbox'][value='"+usedDistrictIdArr[i]+"']").attr("disabled", true);
+            }
+        }
+    }
+    /*]]>*/
+</script>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.GiftPackageDao" >
+    <resultMap id="BaseResultMap" type="com.qyy.jyshop.model.GiftPackage" >
+        <!--
+          WARNING - @mbggenerated
+        -->
+        <id column="gp_id" property="gpId" jdbcType="BIGINT" />
+        <result column="alarm_num" property="alarmNum" jdbcType="INTEGER" />
+        <result column="gp_sn" property="gpSn" jdbcType="VARCHAR" />
+        <result column="gp_name" property="gpName" jdbcType="VARCHAR" />
+        <result column="brand_id" property="brandId" jdbcType="INTEGER" />
+        <result column="com_id" property="comId" jdbcType="INTEGER" />
+        <result column="type_id" property="typeId" jdbcType="INTEGER" />
+        <result column="goods_type" property="goodsType" jdbcType="SMALLINT" />
+        <result column="unit" property="unit" jdbcType="VARCHAR" />
+        <result column="weight" property="weight" jdbcType="DECIMAL" />
+        <result column="market_enable" property="marketEnable" jdbcType="SMALLINT" />
+        <result column="brief" property="brief" jdbcType="VARCHAR" />
+        <result column="price" property="price" jdbcType="DECIMAL" />
+        <result column="cost" property="cost" jdbcType="DECIMAL" />
+        <result column="mktprice" property="mktprice" jdbcType="DECIMAL" />
+        <result column="have_spec" property="haveSpec" jdbcType="SMALLINT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify" property="lastModify" jdbcType="TIMESTAMP" />
+        <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+        <result column="buy_count" property="buyCount" jdbcType="INTEGER" />
+        <result column="disabled" property="disabled" jdbcType="SMALLINT" />
+        <result column="store" property="store" jdbcType="INTEGER" />
+        <result column="point" property="point" jdbcType="INTEGER" />
+        <result column="sort" property="sort" jdbcType="INTEGER" />
+        <result column="grade" property="grade" jdbcType="INTEGER" />
+        <result column="image" property="image" jdbcType="VARCHAR" />
+        <result column="isgroupbuy" property="isgroupbuy" jdbcType="SMALLINT" />
+        <result column="volume" property="volume" jdbcType="DECIMAL" />
+        <result column="SHIP_ID" property="shipId" jdbcType="INTEGER" />
+        <result column="SHIP_TYPE" property="shipType" jdbcType="VARCHAR" />
+        <result column="SHIP_AMOUNT" property="shipAmount" jdbcType="DECIMAL" />
+        <result column="shop_store_id" property="shopStoreId" jdbcType="INTEGER" />
+        <result column="intro" property="intro" jdbcType="LONGVARCHAR" />
+        <result column="params" property="params" jdbcType="LONGVARCHAR" />
+        <result column="specs" property="specs" jdbcType="LONGVARCHAR" />
+    </resultMap>
+  
+  <select id="selectGiftPackageByParams" resultType="map">
+      	SELECT
+			gp_id AS gpId,
+	        gp_sn AS gpSn,
+	        gp_name AS gpName,
+	        brand_id AS brandId,
+	        com_id AS comId,
+	        type_id AS typeId,
+	        goods_type AS goodsType,
+	        unit,
+	        weight,
+	        market_enable AS marketEnable,
+	        brief,
+	        intro,
+	        price,
+	        cost,
+	        mktprice,
+	        params,
+	        specs,
+	        have_spec AS haveSpec,
+	        create_time AS createTime,
+	        last_modify AS lastModify,
+	        view_count AS viewCount,
+	        buy_count AS buyCount,
+	        disabled,
+	        store,
+	        point,
+	        sort,
+	        grade,
+	        image,
+	        alarm_num AS alarmNum,
+	        isgroupbuy,
+	        volume,
+	        SHIP_ID,
+	        SHIP_TYPE AS shipType,
+	        SHIP_AMOUNT AS shipAmount,
+	        shop_store_id AS shopStoreId
+		FROM
+		  	shop_giftpackage
+      where market_enable=1 
+          <if test="gpName != null">
+              AND gp_name LIKE CONCAT('%','${gpName}','%')
+          </if>
+		order by last_modify desc
+    </select>
+    
+    <update id="doGiftPackageSalesExamine">
+    	update shop_giftpackage SET market_enable = #{marketEnable} where gp_id = #{gpId}
+    </update>
+</mapper>

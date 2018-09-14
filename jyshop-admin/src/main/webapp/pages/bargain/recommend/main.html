@@ -1,0 +1,70 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+    <div id="searchForm">
+
+        <div class="col-md-2" style="width: 200px">
+            <input type="text" class="form-control search-query"
+                   name="name" placeholder="请输入查询条件" />
+        </div>
+
+        <div class="col-md-1" style="width: 105px;">
+            <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+        </div>
+    </div>
+    <div>
+        <div class="col-md-11" style="text-align: left;padding-bottom: unset">
+            <button class="btn btn-labeled btn-primary" onclick="javascript:showModal('添加关联商品', '/admin/bargain/recommendSelect','860px')"><span class="btn-label icon fa fa-plus"></span>添加商品</button>
+        </div>
+    </div>
+</div>
+<div class="openAppGrid">
+    <div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                // {field:"checkbox",name:"",value:"bargainId",event:""},
+                {field:"image",text:"活动图", sortColumn:"goodsId",formatter:function(index, content, data){
+                        return "<img src='"+data.image+"' width='50' height='50' >";
+                    }},
+                {field:"name", text:"商品名称", sortColumn:"name"},
+                {field:"mktprice", text:"市场价", sortColumn:"mktprice"},
+                {field:"price", text:"现价", sortColumn:"price"},
+                {field:"store", text:"库存", sortColumn:"store"},
+                {field:"storeName", text:"所属店铺", sortColumn:"storeName"},
+                {field:"createTime", text:"更新时间",sortColumn:"createTime",formatter:function(index, content, data){
+                        if(typeof content!=null)
+                            return new Date(content).toLocaleString();
+                        else
+                            return "<font color='red'>获取下单时间失败</font>";
+                    }},
+                {field:"goodsId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                    var detailUrl = "/admin/goods/preDetailGoods/" + content;
+                    var cancelUrl = "/admin/bargain/recommendDel/"+ content;
+                    var detail = "<a href='javascript:goPage(\""+detailUrl+"\");' data-original-title='查看' class='btn btn-xs btn-default add-tooltip'><i class='fa fa-file'>查看</i></a>";
+                    var del    = "<a href='javascript:showCfm(\"确定删除该砍价活动？\n\", \"" + cancelUrl+"\")' data-original-title='取消' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>取消</i></a>";
+                    return detail+"&nbsp;"+del;
+                }}
+            ],
+            url: _urlPath + "admin/bargain/recommendPage",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+
+        $('.date').datetimepicker({
+            language: 'zh-CN',
+            monthsShort: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 0, //是否显示上下午
+            initialDate: new Date()
+        });
+    });
+    /*]]>*/
+</script>

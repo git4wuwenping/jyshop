@@ -1,0 +1,94 @@
+<style>
+.main {
+	text-align: center; /*让div内部文字居中*/
+	border-radius: 20px;
+	width: 300px;
+	height: 200px;
+	margin: auto;
+	border: 1px dashed #000;
+}
+</style>
+<br />
+<br />
+<div class="main">
+	<br /> <br />
+	<div th:if="${isExpire == false}">
+		<div class="col-sm-6">
+			<label class="control-label">请输入财务密码：</label>
+		</div>
+
+		<div class="col-sm-8">
+			<input class="form-control" type="password" id="password" />
+		</div>
+		<div class="col-sm-5">
+			<input type="button" id="submitBtn" value="确认" />
+		</div>
+
+	</div>
+	<div th:if="${isExpire == true}">
+		<h5>您的密码依然有效，请进行其他财务操作！</h5>
+		<br/>
+		<br/>
+		<p class="page-404">
+			<span>页面自动</span> <a href="javascript:redirectLastPage();">跳转</a> <span>等待时间：</span>
+			<span class="second">3</span>
+		</p>
+	</div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	           
+    redirectLastPage=function(){
+       	goPage([[${url}]]);
+    }
+	$(function(){
+		var isExpire = [[${isExpire}]] ;
+		if(isExpire == true){
+			var wait = $(".second").html();  
+	        timeOut();  
+		}
+		
+        /**  
+         * 实现倒计时  
+         */  
+        function timeOut() {  
+            if(wait != 0) {  
+                setTimeout(function() {  
+                    $('.second').text(--wait);  
+                    timeOut();  
+                }, 1000);  
+            }else{
+            	redirectLastPage();
+            }
+        }  
+		
+        
+		
+		
+		$("#submitBtn").click(function(){
+			var url = "/admin/financialMgr/passwd/checkFinancialPasswd";
+			var redirectUrl = [[${url}]];
+			if(_urlPath!="/")
+				url=_urlPath+url;
+			$.ajax({
+		        url: url,
+		        data: {"password":$("#password").val()},
+		        type: "post",
+		        dataType:"json",
+		        success: function (req){
+		            if (req.retcode == 0) {
+		            	goPage(redirectUrl);
+		                $.Mod.Close(req.retmsg);
+		                
+		            } else {
+		            	alert(req.retmsg+":"+req.data);
+		                //modalErr(req.retmsg);
+		            }
+		        }
+		    });
+			
+			
+		});
+	});
+	/*]]>*/
+</script>

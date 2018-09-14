@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.MemberPointDao">
+
+	<!-- 批量添加 -->
+	<insert id="batchInsert">
+		insert into shop_member_point(order_id,
+		order_sn,type,point,point_type,member_id,create_time) values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.orderId}, #{item.orderSn}, #{item.type},
+			#{item.point},
+			#{item.pointType}, #{item.memberId}, #{item.createTime})
+		</foreach>
+	</insert>
+
+	<select id="selectMemberRedPointList" resultType="map">
+		SELECT
+		sm.face,
+		sm.weixin_face as weixinFace,
+		sm.member_id as memberId,
+		sm.nickname,
+		sm.identity_id as identityId,
+		IFNULL(sm.red_point,0) as redPoint
+		FROM
+		shop_member sm
+		WHERE
+		1=1
+		<if test="memberId != null ">
+			and sm.member_id like #{memberId}
+		</if>
+		<if test="nickname != null ">
+			and sm.nickname like #{nickname}
+		</if>
+		<if test="memberType != null ">
+			and sm.identity_id=#{memberType}
+		</if>
+		<!-- AND sm.red_point > 0 -->
+		order by sm.red_point desc
+	</select>
+
+
+	<select id="queryMemberInfoByMemberId" resultType="map">
+		SELECT
+		sm.face,
+		sm.weixin_face as weixinFace,
+		sm.member_id as memberId,
+		sm.nickname,
+		sm.identity_id as
+		identityId,
+		sm.red_point as redPoint,
+		sum(smp.point) as redPointConfirmed
+		FROM
+		shop_member sm
+		left join shop_member_point smp
+		on sm.member_id=smp.member_id
+		WHERE sm.member_id = #{memberId} and smp.point_type=2
+	</select>
+	
+	<select id="getMemberRedPointInfo" resultType="map">
+		(SELECT
+			smpe.status,
+			sum(smp.point) AS pointSum
+		FROM
+			shop_member_point smp
+		LEFT JOIN shop_member_point_ext smpe ON smp.id = smpe.mp_id
+		WHERE
+			smp.point_type = 2
+		AND smp.type = 2
+		AND smpe. STATUS IN (0, 1, 2, 3)
+		AND smp.member_id = #{memberId}
+		GROUP BY
+			smpe.STATUS
+		) union all (
+		select 
+		   '100' as status , IFNULL(sum(a.point),0) as pointSum 
+		from 
+		    shop_member_point a 
+		where 
+		    a.member_id = #{memberId}
+		and a.type in  (0,1) 
+		and a.point_type = 2 
+		)
+	</select>
+	
+	<!-- 查询待确认积分列表 -->
+	<select id="selectRedPointUnconfirmedList" resultType="map" >
+		(select 'firstProfit' as type,t3.order_sn as orderSn,t3.payment_time as paymentTime,IFNULL(sum((t4.GOODS_PRICE-t4.COST)*t4.BUY_COUNT),0) as profit,t3.order_amount as orderAmount,'0' as orderType from
+			(SELECT
+				t1.order_id,t1.order_sn,
+				t1.payment_time,t1.order_amount
+			FROM
+				shop_order t1
+			INNER JOIN shop_member t2 ON t1.MEMBER_ID = t2.member_id
+			AND t2.is_profit = 0
+			WHERE
+				t1.profit_status = 0
+			AND t1.order_status > 0 and t1.ORDER_STATUS != 8
+			AND t1.ORDER_AMOUNT >= 200
+			AND t1.MEMBER_ID= #{memberId}
+			ORDER BY
+				t1.PAYMENT_TIME
+			limit 1
+			) t3 left join shop_order_items t4 on t3.order_id=t4.order_id
+			where t4.GOODS_PRICE-t4.COST > 0
+		)union all
+		(select 'firstProfit' as type,t3.order_sn as orderSn,t3.payment_time as paymentTime,IFNULL(sum((t4.GOODS_PRICE-t4.COST)*t4.BUY_COUNT),0) as profit,t3.order_amount as orderAmount,'1' as orderType from
+			(SELECT
+				t1.order_id,t1.order_sn,
+				t1.payment_time,t1.order_amount
+			FROM
+				shop_gift_order t1
+			INNER JOIN shop_member t2 ON t1.MEMBER_ID = t2.member_id
+			AND t2.is_profit = 0
+			WHERE
+				t1.profit_status = 0
+			AND t1.order_status > 0 and t1.ORDER_STATUS != 8
+			AND t1.MEMBER_ID= #{memberId}
+			ORDER BY
+				t1.PAYMENT_TIME
+			limit 1
+			) t3 left join shop_gift_order_items t4 on t3.order_id=t4.order_id
+			where t4.GOODS_PRICE-t4.COST > 0
+		)union all
+		(select 'secProfit' as type,t3.order_sn as orderSn,t3.payment_time as paymentTime,IFNULL(sum((t4.GOODS_PRICE-t4.COST)*t4.BUY_COUNT),0) as profit,t3.order_amount as orderAmount,'0' as orderType from
+					(SELECT
+						t1.order_id,t1.order_sn,
+						t1.payment_time,t1.order_amount
+					FROM
+						shop_order t1
+					INNER JOIN shop_member t2 ON t1.MEMBER_ID = t2.member_id
+					AND t2.is_profit = 1
+					WHERE
+						t1.profit_status = 0
+					AND t1.order_status > 0 and t1.ORDER_STATUS != 8
+					AND t1.MEMBER_ID= #{memberId}
+					and t1.PAYMENT_TIME > t2.profit_time
+					) t3 left join shop_order_items t4 on t3.order_id=t4.order_id
+					where t4.GOODS_PRICE-t4.COST > 0
+		group by t3.order_id
+		)union all
+		(select 'secProfit' as type,t3.order_sn as orderSn,t3.payment_time as paymentTime,IFNULL(sum((t4.GOODS_PRICE-t4.COST)*t4.BUY_COUNT),0) as profit,t3.order_amount as orderAmount,'1' as orderType from
+					(SELECT
+						t1.order_id,t1.order_sn,
+						t1.payment_time,t1.order_amount
+					FROM
+						shop_gift_order t1
+					INNER JOIN shop_member t2 ON t1.MEMBER_ID = t2.member_id
+					AND t2.is_profit = 1
+					WHERE
+						t1.profit_status = 0
+					AND t1.order_status > 0 and t1.ORDER_STATUS != 8
+					AND t1.MEMBER_ID= #{memberId}
+					and t1.PAYMENT_TIME > t2.profit_time
+					) t3 left join shop_gift_order_items t4 on t3.order_id=t4.order_id
+					where t4.GOODS_PRICE-t4.COST > 0
+		group by t3.order_id
+		)union all
+		(select 'subProfit' as type,t3.order_sn as orderSn,t3.payment_time as paymentTime,IFNULL(sum((t4.GOODS_PRICE-t4.COST)*t4.BUY_COUNT),0) as profit,t3.order_amount as orderAmount,'0' as orderType from
+				(SELECT
+					t1.order_id,t1.order_sn,t1.PAYMENT_TIME,t1.order_amount
+					FROM
+						shop_order t1
+					INNER JOIN shop_member t2 ON t1.MEMBER_ID = t2.member_id
+					WHERE
+						t1.profit_status = 0
+					AND t1.order_status > 0 and t1.ORDER_STATUS != 8
+					AND t2.PARENT_ID= #{memberId}
+					and t1.PAYMENT_TIME > t2.become_lower_time
+					) t3 left join shop_order_items t4 on t3.order_id=t4.order_id
+					where t4.GOODS_PRICE-t4.COST > 0
+		group by t3.order_id
+		)union all
+		(select 'subProfit' as type,t3.order_sn as orderSn,t3.payment_time as paymentTime,IFNULL(sum((t4.GOODS_PRICE-t4.COST)*t4.BUY_COUNT),0) as profit,t3.order_amount as orderAmount,'1' as orderType from
+				(SELECT
+					t1.order_id,t1.order_sn,t1.PAYMENT_TIME,t1.order_amount
+					FROM
+						shop_gift_order t1
+					INNER JOIN shop_member t2 ON t1.MEMBER_ID = t2.member_id
+					WHERE
+						t1.profit_status = 0
+					AND t1.order_status > 0 and t1.ORDER_STATUS != 8
+					AND t2.PARENT_ID= #{memberId}
+					and t1.PAYMENT_TIME > t2.become_lower_time
+					) t3 left join shop_gift_order_items t4 on t3.order_id=t4.order_id
+					where t4.GOODS_PRICE-t4.COST > 0
+		group by t3.order_id
+		)
+	</select>
+	<!-- 查询获取积分明细 -->
+	<select id="getMemberRedPointGainList" resultType="map">
+		select a.type,a.point,a.create_time as createTime,b.ORDER_AMOUNT as orderAmount,a.order_sn as orderSn,'1' as pointStatus,b.PAYMENT_TIME as paymentTime
+		from 
+			shop_member_point a 
+		LEFT JOIN 
+			shop_order b on a.order_id = b.order_id <!-- and a.member_id = b.MEMBER_ID 考虑下级分润 -->
+		where 
+			a.member_id = #{memberId}
+  		and a.type = 0
+  		and a.point_type = 2;
+	</select>
+	<select id="getOrderProfit" resultType="map">
+		select a.member_id as memberId,b.nickname as nickname,a.point_type as pointType,a.point,a.get_type as getType
+		from 
+			shop_member_point a 
+		LEFT JOIN 
+			shop_member b on a.member_id = b.MEMBER_ID
+		where 
+			a.order_id = #{orderId};
+	</select>
+</mapper>

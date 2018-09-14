@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.AddressDao">
+
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.Address">
+		<id column="address_id" jdbcType="VARCHAR" property="addressId" />
+		<result column="address_name" jdbcType="VARCHAR" property="addressName" />
+		<result column="name_py" jdbcType="VARCHAR" property="namePy" />
+		<result column="name_spy" jdbcType="VARCHAR" property="nameSpy" />
+		<result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+		<result column="region_id" jdbcType="VARCHAR" property="regionId" />
+		<result column="region" jdbcType="VARCHAR" property="region" />
+		<result column="region_py" jdbcType="VARCHAR" property="regionPy" />
+		<result column="region_spy" jdbcType="VARCHAR" property="regionSpy" />
+		<result column="country_id" jdbcType="VARCHAR" property="countryId" />
+		<result column="country" jdbcType="VARCHAR" property="country" />
+		<result column="country_py" jdbcType="VARCHAR" property="countryPy" />
+		<result column="country_spy" jdbcType="VARCHAR" property="countrySpy" />
+		<result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+		<result column="province" jdbcType="VARCHAR" property="province" />
+		<result column="province_py" jdbcType="VARCHAR" property="provincePy" />
+		<result column="province_spy" jdbcType="VARCHAR" property="provinceSpy" />
+		<result column="city_id" jdbcType="VARCHAR" property="cityId" />
+		<result column="city" jdbcType="VARCHAR" property="city" />
+		<result column="city_py" jdbcType="VARCHAR" property="cityPy" />
+		<result column="city_spy" jdbcType="VARCHAR" property="citySpy" />
+		<result column="district_id" jdbcType="VARCHAR" property="districtId" />
+		<result column="district" jdbcType="VARCHAR" property="district" />
+		<result column="district_py" jdbcType="VARCHAR" property="districtPy" />
+		<result column="district_spy" jdbcType="VARCHAR" property="districtSpy" />
+		<result column="town_id" jdbcType="VARCHAR" property="townId" />
+		<result column="town" jdbcType="VARCHAR" property="town" />
+		<result column="town_py" jdbcType="VARCHAR" property="townPy" />
+		<result column="town_spy" jdbcType="VARCHAR" property="townSpy" />
+		<result column="street_id" jdbcType="VARCHAR" property="streetId" />
+		<result column="street" jdbcType="VARCHAR" property="street" />
+		<result column="street_py" jdbcType="VARCHAR" property="streetPy" />
+		<result column="street_spy" jdbcType="VARCHAR" property="streetSpy" />
+		<result column="address_class" jdbcType="VARCHAR" property="addressClass" />
+		<result column="x" jdbcType="VARCHAR" property="x" />
+		<result column="y" jdbcType="VARCHAR" property="y" />
+	</resultMap>
+	
+	<!-- 根据地址Id查询地址名称 -->
+	<select id="selectAddressName" resultType="string">
+		select address_name from  bs_address where address_id=#{addressId}
+	</select>
+	
+	<!-- 根据父ID查询子地区 -->
+	<select id="selectByParentId" resultMap="baseResultModel">
+		select * from  bs_address where parent_id=#{parentId}
+	</select>
+	
+	<!-- 查询所有的省 -->
+	<select id="selectProvince" resultMap="baseResultModel">
+		select * from  bs_address where address_class=3 and city is null order by name_spy asc
+	</select>
+	
+	<!-- 查询所有的市 -->
+	<select id="selectCity" resultMap="baseResultModel">
+		select * from  bs_address where address_class=4 order by name_spy asc
+	</select>
+	
+	<!-- 查询所有的区 -->
+	<select id="selectDistrict" resultMap="baseResultModel">
+		select * from  bs_address where address_class=5 order by name_spy asc
+	</select>
+	
+</mapper>

@@ -1,0 +1,117 @@
+<div class="page-header"
+	style="padding: 10px 20px; margin: -18px 0px 0px">
+	<input id="advSpaceId" hidden="true" th:value="${advSpaceId}" />
+	<div id="searchForm">
+		<div class="col-md-1" style="text-align: left; padding-bottom: unset">
+			<button id="addBtn" class="btn btn-labeled btn-primary"
+				onclick="javascript:doAdAdd();">
+				<span class="btn-label icon fa fa-plus"></span>添加广告
+			</button>
+		</div>
+		<div class="col-md-1" style="text-align: left; padding-bottom: unset">
+			<button class="btn btn-labeled btn-primary"
+				onclick="javascript:goPage('/admin/adv/advSpaceMain');">
+				<span class="btn-label glyphicon glyphicon-chevron-left"></span>返回
+			</button>
+		</div>
+	</div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	doAdAdd = function() {
+		url = "/admin/adv/preAddAdv?advSpaceId=" + $("#advSpaceId").val();
+		showModal('添加广告', url);
+	}
+	$(function() {
+		$("#openAppGrid")
+				.sgrid(
+						{
+							columns : [
+									{
+										field : "advOrder",
+										style : "text-align:center",
+										text : "序号"
+									},
+									{
+										field : "id",
+										style : "text-align:center",
+										text : "广告ID"
+									},
+									{
+										field : "advTitle",
+										style : "text-align:center",
+										text : "广告标题"
+									},
+									{
+										field : "advSpaceId",
+										style : "text-align:center",
+										text : "所属广告位-ID"
+									},
+									{
+										field : "title",
+										style : "text-align:center",
+										text : "所属广告位-标题"
+									},
+									{
+										field : "used",
+										text : "状态",
+										width : 80,
+										style : "text-align:center",
+										formatter : function(index, content,
+												data) {
+											var updateUsedUrl = "/admin/adv/updateAdvUsed/"
+													+ data.id;
+											var opDiv = "";
+											if (content == 0) {
+												return opDiv
+														+ "&nbsp;已开启"
+														+ "&nbsp;<a href='javascript:showMyCfm(\"停用\", \""
+														+ updateUsedUrl
+														+ "\");'  data-original-title='停用' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>停用</i></a>";
+											} else {
+												return opDiv
+														+ "&nbsp;已停用"
+														+ "&nbsp;<a href='javascript:showMyCfm(\"开启\", \""
+														+ updateUsedUrl
+														+ "\");'  data-original-title='开启' class='btn btn-xs btn-primary add-tooltip'><i class='fa fa-anchor'>开启</i></a>";
+
+											}
+										}
+									},
+									{
+										field : "id",
+										text : "操作",
+										width : 80,
+										style : "text-align:center",
+										formatter : function(index, content,
+												data) {
+											var editUrl = "/admin/adv/preEditAdv/"
+													+ content;
+											var delUrl = "/admin/adv/delAdv/"
+													+ content;
+											var opDiv = "";
+											return opDiv
+													+ "&nbsp;<a href='javascript:showModal(\"修改广告\", \""
+													+ editUrl
+													+ "\");' data-original-title='修改' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>修改</i></a>"
+													+ "&nbsp;<a href='javascript:showCfm(\"确定删除该广告\", \""
+													+ delUrl
+													+ "\");'  data-original-title='删除' class='btn btn-xs btn-danger add-tooltip'><i class='fa fa-times'>删除</i></a>";
+										}
+									} ],
+							cls : "",
+							url : _urlPath + "admin/adv/pageAdvAjax/"
+									+ $("#advSpaceId").val(),
+							sort : "id",
+							order : "desc",
+							pagination : false,
+							onLoad : function() {
+								$(".add-tooltip").tooltip();
+							}
+						});
+	});
+	/*]]>*/
+</script>

@@ -1,0 +1,464 @@
+<form id="submitForm" class="form-horizontal">
+    <input name="typeId" th:value="${dlyType.typeId}" type="text" hidden="hidden" />
+    <div class="panel">
+        <div class="panel-heading">
+            <span class="panel-title">添加配送方式</span>
+        </div>
+        <div class="panel-body">
+            <div class="tab-content">
+                <div class="col-sm-12 tab-pane active" id="bs-tabdrop-pill1">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <span class="panel-title">基本信息</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="name"><font
+                                        color="red">*</font>配送方式名称：</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="text" id="name" name="name" th:value="${dlyType.name}"
+                                           placeholder="请填写配送方式名称" style="width: 400px"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label"><font
+                                        color="red">*</font>费用类型：</label>
+                                <div class="col-sm-8">
+                                    <div class="radio">
+                                        <div class="radio">
+                                            <label style="display: inline-block; width: 100px;">
+                                                <input value="1" name="isSame" type="radio" class="ace" th:checked="${dlyType.isSame==1}?true:false"/>统一设置
+                                            </label>
+                                            <label style="display: inline-block; width: 200px;">
+                                                <input value="0" name="isSame" type="radio" class="ace" th:checked="${dlyType.isSame==0}?true:false"/>指定配送地区和费用
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label"><font
+                                        color="red">*</font>首重(kg)：</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="text" name="firstWeight" th:value="${dlyType.firstWeight}" style="width: 400px"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label"><font
+                                        color="red">*</font>首重费用：</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="text" name="firstWeightPrice" th:value="${dlyType.firstWeightPrice}" style="width: 400px"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label"><font
+                                        color="red">*</font>续重(kg)：</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="text" name="additionalWeight" th:value="${dlyType.additionalWeight}" style="width: 400px"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label"><font
+                                        color="red">*</font>续重费用：</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="text" name="additionalWeightPrice" th:value="${dlyType.additionalWeightPrice}" style="width: 400px"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label"><font
+                                        color="red">*</font>状态：</label>
+                                <div class="col-sm-8">
+                                    <div class="radio">
+                                        <div class="radio">
+                                            <label style="display: inline-block; width: 50px;">
+                                                <input value="1" name="disabled" type="radio" class="ace" th:checked="${dlyType.disabled==1}?true:false"/>启用
+                                            </label>
+                                            <label style="display: inline-block; width: 50px;">
+                                                <input value="0" name="disabled" type="radio" class="ace" th:checked="${dlyType.disabled==0}?true:false"/>停用
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="option_panel_remove" th:if="${dlyType.isSame == 0}">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <span class="panel-title">包邮地区</span>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group" th:each="dlyTypeArea:${dlyTypeAreaList}" th:if="${dlyTypeArea.freeDly == 1}">
+                                    <label class="col-sm-3 control-label"><font color="red">*</font>包邮地区设置：</label>
+                                    <div class="col-sm-8">
+                                        <a href="javascript:void(0)" class="btn btn-info" th:id="${dlyTypeArea.id}" onclick="areaSetting(this)" id="select_free_delivery_area">点击选择包邮地区</a>
+                                    </div>
+                                    <input class="form-control" type="hidden" name="firstWeightPrices" value="0"/>
+                                    <input class="form-control" type="hidden" name="additionalWeightPrices" value="0"/>
+                                    <label class="col-sm-3 control-label"></label>
+                                    <div class="col-sm-8" name="appdiv" th:text="${dlyTypeArea.areaNameGroup}">
+
+                                    </div>
+                                    <input name="area_district_ids" th:value="${dlyTypeArea.areaIdGroup}" type="text" hidden="hidden" />
+                                    <input name="area_district_names" th:value="${dlyTypeArea.areaNameGroup}" type="text" hidden="hidden" />
+                                    <input name="dly_type" type="text" hidden="hidden" />
+                                    <input name="id" type="text" th:value="${dlyTypeArea.id}" hidden="hidden" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <span class="panel-title">不包邮地区费用设置<font color="red">(没有设置的地区按照统一设置计算费用)</font></span>
+                            </div>
+                            <div class="panel-body append">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">不包邮地区运费设置：</label>
+                                    <div class="col-sm-8">
+                                        <a href="javascript:void(0)" class="btn btn-info" id="append_btn" onclick="appendSetting(this)">点击为指定的地区设置运费</a>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="panel_parent" th:each="dlyTypeArea:${dlyTypeAreaList}" th:if="${dlyTypeArea.freeDly == 0}">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">地区选择：</label>
+                                        <div class="col-sm-8">
+                                            <a href="javascript:void(0)" class="btn btn-info no-free" th:id="${dlyTypeArea.id}" onclick="areaSetting(this)">点击选择地区</a>
+                                            <a href="javascript:void(0)" style="margin-left: 200px" onclick="deleteCurrentPanel(this)">删除</a>
+                                        </div>
+                                        <label class="col-sm-3 control-label"></label>
+                                        <div class="col-sm-8" name="appdiv" th:text="${dlyTypeArea.areaNameGroup}">
+
+                                        </div>
+                                        <input type="text" hidden="hidden" name="area_district_ids" th:value="${dlyTypeArea.areaIdGroup}"/>
+                                        <input type="text" hidden="hidden" name="area_district_names" th:value="${dlyTypeArea.areaNameGroup}"/>
+                                        <input name="id" type="text" hidden="hidden" th:value="${dlyTypeArea.id}"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">首重费用：</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" name="firstWeightPrices" th:value="${dlyTypeArea.firstWeightPrice}" style="width: 400px"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">续重费用：</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" name="additionalWeightPrices" th:value="${dlyTypeArea.additionalWeightPrice}" style="width: 400px"/>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div align="center">
+            <button id="sumbitBtn" class="btn btn-primary">提交</button>
+        </div>
+    </div>
+</form>
+<div id="option_panel" style="display: none">
+	<div id="option_panel_remove">
+	    <div class="panel">
+	        <div class="panel-heading">
+	            <span class="panel-title">包邮地区</span>
+	        </div>
+	        <div class="panel-body">
+	            <div class="form-group">
+	                <label class="col-sm-3 control-label"><font color="red">*</font>包邮地区设置：</label>
+	                <div class="col-sm-8">
+	                    <a href="javascript:void(0)" class="btn btn-info" onclick="areaSetting(this)">点击选择包邮地区</a>
+	                </div>
+	                <input class="form-control" type="hidden" name="firstWeightPrices" value="0"/>
+	                <input class="form-control" type="hidden" name="additionalWeightPrices" value="0"/>
+	                <label class="col-sm-3 control-label"></label>
+	                <div class="col-sm-8" name="appdiv">
+	
+	                </div>
+	                <input name="area_district_ids" type="text" hidden="hidden" />
+	                <input name="area_district_names" type="text" hidden="hidden" />
+	                <input name="id" type="text" hidden="hidden" />
+	            </div>
+	        </div>
+	    </div>
+	    <div class="panel">
+	        <div class="panel-heading">
+	            <span class="panel-title">不包邮地区费用设置<font color="red">(没有设置的地区按照统一设置计算费用)</font></span>
+	        </div>
+	        <div class="panel-body append">
+	            <div class="form-group">
+	                <label class="col-sm-3 control-label">不包邮地区运费设置：</label>
+	                <div class="col-sm-8">
+	                    <a href="javascript:void(0)" class="btn btn-info" onclick="appendSetting(this)">点击为指定的地区设置运费</a>
+	                </div>
+	            </div>
+	            <hr/>
+	        </div>
+	    </div>
+</div>
+</div>
+<input id="usedDistrictIds" name="usedDistrictIds" type="text" hidden="hidden" />
+<input id="dlyTypeAreaJson" name="dlyTypeAreaJson" th:value="${dlyTypeAreaJson}" type="text" hidden="hidden" />
+<input id="count" name="count" type="text" hidden="hidden" value="0"/>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+
+    function areaSetting(obj){
+        var id = $(obj).attr("id");
+        var position = "";
+        if(typeof id != 'undefined' && id !='' && id != null){
+            position = 'area_panel' + 10000 * id;
+        } else {
+            id = parseInt($("#count").val()) + 1;
+            $("#count").val(id);
+            position = "area_panel_" + id;
+        }
+        console.log("position=====" + position);
+        $(obj).parent().siblings("div[name='appdiv']").attr("id", position)
+        $(obj).parent().siblings("input[name='area_district_ids']").attr("id", position + "_DistrictIds")
+        $(obj).parent().siblings("input[name='area_district_names']").attr("id", position + "_DistrictNames")
+        showModal("选择城市" + "<input position='"+position+"' class='panel_position' hidden='hidden' />", '/admin/dlyType/preSelectProvinces', 1000,700);
+    }
+
+    function deleteCurrentPanel(obj){
+    	var idArr = $("#usedDistrictIds").val().split(",");
+    	var delIdArr = $(obj).parents("div[class='panel_parent']").find("input[name='area_district_ids']").val().split(",");
+    	$(delIdArr).each(function(i,n){
+    		idArr.splice($.inArray(n,idArr),1);
+    	});
+    	$("#usedDistrictIds").val(idArr.join(","));
+        $(obj).parents("div[class='panel_parent']").remove();
+    }
+
+    function appendSetting(obj){
+        var position = parseInt($("#count").val()) + 1;
+        $("#count").val(position);
+        var idName = "area_panel_" + position;
+        //console.log("idName==" + idName);
+        $(obj).parents("div[class='panel-body append']").append(
+            "    <div class='panel_parent'>" +
+            "    <div class='form-group'>" +
+            "        <label class='col-sm-3 control-label'>地区选择：</label>" +
+            "        <div class='col-sm-8'>" +
+            "            <a href='javascript:void(0)' class='btn btn-info' onclick='areaSetting(this)'>点击选择地区</a>" +
+            "            <a href='javascript:void(0)' style='margin-left: 200px' onclick='deleteCurrentPanel(this)'>删除</a>" +
+            "        </div>" +
+            "        <label class='col-sm-3 control-label'></label>" +
+            "        <div class='col-sm-8' name='appdiv'>" +
+            "        </div>" +
+            "        <input type='text' hidden='hidden' name='area_district_ids'/>" +
+            "        <input type='text' hidden='hidden' name='area_district_names"+"'/>" +
+            "        <input name='id' type='text' hidden='hidden' /> " +
+            "     </div>" +
+            "    <div class='form-group'>" +
+            "        <label class='col-sm-3 control-label'>首重费用：</label>" +
+            "        <div class='col-sm-8'>" +
+            "            <input class='form-control' type='text' name='firstWeightPrices' style='width: 400px'/>" +
+            "        </div>" +
+            "    </div>" +
+            "    <div class='form-group'>" +
+            "        <label class='col-sm-3 control-label'>续重费用：</label>" +
+            "        <div class='col-sm-8'>" +
+            "            <input class='form-control' type='text' name='additionalWeightPrices' style='width: 400px'/>" +
+            "        </div>" +
+            "    </div>" +
+            "    <hr/>"+
+            "    </div>"
+        );
+    }
+
+    $(function () {
+
+        $("#sumbitBtn").click(function(){
+            $('#submitForm').data('bootstrapValidator').validate();
+            if($('#submitForm').data('bootstrapValidator').isValid()){
+                $("#sumbitBtn").attr("disabled",true);
+                $.ajax({
+                    url: _urlPath +'admin/dlyType/editDlyType',
+                    method: "POST",
+                    data:$('#submitForm').serialize(),
+                    dataType:"json",
+                    success:function(reslut) {
+                        if (reslut.retcode == 0) {
+                            $.growl.notice({title:'操作成功', message: reslut.retmsg });
+                            goPage('/admin/dlyType/dlyTypeMain');
+                        }else {
+                            $("#sumbitBtn").attr("disabled",false);
+                            $.Err(reslut.retmsg);
+                        }
+                    }
+                });
+            }
+        })
+
+        $('#submitForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入配送方式名称'
+                        }
+                    }
+                },
+                firstWeight: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入首重'
+                        },
+                        regexp: {
+                            regexp: /^\d+(\.\d+)?$/,
+                            message: '请输入非负的数字~'
+                        }
+                    }
+                },
+                additionalWeight: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入续重'
+                        },
+                        regexp: {
+                            regexp: /^\d+(\.\d+)?$/,
+                            message: '请输入非负的数字~'
+                        }
+                    }
+                },
+                firstWeightPrice: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入首重费用'
+                        },
+                        regexp: {
+                            regexp: /^\d+(\.\d+)?$/,
+                            message: '请输入非负的数字~'
+                        }
+                    }
+                },
+                additionalWeightPrice: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入续重费用'
+                        },
+                        regexp: {
+                            regexp: /^\d+(\.\d+)?$/,
+                            message: '请输入非负的数字~'
+                        }
+                    }
+                }
+            }
+        });
+
+        $("input[type='radio'][name='isSame']").on("click", function () {
+            if($(this).val() == 1){
+            	$("#usedDistrictIds").val('');
+                $("#option_panel_remove").remove();
+            } else {
+                var obj = $("form div[id='option_panel_remove']").length;
+                if(typeof obj == 'undefined' || obj == null || obj == '' || obj == 0)
+                    $("#bs-tabdrop-pill1").append($("#option_panel").html());
+            }
+        });
+    });
+
+    var arrayTools ={
+
+        /*数组转为字符串，用逗号隔开*/
+        arrayToStr: function arrayToStr(arr) {
+            var str = "";
+            for(var i in arr)
+                str += arr[i] + ",";
+            str = str.substr(0,str.length-1);
+            return str;
+        },
+
+        /*字符串转为数组，用逗号切割*/
+        strToArr: function strToArr(str) {
+            var arr = [];
+            if(str.indexOf(",") > -1)
+                arr = str.split(",");
+            else
+                arr.push(str)
+            return arr;
+        },
+        /*往数组中添加元素*/
+        pushToArr: function pushToArr(arr, obj) {
+            if(Array.isArray(arr)){
+                if(arr.length == 0){
+                    arr.push(obj);
+                } else {
+                    for(var i in arr){
+                        if(arr[i] == obj){
+                            break;
+                        }
+                        if(i == arr.length - 1){
+                            arr.push(obj);
+                        }
+                    }
+                }
+                return arr;
+            }
+        },
+        /*是否存在于数组中*/
+        isInArr: function isInArr(arr, obj) {
+            if(Array.isArray(arr)){
+                if(arr.length == 0){
+                    return false;
+                } else {
+                    for(var i in arr){
+                        if(arr[i] == obj){
+                            return true;
+                        }
+                        if(i == arr.length - 1){
+                            return false;
+                        }
+                    }
+                }
+                return false;
+            }
+        },
+        /*往数组中移除元素*/
+        removeFromArr: function removeFromArr(arr, obj) {
+            if(Array.isArray(arr)){
+                var index = arr.indexOf(obj);
+                if(index > -1){
+                    arr.splice(index, 1);
+                }
+                return arr;
+            }
+        },
+        /*清空数组*/
+        arrEmpty: function arrEmpty(arr){
+            if(Array.isArray(arr)){
+                arr.splice(0,arr.length);
+            }
+        }
+    }
+
+    init.push(function () {
+        arrayTools.init();
+    });
+
+    var usedIdArr = [];
+    //初始化
+    var obj = $("#dlyTypeAreaJson").val();
+    if(typeof obj != 'undefined' && obj !='' && obj != null){
+        var dlyTypeAreaJson = eval("(" + obj + ")");
+        //console.log($("#dlyTypeAreaJson").val())
+        $.each(dlyTypeAreaJson,function(i,dlyTypeArea){
+            var obj = dlyTypeArea.areaIdGroup;
+            var arr = arrayTools.strToArr(obj);
+            for(var j in arr){
+                usedIdArr.push(arr[j]);
+            }
+        });
+        //console.log(arrayTools.arrayToStr(usedIdArr))
+        $("#usedDistrictIds").val(arrayTools.arrayToStr(usedIdArr));
+    }
+    /*]]>*/
+</script>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.BargainRecomGoodsDao">
+	
+	<!-- 查询推荐商品列表 -->
+	<select id="selectGoodsList" resultType="map">
+		select 
+			sg.goods_id as goodsId,
+			sg.name,
+			sg.image,
+			sg.mktprice,
+			sg.price
+		from shop_bargain_recom_goods sbrg 
+		inner join shop_goods sg on sbrg.goods_id=sg.goods_id and sg.market_enable=1
+	</select>
+
+	<select id="pageList" resultType="map">
+		select
+		  	sbrg.id,
+  			sg.goods_id as goodsId,
+  			sg.name,
+  			sg.image,
+  			sg.price,
+  			sc.store_name storeName,
+  			sg.store,
+  			sg.create_time createTime,
+  			sg.mktprice
+		from shop_bargain_recom_goods sbrg
+  		left join shop_goods sg
+  		on sbrg.goods_id=sg.goods_id
+  		LEFT JOIN shop_company sc
+  		on sg.com_id = sc.com_id
+      	and sg.market_enable=1
+		where 1=1
+		<if test="name != null and name != ''">
+			and sg.name like '%${name}%'
+		</if>
+	</select>
+
+	<!-- 批量添加 -->
+	<insert id="batchInsert">
+		insert into shop_bargain_recom_goods(id, goods_id) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id}, #{item.goodsId})
+		</foreach>
+	</insert>
+	
+</mapper>

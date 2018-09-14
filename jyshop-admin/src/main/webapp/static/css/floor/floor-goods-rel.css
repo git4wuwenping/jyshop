@@ -1,0 +1,2787 @@
+.floor_editor {
+	width: 100%;
+}
+
+.floor_m {
+	width: 949px;
+	float: left;
+	height: 30px;
+	line-height: 30px;
+	color: #333;
+	padding-left: 10px;
+	margin-top: 10px;
+	color: #39F;
+	font-size: 14px;
+}
+
+.floor_rel {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+/*楼层样式0*/
+.floor {
+	width: 1202px;
+	overflow: hidden;
+	clear: both;
+	margin-top: 20px;
+	position: relative;
+}
+
+.floor .flr_m_details {
+	background: #f8f8f8 url(/images/floor/floor_shadow.jpg) no-repeat left top;
+}
+
+.floor .floor_menu h3 {
+	background: url(/images/floor/floor.jpg);
+}
+
+.floor .floorclass .floorul .this {
+	color: #000;
+}
+
+.floor .ranking {
+	border-top: 3px solid #666;
+}
+
+.floor .ranking .rankul li .rankno1 {
+	background: url(/images/floor/ph_0.gif) no-repeat left 0%;
+}
+
+.floor .ranking .rankul li .rankno2 {
+	background: url(/images/floor/ph_0.gif) no-repeat left 50%;
+}
+
+.floor .ranking .rankul li .rankno3 {
+	background: url(/images/floor/ph_0.gif) no-repeat left 100%;
+}
+
+.floor .flr_sp_brand a:hover {
+	background: #ccc
+}
+
+.floor .floor_box {
+	width: 1202px;
+	float: left;
+	overflow: hidden
+}
+
+.floor .floorclass {
+	width: 809px;
+	float: left;
+	height: 551px;
+	overflow: hidden;
+}
+
+.floor .floorclass .floorul {
+	width: 809px;
+	margin-top: -1px;
+	height: 39px;
+	position: relative;
+	z-index: 3;
+	background: #EEEEEE;
+	border-bottom: 1px solid #777;
+}
+
+.floor .floorclass .floorul li {
+	border-top: 2px solid #ddd;
+	float: left;
+	width: 134px;
+	height: 37px;
+	text-align: center;
+	line-height: 37px;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	background: url(/images/floor/tabli.jpg) no-repeat left center;
+}
+
+.floor .floorclass .floorul .this {
+	background: #fff;
+	height: 38px;
+	position: relative;
+	border: 1px solid #777;
+	border-bottom: 0px;
+	width: 132px;
+	top: 1px;
+}
+
+.floor .ftab {
+	width: 809px;
+	overflow: hidden;
+}
+
+.floor .ftabone {
+	width: 809px;
+	overflow: hidden;
+	float: left;
+	position: relative;
+}
+
+.floor .classpro {
+	width: 820px;
+	float: left;
+	border-bottom: 1px solid #ddd;
+	background: url(/images/floor/flool_0_bg.jpg) repeat-x left top;
+	overflow: hidden;
+	z-index: 1;
+	position: relative;
+	top: -1px;
+	height: 512px;
+}
+
+.floor .productone {
+	width: 162px;
+	float: left;
+	background: #fff;
+	margin-top: 1px;
+}
+
+.floor .productone ul {
+	padding: 5px 4px;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #fff;
+	width: 145px;
+	height: 245px;
+	_padding: 4px;
+	_height: 247px;
+	position: relative;
+	z-index: 0;
+}
+
+.floor .productone ul li {
+	line-height: 20px;
+}
+
+.floor .productone ul li a {
+	color: #555555;
+}
+
+.floor .productone .this {
+	background: #F5F5F5;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.floor .productone ul .pronames {
+	height: 43px;
+	margin-top: 7px;
+	overflow: hidden;
+}
+
+.floor .center_span {
+	width: 145px;
+	height: 145px;
+	display: table-cell;
+	*display: block;
+	text-align: center;
+	position: relative;
+	vertical-align: middle;
+	padding-top: 5px;
+}
+
+.floor .center_span p {
+	*position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+.floor .center_span p img {
+	*position: relative;
+	top: -50%;
+	left: -50%;
+}
+
+.floor .ranking {
+	width: 198px;
+	float: left;
+	border-right: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	overflow: hidden;
+	position: relative;
+}
+
+.floor .rank_advertisment {
+	width: 198px;
+	float: left;
+	overflow: hidden;
+	height: 198px;
+	position: relative
+}
+
+.floor .ranking h1 {
+	height: 35px;
+	line-height: 35px;
+	font-size: 16px;
+	font-weight: bold;
+	border-bottom: 1px dashed #E1E1E1;
+	text-align: center;
+	color: #000;
+}
+
+.floor .ranking .rankul {
+	margin-left: auto;
+	margin-right: auto;
+	width: 188px;
+	border-bottom: 1px dashed #E1E1E1;
+	margin-top: 5px;
+	overflow: hidden;
+	position: relative;
+	height: 64px;
+	padding-bottom: 4px;
+}
+
+.floor .ranking .rankul .rankimg {
+	float: left;
+	width: 73px;
+	margin-right: 10px;
+	height: 73px;
+}
+
+.floor .ranking .rankul .rankhui a {
+	color: #636363;
+	height: 35px;
+	display: block;
+}
+
+.floor .ranking .rankul .rankmoney {
+	color: #D70000;
+	margin-top: 5px;
+	font-size: 16px;
+	font-weight: bold
+}
+
+.floor .ranking .rankul li {
+	*float: left;
+}
+
+.floor .ranking .rankul li span {
+	display: block;
+	width: 16px;
+	height: 13px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.floor .ranking .rankul2 {
+	width: 188px;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;
+	height: 91px;
+}
+
+.floor .ranking .rankul2 li {
+	border-bottom: 1px dashed #E1E1E1;
+	width: 188px;
+	line-height: 27px;
+}
+
+.floor .center_ph {
+	width: 73px;
+	height: 73px;
+	display: table-cell;
+	*display: block;
+	text-align: center;
+	position: relative;
+	vertical-align: middle;
+}
+
+.floor .center_ph p {
+	*position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+.floor .center_ph p img {
+	*position: relative;
+	top: -50%;
+	left: -50%;
+}
+/*楼层分类*/
+.floor .floor_menu {
+	width: 193px;
+	float: left;
+}
+
+.floor .floor_menu h3 {
+	float: left;
+	width: 193px;
+	height: 39px;
+	overflow: hidden;
+	line-height: 39px;
+	font-size: 16px;
+	color: #FFF;
+	text-align: center
+}
+
+.floor .flr_m_details {
+	width: 193px;
+	float: left;
+	overflow: hidden;
+	border-bottom: 1px solid #ddd;
+}
+
+.floor .flr_m_du {
+	float: left;
+	padding: 8px;
+	width: 177px;
+	overflow: hidden;
+	height: 302px;
+}
+
+.floor .flr_m_du li {
+	width: 177px;
+	overflow: hidden;
+	float: left;
+	margin-bottom: 5px;
+	float: left;
+}
+
+.floor .flr_m_du li h4 {
+	width: 177px;
+	clear: both;
+	margin-top: 5px;
+	color: #000;
+	margin-bottom: 5px;
+}
+
+.floor .flr_m_du li p {
+	width: 177px;
+	overflow: hidden;
+	clear: both;
+}
+
+.floor .flr_m_du li p span {
+	margin-right: 3px;
+	width: 67px;
+	float: left;
+	margin-top: 5px;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.floor .flr_m_du li p span a {
+	color: #888;
+}
+
+.floor .flr_m_du li p span a:hover {
+	color: #000;
+	text-decoration: underline
+}
+
+.floor .flr_advertisment {
+	width: 193px;
+	float: left;
+	height: 193px;
+	overflow: hidden;
+	position: relative
+}
+
+.floor .floor_brand {
+	width: 1200px;
+	float: left;
+	overflow: hidden;
+	border: 1px solid #ddd;
+	border-top: 0px;
+	height: 47px;
+	position: relative;
+}
+
+.floor .flr_sp_brand {
+	float: left;
+	display: block;
+	width: 1200px;
+	overflow: hidden;
+}
+
+.floor .flr_sp_brand a {
+	display: block;
+	width: 98px;
+	height: 35px;
+	display: inline;
+	margin: 4px;
+	float: left;
+	margin-left: 3px;
+	margin-right: 4px;
+}
+
+.edfloor {
+	font-size: 12px;
+	font-weight: lighter;
+	margin-left: 10px;
+	color: #36C
+}
+
+.edfloor:hover {
+	text-decoration: underline;
+	color: #000
+}
+
+.edafloor {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	color: #36C;
+	background: #fff;
+	height: 30px;
+	width: 193px;
+	line-height: 30px;
+	text-align: center;
+}
+
+.edafloor:hover {
+	text-decoration: underline;
+	color: #000;
+}
+
+.afloor {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	color: #36C;
+	background: #fff;
+	height: 30px;
+	width: 205px;
+	line-height: 30px;
+	text-align: center;
+}
+
+.afloor:hover {
+	text-decoration: underline;
+	color: #000;
+}
+
+.fl_brand_sp {
+	float: left;
+	display: block;
+	display: block;
+	width: 50px;
+	position: absolute;
+}
+
+.fl_brand_sp b {
+	background: #fff;
+	filter: alpha(opacity = 60);
+	-moz-opacity: 0.60;
+	opacity: 0.60;
+	display: block;
+	width: 50px;
+	height: 45px;
+	position: absolute;
+	z-index: 1;
+	left: 0px;
+	top: 0px;
+}
+
+.fl_brand_sp a {
+	color: #36C;
+	display: block;
+	position: absolute;
+	z-index: 2;
+	display: block;
+	text-align: center;
+	line-height: 45px;
+	left: 0px;
+	top: 0px;
+	width: 50px;
+	height: 45px;
+}
+
+.fl_brand_sp a:hover {
+	text-decoration: underline;
+	color: #000;
+}
+
+/*楼层样式1*/
+.floor_one {
+	width: 1202px;
+	overflow: hidden;
+	clear: both;
+	margin-top: 20px;
+	position: relative;
+	border-top: 4px solid #666;
+}
+
+.floor_one .flr_m_details {
+	background: #f8f8f8 url(/images/floor/floor_shadow.jpg) no-repeat left top;
+}
+
+.floor_one .floor_menu h3 {
+	background: url(/images/floor/floor.jpg);
+}
+
+.floor_one .floorclass .floorul .this {
+	color: #000;
+}
+
+.floor_one .ranking .rankul li .rankno1 {
+	background: url(/images/floor/ph_1.png) no-repeat left 0%;
+}
+
+.floor_one .ranking .rankul li .rankno2 {
+	background: url(/images/floor/ph_1.png) no-repeat left 51%;
+}
+
+.floor_one .ranking .rankul li .rankno3 {
+	background: url(/images/floor/ph_1.png) no-repeat left 100%;
+}
+
+.floor_one .flr_sp_brand a:hover {
+	background: #ccc
+}
+
+.floor_one .floorclass {
+	width: 716px;
+	float: left;
+	overflow: hidden;
+}
+
+.floor_one .floorul_hidden {
+	width: 716px;
+	float: left;
+	overflow: hidden;
+	position: relative;
+}
+
+.floor_one .floorclass .floorul {
+	width: 716px;
+	margin-top: -1px;
+	height: 39px;
+	z-index: 3;
+	background: #EEEEEE;
+	border-bottom: 1px solid #777;
+	z-index: 0;
+	position: relative
+}
+
+.floor_one .floorclass .floorul li {
+	float: left;
+	width: 142px;
+	height: 37px;
+	text-align: center;
+	line-height: 37px;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	background: url(/images/floor/tabli.jpg) no-repeat left center;
+}
+
+.floor_one .floorclass .floorul .this {
+	background: #fff;
+	height: 38px;
+	position: relative;
+	border: 1px solid #777;
+	border-bottom: 1px solid #fff;
+	width: 140px;
+	top: 1px;
+}
+
+.floor_one .ftab {
+	width: 716px;
+	overflow: hidden;
+}
+
+.floor_one .ftabone {
+	width: 516px;
+	overflow: hidden;
+	float: left;
+	position: relative;
+}
+
+.floor_one .classpro {
+	width: 516px;
+	float: left;
+	border-bottom: 1px solid #ddd;
+	background: url(/images/floor/floolonebg.jpg) repeat-x left top;
+	overflow: hidden;
+	z-index: 1;
+	position: relative;
+	top: -1px;
+}
+
+.floor_one .productone {
+	width: 172px;
+	float: left;
+	background: #fff;
+	margin-top: 1px;
+}
+
+.floor_one .productone ul {
+	padding: 5px;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #fff;
+	width: 160px;
+	height: 190px;
+	position: relative;
+	z-index: 0;
+}
+
+.floor_one .productone ul li {
+	line-height: 15px;
+}
+
+.floor_one .productone ul li a {
+	color: #555555;
+}
+
+.floor_one .productone .this {
+	background: #F5F5F5;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.floor_one .productone ul .pronames {
+	height: 30px;
+	overflow: hidden;
+	margin-top: 5px;
+}
+
+.floor_one .productone ul .promoneys {
+	margin-top: 5px;
+}
+
+.floor_one .productone ul .promoneys .red {
+	font-size: 14px;
+	margin-right: 10px;
+}
+
+.floor_one .center_span {
+	width: 130px;
+	padding-left: 15px;
+	*padding-left: 26px;
+	height: 130px;
+	display: table-cell;
+	*display: block;
+	text-align: center;
+	position: relative;
+	vertical-align: middle;
+	padding-top: 5px;
+	overflow: hidden;
+}
+
+.floor_one .center_span p {
+	*position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+.floor_one .center_span p img {
+	*position: relative;
+	top: -50%;
+	left: -50%;
+}
+
+.floor_one .ranking {
+	width: 291px;
+	float: left;
+	border-right: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	overflow: hidden;
+	position: relative;
+}
+
+.floor_one .ranking h1 {
+	height: 39px;
+	line-height: 39px;
+	font-size: 16px;
+	font-weight: bold;
+	border-bottom: 1px dashed #E1E1E1;
+	text-align: center;
+	color: #000;
+}
+
+.floor_one .ranking .rankul {
+	margin-left: auto;
+	margin-right: auto;
+	width: 280px;
+	border-bottom: 1px dashed #E1E1E1;
+	margin-top: 5px;
+	overflow: hidden;
+	position: relative;
+	height: 73px;
+	padding-bottom: 4px;
+}
+
+.floor_one .ranking .rankul .rankimg {
+	float: left;
+	width: 103px;
+	margin-right: 10px;
+	height: 73px;
+}
+
+.floor_one .ranking .rankul .rankhui a {
+	color: #636363;
+	height: 35px;
+	display: block;
+}
+
+.floor_one .ranking .rankul .rankmoney {
+	color: #D70000;
+	margin-top: 5px;
+	font-size: 16px;
+	font-weight: bold
+}
+
+.floor_one .ranking .rankul li {
+	*float: left;
+}
+
+.floor_one .ranking .rankul li span {
+	display: block;
+	width: 30px;
+	height: 51px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.floor_one .ranking .rankul2 {
+	width: 280px;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;
+	height: 151px;
+}
+
+.floor_one .ranking .rankul2 li {
+	border-bottom: 1px dashed #E1E1E1;
+	line-height: 27px;
+	padding-left: 10px;
+}
+
+.floor_one .center_ph {
+	width: 73px;
+	padding-left: 35px;
+	height: 73px;
+	display: table-cell;
+	*display: block;
+	text-align: center;
+	position: relative;
+	vertical-align: middle;
+}
+
+.floor_one .center_ph p {
+	*position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+.floor_one .center_ph p img {
+	*position: relative;
+	top: -50%;
+	left: -50%;
+}
+/*楼层分类*/
+.floor_one .floor_menu {
+	width: 193px;
+	float: left;
+}
+
+.floor_one .floor_menu h3 {
+	float: left;
+	width: 100%;
+	height: 39px;
+	overflow: hidden;
+	line-height: 39px;
+	font-size: 16px;
+	color: #FFF;
+	text-align: center
+}
+
+.floor_one .flr_m_details {
+	width: 100%;
+	float: left;
+	overflow: hidden;
+	border-bottom: 1px solid #ddd;
+}
+
+.floor_one .flr_advertisment {
+	width: 100%;
+	float: left;
+	height: 265px;
+	overflow: hidden;
+	position: relative
+}
+
+.floor_one .flr_m_du {
+	float: left;
+	padding: 5px;
+	width: 178px;
+	overflow: hidden;
+	height: 175px;
+}
+
+.floor_one .flr_m_du li {
+	width: 100%;
+	overflow: hidden;
+	float: left;
+	margin-bottom: 5px;
+	float: left;
+}
+
+.floor_one .flr_m_du li h4 {
+	width: 100%;
+	clear: both;
+	margin-top: 3px;
+	color: #000;
+}
+
+.floor_one .flr_m_du li p {
+	width: 100%;
+	overflow: hidden;
+	clear: both;
+}
+
+.floor_one .flr_m_du li p span {
+	margin-right: 3px;
+	width: 67px;
+	float: left;
+	margin-top: 3px;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.floor_one .flr_m_du li p span a {
+	color: #969595;
+}
+
+.floor_one .flr_m_du li p span a:hover {
+	color: #000;
+	text-decoration: underline
+}
+/*楼层品牌*/
+.floor_one .floor_brand {
+	width: 1008px;
+	float: left;
+	overflow: hidden;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-top: 0px;
+	height: 48px;
+	_height: 47px;
+	position: relative;
+	margin-top: -1px;
+}
+
+.floor_one .flr_sp_brand {
+	float: left;
+	display: block;
+	width: 958px;
+}
+
+.floor_one .brand_i {
+	width: 93px;
+	height: 33px;
+	position: relative;
+	margin: 6px 3px;
+	display: block;
+	cursor: pointer;
+	float: left;
+	margin-left: 4px;
+}
+
+.floor_one .brand_i a {
+	display: block;
+	width: 93px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 33px;
+	filter: alpha(opacity = 0);
+	-moz-opacity: 0;
+	opacity: 0;
+	text-align: center;
+	line-height: 33px;
+}
+
+.floor_one .brand_i a:hover {
+	display: block;
+	color: #FFF;
+	filter: alpha(opacity = 90);
+	-moz-opacity: 0.90;
+	opacity: 0.90;
+}
+
+.floor_one .floor_box_right {
+	width: 1009px;
+	float: left;
+	overflow: hidden
+}
+
+.floor_one .floor_right_top {
+	width: 1009px;
+	float: left;
+	overflow: hidden
+}
+
+.floor_one .ftab_adv {
+	width: 200px;
+	display: block;
+	float: left;
+	overflow: hidden;
+}
+
+.floor_one .ftab_adv ul li {
+	width: 200px;
+	overflow: hidden;
+	height: 200px;
+	float: left;
+	margin-top: 1px;
+	position: relative;
+}
+
+.floor_one .ftab_adv ul li a span {
+	position: absolute;
+	bottom: 20px;
+	left: 20px;
+	width: 160px;
+	display: block;
+	background: #fff;
+	filter: alpha(opacity = 80);
+	-moz-opacity: 0.80;
+	opacity: 0.80;
+	height: 40px;
+	z-index: 2;
+	border: 2px solid #fff;
+}
+
+.floor_one .ftab_adv ul li a:hover span {
+	filter: alpha(opacity = 90);
+	-moz-opacity: 0.90;
+	opacity: 0.90;
+	border: 2px solid #000;
+}
+
+.floor_one .ftab_adv ul li a b {
+	width: 140px;
+	height: 40px;
+	position: absolute;
+	z-index: 3;
+	left: 30px;
+	bottom: 20px;
+}
+
+.floor_one .ftab_adv ul li a b strong {
+	width: 140px;
+	display: block;
+	line-height: 19px;
+	text-align: center;
+	height: 19px;
+	border-bottom: 1px dashed #333;
+	font-weight: lighter;
+	color: #000;
+}
+
+.floor_one .ftab_adv ul li a b i {
+	width: 140px;
+	line-height: 20px;
+	height: 20px;
+	text-align: center;
+	display: block;
+	color: #000;
+	font-family: "宋体";
+	font-weight: lighter;
+}
+
+.floor_one_adv_a {
+	text-align: center;
+	width: 200px;
+	background: #fff;
+	display: block;
+	position: absolute;
+	left: 0px;
+	line-height: 30px;
+	height: 30px;
+	top: 0px;
+	color: #36c;
+}
+
+.floor_one_adv_a:hover {
+	color: #000
+}
+
+/*楼层样式2*/
+.floor_two {
+	width: 1202px;
+	overflow: hidden;
+	clear: both;
+	margin-top: 20px;
+	position: relative;
+	border-top: 4px solid #666
+}
+/*楼层样式2绿色*/
+.floor_two .floor_menu h3 {
+	background: url(/images/floor/floor.jpg);
+}
+
+.floor_two .flr_m_details {
+	background: #f8f8f8 url(/images/floor/floor_shadow.jpg) no-repeat left top
+}
+
+.floor_two .floorclass .floorul .this {
+	color: #000;
+}
+
+.floor_two .flr_sp_brand a:hover {
+	background: #ccc
+}
+
+.floor_two .floor_adva .this {
+	background: #666 url(/images/floor/floor_two.gif) no-repeat right center;
+	color: #fff;
+	width: 140px;
+}
+
+.floor_two .floor_right_top {
+	border-bottom: 2px solid #666
+}
+
+.floor_two .floor_two_sort_numa {
+	background: url(/images/floor/floor2_1.jpg) no-repeat left;
+}
+
+.floor_two .floor_two_sort_numb {
+	background: url(/images/floor/floor2_2.jpg) no-repeat left;
+}
+
+.floor_two .floor_two_sort_numc {
+	background: url(/images/floor/floor2_3.jpg) no-repeat left;
+}
+
+.floor_two .floor_two_sort_numd {
+	background: url(/images/floor/floor2_4.jpg) no-repeat left;
+}
+
+.floor_two .floor_two_sort_nume {
+	background: url(/images/floor/floor2_5.jpg) no-repeat left;
+}
+
+.floor_two .floorclass {
+	width: 800px;
+	float: left;
+	overflow: hidden;
+}
+
+.floor_two .floorul_hidden {
+	width: 800px;
+	float: left;
+	overflow: hidden;
+	position: relative;
+}
+
+.floor_two .floorclass .floorul {
+	width: 800px;
+	margin-top: -1px;
+	height: 39px;
+	z-index: 3;
+	background: #EEEEEE;
+	border-bottom: 1px solid #777;
+	z-index: 0;
+	position: relative;
+}
+
+.floor_two .floorclass .floorul li {
+	float: left;
+	width: 159px;
+	height: 37px;
+	text-align: center;
+	line-height: 37px;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	background: url(/images/floor/tabli.jpg) no-repeat left center;
+}
+
+.floor_two .floorclass .floorul .this {
+	background: #fff;
+	height: 38px;
+	position: relative;
+	border: 1px solid #777;
+	border-bottom: 1px solid #fff;
+	width: 157px;
+	top: 1px;
+}
+
+.floor_two .ftab {
+	width: 800px;
+	overflow: hidden;
+	position: relative
+}
+
+.floor_two .classpro {
+	width: 800px;
+	float: left;
+	overflow: hidden;
+	z-index: 1;
+	position: relative;
+}
+
+.floor_two .productone {
+	width: 200px;
+	float: left;
+	background: #fff;
+	margin-top: 1px;
+}
+
+.floor_two .productone ul {
+	padding: 5px;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #fff;
+	width: 188px;
+	height: 287px;
+	position: relative;
+	z-index: 0;
+}
+
+.floor_two .productone ul li {
+	line-height: 15px;
+}
+
+.floor_two .productone ul li a {
+	color: #555555;
+}
+
+.floor_two .productone .this {
+	background: #F5F5F5;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.floor_two .productone ul .pronames {
+	height: 20px;
+	line-height: 20px;
+	font-size: 14px;
+	overflow: hidden;
+	margin-top: 8px;
+	margin-bottom: 20px;
+}
+
+.floor_two .productone ul .promoneys {
+	margin-top: 15px;
+}
+
+.floor_two .productone ul .promoneys .red {
+	font-size: 16px;
+	margin-right: 10px;
+}
+
+.floor_two .center_span {
+	width: 188px;
+	height: 188px;
+	display: table-cell;
+	*display: block;
+	text-align: center;
+	position: relative;
+	vertical-align: middle;
+	overflow: hidden;
+}
+
+.floor_two .center_span p {
+	*position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+.floor_two .center_span p img {
+	*position: relative;
+	top: -50%;
+	left: -50%;
+}
+
+/*楼层分类2*/
+.floor_two .floor_menu {
+	width: 193px;
+	float: left;
+}
+
+.floor_two .floor_menu h3 {
+	float: left;
+	width: 100%;
+	height: 39px;
+	overflow: hidden;
+	line-height: 39px;
+	font-size: 16px;
+	color: #FFF;
+	text-align: center
+}
+
+.floor_two .flr_m_details {
+	width: 100%;
+	float: left;
+	overflow: hidden;
+	border-bottom: 1px solid #ddd;
+}
+
+.floor_two .flr_advertisment {
+	width: 100%;
+	float: left;
+	height: 300px;
+	overflow: hidden;
+	position: relative
+}
+
+.floor_two .flr_m_du {
+	float: left;
+	padding: 5px;
+	width: 178px;
+	overflow: hidden;
+	height: 195px;
+}
+
+.floor_two .flr_m_du li {
+	width: 100%;
+	overflow: hidden;
+	float: left;
+	margin-bottom: 5px;
+	float: left;
+}
+
+.floor_two .flr_m_du li h4 {
+	width: 100%;
+	clear: both;
+	margin-top: 3px;
+	color: #000;
+}
+
+.floor_two .flr_m_du li p {
+	width: 100%;
+	overflow: hidden;
+	clear: both;
+}
+
+.floor_two .flr_m_du li p span {
+	margin-right: 3px;
+	width: 67px;
+	float: left;
+	margin-top: 3px;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.floor_two .flr_m_du li p span a {
+	color: #969595;
+}
+
+.floor_two .flr_m_du li p span a:hover {
+	color: #000;
+	text-decoration: underline
+}
+/*楼层品牌2*/
+.floor_two .floor_brand {
+	width: 1008px;
+	float: left;
+	overflow: hidden;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-top: 0px;
+	height: 48px;
+	_height: 47px;
+	position: relative;
+	margin-top: -1px;
+}
+
+.floor_two .flr_sp_brand {
+	float: left;
+	display: block;
+	width: 958px;
+}
+
+.floor_two .brand_i {
+	width: 93px;
+	height: 33px;
+	position: relative;
+	margin: 6px 3px;
+	display: block;
+	cursor: pointer;
+	float: left;
+	margin-left: 4px;
+}
+
+.floor_two .brand_i a {
+	display: block;
+	width: 93px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 33px;
+	filter: alpha(opacity = 0);
+	-moz-opacity: 0;
+	opacity: 0;
+	text-align: center;
+	line-height: 33px;
+}
+
+.floor_two .brand_i a:hover {
+	display: block;
+	color: #FFF;
+	filter: alpha(opacity = 90);
+	-moz-opacity: 0.90;
+	opacity: 0.90;
+}
+
+/*广告2*/
+.floor_two .floor_two_adv {
+	width: 208px;
+	border-left: 1px solid #ddd;
+	float: left;
+	height: 337px;
+	position: relative;
+}
+
+.floor_two .floor_two_img {
+	width: 208px;
+	float: left;
+	height: 337px;
+	overflow: hidden;
+	position: absolute;
+	z-index: 1;
+}
+
+.floor_two .floor_adva {
+	position: absolute;
+	z-index: 2;
+	bottom: 50px;
+}
+
+.floor_two .floor_adva span {
+	background: #fff;
+	width: 110px;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 20px;
+	display: block;
+	cursor: pointer
+}
+
+/*楼层排行2*/
+.floor_two .floor_two_sort {
+	width: 1008px;
+	float: left;
+	overflow: hidden;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.floor_two .floor_two_sort_hid {
+	width: 1008px;
+	float: left;
+	overflow: hidden;
+}
+
+.floor_two .floor_two_sort_title {
+	display: block;
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	font-size: 16px;
+}
+
+.floor_two .floor_two_sort_title span {
+	padding-left: 20px;
+}
+
+.floor_two .floor_two_sort_box {
+	width: 1005;
+	padding-left: 3px;
+	float: left;
+	overflow: hidden;
+}
+
+.floor_two .floor_two_sort_box dl {
+	width: 201px;
+	float: left;
+	height: 107px;
+}
+
+.floor_two .floor_two_sort_box dl dt {
+	width: 85px;
+	float: left;
+	padding-left: 30px;
+	height: 85px;
+	margin-top: 11px;
+	float: left
+}
+
+.floor_two .floor_two_sort_box dl dt a {
+	display: block;
+	width: 85px;
+	height: 85px;
+	cursor: pointer
+}
+
+.floor_two .floor_two_sort_box dl dd {
+	width: 81px;
+	padding-left: 5px;
+	float: left
+}
+
+.floor_two .floor_two_sort_box dl dt span {
+	width: 85px;
+	height: 85px;
+	overflow: hidden;
+}
+
+.floor_two .floor_two_sort_box dl dd h5 {
+	margin-top: 11px;
+	width: 100%;
+	float: left;
+	height: 60px;
+	line-height: 20px;
+	overflow: hidden;
+	font-size: 12px;
+}
+
+.floor_two .floor_two_sort_box dl dd span {
+	margin-top: 10px;
+	color: #333;
+	font-size: 16px;
+	height: 20px;
+}
+
+.floor_two .floor_box_right {
+	width: 1009px;
+	float: left;
+	overflow: hidden
+}
+
+.floor_two .floor_right_top {
+	width: 1009px;
+	float: left;
+	overflow: hidden;
+}
+
+.floor_two_adv_a {
+	width: 208px;
+	display: block;
+	background: #fff;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	line-height: 30px;
+	height: 30px;
+	text-align: center;
+	color: #36c
+}
+
+.floor_two_adv_a:hover {
+	color: #000
+}
+
+/*楼层样式3*/
+.floor_three {
+	width: 1202px;
+	overflow: hidden;
+	clear: both;
+	margin-top: 20px;
+	position: relative;
+	border-top: 4px solid #666;
+}
+
+.floor_three .flr_m_details {
+	background: #f8f8f8 url(/images/floor/floor_shadow.jpg) no-repeat left top;
+}
+
+.floor_three .floor_menu h3 {
+	background: url(/images/floor/floor.jpg) no-repeat;
+}
+
+.floor_three .floorclass .floorul .this {
+	color: #333;
+}
+
+.floor_three .flr_sp_brand a:hover {
+	background: #ccc
+}
+
+.floor_three .ranking_three .rankno_three {
+	background: #666
+}
+
+.floor_three .floor_three_adv {
+	background: #f1f1f1
+}
+
+.floor_three .floor_three_adv span {
+	border: 5px solid #f1f1f1;
+	position: relative
+}
+
+.floor_three .floorclass {
+	width: 514px;
+	float: left;
+	overflow: hidden;
+}
+
+.floor_three .floorul_hidden {
+	width: 514px;
+	float: left;
+	overflow: hidden;
+	position: relative;
+}
+
+.floor_three .floorclass .floorul {
+	width: 516px;
+	margin-top: -1px;
+	height: 39px;
+	z-index: 3;
+	background: #EEEEEE;
+	border-bottom: 1px solid #777;
+	z-index: 0;
+	position: relative
+}
+
+.floor_three .floorclass .floorul li {
+	float: left;
+	width: 101px;
+	height: 37px;
+	text-align: center;
+	line-height: 37px;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	background: url(/images/floor/tabli.jpg) no-repeat left center;
+}
+
+.floor_three .floorclass .floorul .this {
+	background: #fff;
+	height: 38px;
+	position: relative;
+	border: 1px solid #777;
+	border-bottom: 1px solid #fff;
+	width: 99px;
+	top: 1px;
+}
+
+.floor_three .ftab {
+	width: 514px;
+	overflow: hidden;
+	position: relative
+}
+
+.floor_three .classpro {
+	width: 516px;
+	float: left;
+	border-bottom: 1px solid #ddd;
+	background: url(/images/floor/floolonebg.jpg) repeat-x left top;
+	overflow: hidden;
+	z-index: 1;
+	position: relative;
+	top: -1px;
+}
+
+.floor_three .productone {
+	width: 172px;
+	float: left;
+	background: #fff;
+	margin-top: 1px;
+}
+
+.floor_three .productone ul {
+	padding: 5px;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #fff;
+	width: 160px;
+	height: 190px;
+	position: relative;
+	z-index: 0;
+}
+
+.floor_three .productone ul li {
+	line-height: 15px;
+}
+
+.floor_three .productone ul li a {
+	color: #555555;
+}
+
+.floor_three .productone .this {
+	background: #F5F5F5;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.floor_three .productone ul .pronames {
+	height: 30px;
+	overflow: hidden;
+	margin-top: 5px;
+}
+
+.floor_three .productone ul .promoneys {
+	margin-top: 5px;
+}
+
+.floor_three .productone ul .promoneys .red {
+	font-size: 14px;
+	margin-right: 10px;
+}
+
+.floor_three  .center_span {
+	width: 130px;
+	padding-left: 15px;
+	*padding-left: 26px;
+	height: 130px;
+	display: table-cell;
+	*display: block;
+	text-align: center;
+	position: relative;
+	vertical-align: middle;
+	padding-top: 5px;
+	overflow: hidden;
+}
+
+.floor_three .center_span p {
+	*position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+.floor_three  .center_span p img {
+	*position: relative;
+	top: -50%;
+	left: -50%;
+}
+
+.floor_three .ranking_three {
+	width: 199px;
+	float: left;
+	border-left: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	overflow: hidden;
+	position: relative;
+}
+
+.floor_three .ranking_three h1 {
+	height: 38px;
+	line-height: 38px;
+	font-size: 16px;
+	font-weight: bold;
+	border-bottom: 1px dashed #E1E1E1;
+	text-align: center;
+	color: #000;
+}
+
+.floor_three .ranking_three .rankul_three {
+	float: left;
+	overflow: hidden;
+	width: 199px;
+	border-bottom: 1px dashed #E1E1E1;
+	margin-top: 5px;
+	overflow: hidden;
+	position: relative;
+	padding-bottom: 4px;
+	height: 73px;
+}
+
+.floor_three  .ranking_three .rankul_three .rankimg_three {
+	float: left;
+	width: 83px;
+	margin-right: 10px;
+	height: 73px;
+}
+
+.floor_three .ranking_three .rankul_three .rankhui_three a {
+	color: #636363;
+	height: 35px;
+	display: block;
+}
+
+.floor_three .ranking_three .rankul_three .rankmoney_three {
+	color: #333;
+	margin-top: 5px;
+	font-size: 16px;
+	font-weight: bold
+}
+
+.floor_three .ranking_three .rankno_three {
+	display: block;
+	position: absolute;
+	top: 0px;
+	left: 1px;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	color: #FFF;
+	overflow: hidden
+}
+
+.floor_three .ranking_three .rankul_three li {
+	*float: left;
+}
+
+.floor_three  .ranking_three .rankul2_three {
+	width: 199px;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;
+	height: 152px;
+}
+
+.floor_three .ranking_three .rankul2_three li {
+	border-bottom: 1px dashed #E1E1E1;
+	line-height: 27px;
+	padding-left: 10px;
+}
+
+.floor_three .center_ph_three {
+	width: 73px;
+	padding-left: 15px;
+	height: 73px;
+	display: table-cell;
+	*display: block;
+	text-align: center;
+	position: relative;
+	vertical-align: middle;
+}
+
+.floor_three .center_ph_three p {
+	*position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+.floor_three .center_ph_three p img {
+	*position: relative;
+	top: -50%;
+	left: -50%;
+}
+/*楼层广告*/
+.floor_three .floor_three_adv {
+	width: 200px;
+	height: 441px;
+	float: left;
+	display: block;
+}
+
+.floor_three .floor_three_adv span {
+	width: 190px;
+	height: 142px;
+	border-top: 0px;
+	display: block;
+	float: left;
+	position: relative
+}
+/*楼层分类*/
+.floor_three .floor_menu {
+	width: 193px;
+	float: left;
+}
+
+.floor_three .floor_menu h3 {
+	float: left;
+	width: 100%;
+	height: 39px;
+	overflow: hidden;
+	line-height: 39px;
+	font-size: 16px;
+	color: #FFF;
+	text-align: center
+}
+
+.floor_three .flr_m_details {
+	width: 100%;
+	float: left;
+	overflow: hidden;
+	border-bottom: 1px solid #ddd;
+}
+
+.floor_three .flr_advertisment {
+	width: 100%;
+	float: left;
+	height: 200px;
+	overflow: hidden;
+	position: relative
+}
+
+.floor_three .flr_m_du {
+	float: left;
+	padding: 5px;
+	width: 178px;
+	overflow: hidden;
+	height: 191px;
+}
+
+.floor_three .flr_m_du li {
+	width: 100%;
+	overflow: hidden;
+	float: left;
+	margin-bottom: 5px;
+	float: left;
+}
+
+.floor_three .flr_m_du li h4 {
+	width: 100%;
+	clear: both;
+	margin-top: 3px;
+	color: #000;
+}
+
+.floor_three .flr_m_du li p {
+	width: 100%;
+	overflow: hidden;
+	clear: both;
+}
+
+.floor_three .flr_m_du li p span {
+	margin-right: 3px;
+	width: 67px;
+	float: left;
+	margin-top: 3px;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.floor_three .flr_m_du li p span a {
+	color: #969595;
+}
+
+.floor_three .flr_m_du li p span a:hover {
+	color: #000;
+	text-decoration: underline
+}
+/*楼层品牌*/
+.floor_three .floor_brand_three {
+	width: 93px;
+	float: left;
+	overflow: hidden;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-top: 0px;
+	position: relative;
+	height: 440px;
+}
+
+.floor_three .brand_i {
+	width: 93px;
+	height: 33px;
+	position: relative;
+	margin-bottom: 12px;
+	display: block;
+	cursor: pointer;
+	float: left;
+}
+
+.floor_three .brand_i a {
+	display: block;
+	width: 93px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 33px;
+	filter: alpha(opacity = 0);
+	-moz-opacity: 0;
+	opacity: 0;
+	text-align: center;
+	line-height: 33px;
+}
+
+.floor_three .brand_i a:hover {
+	display: block;
+	color: #FFF;
+	filter: alpha(opacity = 90);
+	-moz-opacity: 0.90;
+	opacity: 0.90;
+}
+
+.floor_three .floor_box_right {
+	width: 1009px;
+	float: left;
+	overflow: hidden
+}
+
+.floor_three_adv_a {
+	display: block;
+	width: 190px;
+	line-height: 30px;
+	height: 30px;
+	text-align: center;
+	color: #36c;
+	background: #fff;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.floor_three_adv_a:hover {
+	color: #000
+}
+
+/*楼层样式4*/
+.floor_four {
+	width: 1202px;
+	overflow: hidden;
+	clear: both;
+	margin-top: 20px;
+	position: relative;
+	border-top: 4px solid #666
+}
+/*楼层样式4绿色*/
+.floor_four .floor_menu h3 {
+	background: url(/images/floor/floor.jpg);
+}
+
+.floor_four .flr_m_details {
+	background: #f8f8f8 url(/images/floor/floor_shadow.jpg) no-repeat left top
+}
+
+.floor_four .floorclass .floorul .this {
+	color: #000;
+}
+
+.floor_four .flr_sp_brand a:hover {
+	background: #ccc
+}
+
+.floor_four .floor_right_top {
+	border-bottom: 2px solid #99cc00
+}
+
+.floor_four .floor_two_sort_numa {
+	background: url(/images/floor/floor2_1.jpg) no-repeat left;
+}
+
+.floor_four .floor_two_sort_numb {
+	background: url(/images/floor/floor2_2.jpg) no-repeat left;
+}
+
+.floor_four .floor_two_sort_numc {
+	background: url(/images/floor/floor2_3.jpg) no-repeat left;
+}
+
+.floor_four .floor_two_sort_numd {
+	background: url(/images/floor/floor2_4.jpg) no-repeat left;
+}
+
+.floor_four .floor_two_sort_nume {
+	background: url(/images/floor/floor2_5.jpg) no-repeat left;
+}
+
+.floor_four .floorclass {
+	width: 1008px;
+	float: left;
+	overflow: hidden;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.floor_four .floorul_hidden {
+	width: 1008px;
+	float: left;
+	overflow: hidden;
+	position: relative;
+}
+
+.floor_four .floorclass .floorul {
+	width: 1008px;
+	margin-top: -1px;
+	height: 39px;
+	z-index: 3;
+	background: #EEEEEE;
+	border-bottom: 1px solid #777;
+	z-index: 0;
+	position: relative;
+}
+
+.floor_four .floorclass .floorul li {
+	float: left;
+	width: 167px;
+	height: 37px;
+	text-align: center;
+	line-height: 37px;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	background: url(/images/floor/tabli.jpg) no-repeat left center;
+}
+
+.floor_four .floorclass .floorul .this {
+	background: #fff;
+	height: 38px;
+	position: relative;
+	border: 1px solid #777;
+	border-bottom: 1px solid #fff;
+	width: 165px;
+	top: 1px;
+}
+
+.floor_four .ftab {
+	width: 1008px;
+	overflow: hidden;
+	position: relative
+}
+
+.floor_four .classpro {
+	width: 1008px;
+	float: left;
+	overflow: hidden;
+	z-index: 1;
+	position: relative;
+}
+
+.floor_four .productone {
+	width: 168px;
+	float: left;
+	background: #fff;
+	margin-top: 1px;
+}
+
+.floor_four .productone ul {
+	padding: 5px;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #fff;
+	width: 156px;
+	height: 190px;
+	position: relative;
+	z-index: 0;
+}
+
+.floor_four .productone ul li {
+	line-height: 15px;
+}
+
+.floor_four .productone ul li a {
+	color: #555555;
+}
+
+.floor_four .productone .this {
+	background: #F5F5F5;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.floor_four .productone ul .pronames {
+	height: 30px;
+	overflow: hidden;
+	margin-top: 5px;
+}
+
+.floor_four .productone ul .promoneys {
+	margin-top: 5px;
+}
+
+.floor_four .productone ul .promoneys .red {
+	font-size: 14px;
+	margin-right: 10px;
+}
+
+.floor_four  .center_span {
+	width: 130px;
+	padding-left: 15px;
+	*padding-left: 26px;
+	height: 130px;
+	display: table-cell;
+	*display: block;
+	text-align: center;
+	position: relative;
+	vertical-align: middle;
+	padding-top: 5px;
+	overflow: hidden;
+}
+
+.floor_four .center_span p {
+	*position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+.floor_four  .center_span p img {
+	*position: relative;
+	top: -50%;
+	left: -50%;
+}
+
+/*楼层分类4*/
+.floor_four .floor_menu {
+	width: 193px;
+	float: left;
+}
+
+.floor_four .floor_menu h3 {
+	float: left;
+	width: 100%;
+	height: 39px;
+	overflow: hidden;
+	line-height: 39px;
+	font-size: 16px;
+	color: #FFF;
+	text-align: center
+}
+
+.floor_four .flr_m_details {
+	width: 100%;
+	float: left;
+	overflow: hidden;
+	border-bottom: 1px solid #ddd;
+}
+
+.floor_four .flr_advertisment {
+	width: 100%;
+	float: left;
+	height: 206px;
+	overflow: hidden;
+	position: relative
+}
+
+.floor_four .flr_m_du {
+	float: left;
+	padding: 5px;
+	width: 178px;
+	overflow: hidden;
+	height: 191px;
+}
+
+.floor_four .flr_m_du li {
+	width: 100%;
+	overflow: hidden;
+	float: left;
+	margin-bottom: 5px;
+	float: left;
+}
+
+.floor_four .flr_m_du li h4 {
+	width: 100%;
+	clear: both;
+	margin-top: 3px;
+	color: #000;
+}
+
+.floor_four .flr_m_du li p {
+	width: 100%;
+	overflow: hidden;
+	clear: both;
+}
+
+.floor_four .flr_m_du li p span {
+	margin-right: 3px;
+	width: 67px;
+	float: left;
+	margin-top: 3px;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.floor_four .flr_m_du li p span a {
+	color: #969595;
+}
+
+.floor_four .flr_m_du li p span a:hover {
+	color: #000;
+	text-decoration: underline
+}
+/*楼层品牌4*/
+.floor_four .floor_brand {
+	width: 1008px;
+	float: left;
+	overflow: hidden;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-top: 0px;
+	height: 48px;
+	_height: 47px;
+	position: relative;
+	margin-top: -1px;
+}
+
+.floor_four .flr_sp_brand {
+	float: left;
+	display: block;
+	width: 958px;
+}
+
+.floor_four .brand_i {
+	width: 93px;
+	height: 33px;
+	position: relative;
+	margin: 6px 3px;
+	display: block;
+	cursor: pointer;
+	float: left;
+	margin-left: 4px;
+}
+
+.floor_four .brand_i a {
+	display: block;
+	width: 93px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 33px;
+	filter: alpha(opacity = 0);
+	-moz-opacity: 0;
+	opacity: 0;
+	text-align: center;
+	line-height: 33px;
+}
+
+.floor_four .brand_i a:hover {
+	display: block;
+	color: #FFF;
+	filter: alpha(opacity = 90);
+	-moz-opacity: 0.90;
+	opacity: 0.90;
+}
+
+/*楼层排行4*/
+.floor_four .floor_two_sort {
+	width: 1008px;
+	float: left;
+	overflow: hidden;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.floor_four .floor_two_sort_hid {
+	width: 1008px;
+	float: left;
+	overflow: hidden;
+}
+
+.floor_four .floor_two_sort_title {
+	display: block;
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	font-size: 16px;
+}
+
+.floor_four .floor_two_sort_title span {
+	padding-left: 20px;
+}
+
+.floor_four .floor_two_sort_box {
+	width: 1005;
+	padding-left: 3px;
+	float: left;
+	overflow: hidden;
+}
+
+.floor_four .floor_two_sort_box dl {
+	width: 201px;
+	float: left;
+	height: 107px;
+}
+
+.floor_four .floor_two_sort_box dl dt {
+	width: 85px;
+	float: left;
+	padding-left: 30px;
+	height: 85px;
+	margin-top: 11px;
+	float: left
+}
+
+.floor_four .floor_two_sort_box dl dt a {
+	display: block;
+	width: 85px;
+	height: 85px;
+	cursor: pointer
+}
+
+.floor_four .floor_two_sort_box dl dd {
+	width: 81px;
+	padding-left: 5px;
+	float: left
+}
+
+.floor_four .floor_two_sort_box dl dt span {
+	width: 85px;
+	height: 85px;
+	overflow: hidden;
+}
+
+.floor_four .floor_two_sort_box dl dd h5 {
+	margin-top: 11px;
+	width: 100%;
+	float: left;
+	height: 60px;
+	line-height: 20px;
+	overflow: hidden;
+	font-size: 12px;
+}
+
+.floor_four .floor_two_sort_box dl dd span {
+	margin-top: 10px;
+	color: #333;
+	font-size: 16px;
+	height: 20px;
+}
+
+.floor_four .floor_box_right {
+	width: 1009px;
+	float: left;
+	overflow: hidden
+}
+
+/*楼层编辑*/
+.box_floor {
+	width: 720px;
+	overflow: hidden;
+	clear: both;
+}
+
+.box_floor_h6 {
+	height: 30px;
+	line-height: 30px;
+	padding-left: 20px;
+	color: #000;
+	float: left;
+	width: 560px;
+	background: #f1f1f1;
+	border: 1px solid #ddd;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	width: 538px;
+	margin-left: 20px;
+	display: inline
+}
+
+.box_floor_class {
+	width: 560px;
+	float: left;
+	overflow: hidden;
+	padding-left: 20px;
+}
+
+.box_floor_class select {
+	margin-right: 20px;
+}
+
+.box_edits {
+	float: left;
+	width: 580px;
+	overflow: hidden;
+}
+
+.box_edit_class {
+	float: left;
+	width: 558px;
+	overflow: hidden;
+	border: 1px solid #D8D8D8;
+	border-bottom: 0px;
+	margin-bottom: 10px;
+	display: inline;
+	margin-left: 20px;
+}
+
+.box_edit_class li {
+	width: 538px;
+	float: left;
+	border-bottom: 1px solid #D8D8D8;
+	padding: 10px;
+	padding-bottom: 7px;
+}
+
+.box_edit_li h6 {
+	float: left;
+	width: 538px;
+	line-height: 25px;
+	color: #09C;
+	font-weight: bold;
+	color: #999;
+}
+
+.box_edit_li h6 a {
+	float: left;
+	display: block;
+	white-space: nowrap;
+	background: #f9f9f9 url(/images/floor/tm_dela.gif) no-repeat right center;
+	padding-right: 15px;
+	height: 20px;
+	line-height: 20px;
+	padding-left: 3px;
+	color: #999;
+	margin-right: 10px;
+	margin-bottom: 3px;
+}
+
+.box_edit_li h6 a:hover {
+	color: #333;
+	background: #f0f0f0 url(/images/floor/tm_dela.gif) no-repeat right center;
+}
+
+.box_edit_li span {
+	float: left;
+	width: 538px;
+	display: block
+}
+
+.box_edit_li span a {
+	float: left;
+	display: block;
+	white-space: nowrap;
+	background: #f9f9f9 url(/images/floor/tm_dela.gif) no-repeat right center;
+	padding-right: 15px;
+	height: 20px;
+	line-height: 20px;
+	padding-left: 3px;
+	color: #999;
+	margin-right: 10px;
+	margin-bottom: 3px;
+}
+
+.box_edit_li span a:hover {
+	color: #333;
+	background: #f0f0f0 url(/images/floor/tm_dela.gif) no-repeat right center;
+}
+
+.box_floor_class b {
+	float: left;
+	color: #333;
+	line-height: 25px;
+	margin-right: 10px;
+}
+
+.box_floor_six {
+	width: 700px;
+	float: left;
+	padding-left: 20px;
+}
+
+.box_floor_proname {
+	width: 700px;
+	float: left;
+}
+
+.box_floor_proname b {
+	float: left;
+	color: #333;
+	line-height: 25px;
+	margin-right: 10px;
+}
+
+.floor_proname {
+	height: 18px;
+	line-height: 18px;
+	padding-left: 10px;
+	float: left
+}
+
+.floor_wr {
+	float: left;
+	color: #999;
+	font-style: normal;
+	width: 280px;
+	padding-left: 20px;
+}
+
+.box_floor_prodel {
+	float: left;
+	width: 670px;
+	overflow: hidden;
+	margin-top: 10px;
+	border: 1px dashed #FFC7AC;
+	padding: 5px 10px;
+}
+
+.floor_box_pls {
+	width: 670px;
+	float: left;
+}
+
+.floor_pro {
+	width: 100px;
+	float: left;
+	margin-left: 5px;
+	margin-right: 5px;
+	padding: 10px;
+	display: inline-block;
+	background: #fff;
+	position: relative;
+	cursor: pointer;
+	overflow: hidden;
+}
+
+.floor_pro:hover {
+	filter: alpha(opacity = 70);
+	-moz-opacity: 0.70;
+	opacity: 0.70;
+	background: #FFC7AC;
+}
+
+.floor_pro_img {
+	width: 100px;
+	float: left;
+	height: 100px;
+	overflow: hidden
+}
+
+.floor_pro_name {
+	color: #333;
+	margin-top: 5px;
+	float: left;
+	width: 100px;
+	height: 32px;
+	overflow: hidden;
+}
+
+.floor_pro_del {
+	width: 100px;
+	height: 100px;
+	float: left;
+	line-height: 20px;
+	text-align: center;
+	color: #999;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	margin-left: 10px;
+	margin-top: 10px;
+	line-height: 100px;
+}
+
+.floor_pro:hover .floor_pro_del {
+	color: #f00;
+	font-weight: bold;
+	filter: alpha(opacity = 70);
+	-moz-opacity: 0.70;
+	opacity: 0.70;
+	background: #FFC7AC;
+}
+
+.floor_choose {
+	width: 700px;
+	float: left;
+	line-height: 30px;
+	margin-top: 10px;
+	font-weight: bold;
+}
+
+.floor_choose_box {
+	width: 678px;
+	float: left;
+	margin-top: 10px;
+	border: 1px solid #ddd;
+	padding: 10px;
+	padding-bottom: 5px;
+}
+
+.floor_choose_sp {
+	width: 678px;
+	float: left;
+	display: block;
+}
+
+.floor_choose_sp select {
+	margin-right: 10px;
+}
+
+.floor_search_sp {
+	float: left;
+	width: 538px;
+	display: block;
+	margin-top: 10px;
+}
+
+.floor_search_sp input {
+	margin-right: 10px;
+	float: left
+}
+
+.floor_sear_btn {
+	background: url(/images/floor/flsearch.jpg) no-repeat;
+	width: 52px;
+	height: 25px;
+	border: 0px;
+	float: left;
+	margin-top: -3px;
+}
+
+.floor_sear_btn:hover {
+	background: url(/images/floor/flsearch2.jpg);
+}
+
+.floor_search_sp b {
+	line-height: 25px;
+	float: left
+}
+
+.floor_sear_pro {
+	width: 538px;
+	float: left;
+	overflow: hidden;
+	margin-top: 10px;
+}
+
+.floor_sear_pro li {
+	width: 80px;
+	float: left;
+	display: inline;
+	position: relative;
+	border: 1px solid #f1f1f1;
+	margin-top: 5px;
+	margin-right: 3px;
+	margin-left: 4px;
+}
+
+.floor_sear_a {
+	width: 70px;
+	padding: 5px;
+	overflow: hidden;
+	display: block
+}
+
+.floor_sear_img {
+	width: 70px;
+	height: 70px;
+	float: left;
+}
+
+.floor_sear_name {
+	float: left;
+	width: 70px;
+	height: 32px;
+	margin-top: 5px;
+	color: #000;
+	overflow: hidden;
+}
+
+.floor_sear_pro li input {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+}
+
+.floor_sear_a:hover {
+	background: #eee;
+}
+
+.floor_warning {
+	float: left;
+	padding: 5px;
+	color: #F60;
+	background: #FFFFD9 url(/images/floor/czts.jpg) no-repeat 5px center;
+	padding-left: 25px;
+	font-style: normal;
+	border: 1px solid #FFC1A4;
+	margin-top: 10px;
+}
+
+.floor_page {
+	width: 528px;
+	float: left;
+	padding: 5px;
+	margin-top: 5px;
+}
+
+.floor_page span {
+	float: right;
+	padding: 5px 0px;
+}
+
+.floor_page span a {
+	color: #666;
+	background: #f1f1f1;
+	border: 1px solid #ccc;
+	padding: 2px 5px;
+	margin-right: 7px;
+}
+
+.floor_page span .this {
+	color: #fff;
+	background: #000;
+	border: 1px solid #333
+}
+
+.floor_page span a:hover {
+	color: #fff;
+	background: #999;
+	border: 1px solid #333
+}
+
+.floor_advertisment {
+	width: 560px;
+	float: left;
+	padding-left: 20px;
+	padding-top: 0px;
+}
+
+.floor_adv {
+	width: 560px;
+	float: left;
+	overflow: hidden
+}
+
+.floor_adv li {
+	float: left;
+	width: 560px;
+	border-bottom: 1px solid #D8D8D8;
+	padding-top: 20px;
+	padding-bottom: 10px;
+}
+
+.floor_adv li b {
+	display: block;
+}
+
+.floor_adv li .floor_adv_sp {
+	display: block;
+	margin-top: 10px;
+	float: left;
+}
+
+.floor_adv li .floor_adv_sp input {
+	margin-right: 5px;
+}
+
+.floor_adv li .floor_adv_sp i {
+	margin-right: 20px;
+	font-style: normal;
+	font-weight: bold;
+}
+
+/*楼层浏览样式*/
+.flooor_file {
+	width: 280px;
+	height: 27px;
+	opacity: 0;
+	filter: Alpha(Opacity = 0);
+	position: absolute;
+	margin-left: -288px;
+	height: 25px;
+}
+
+.floor_file_txt {
+	height: 20px;
+	line-height: 20px;
+	float: left;
+	border: 1px solid #BBF0FD;
+	width: 200px;
+}
+
+.floor_file_btn {
+	height: 25px;
+	background: url(/images/floor/filebtn.jpg) no-repeat;
+	height: 27px;
+	width: 64px;
+	border: 0px;
+	float: left;
+}
+
+.floor_adv_i {
+	float: left;
+	width: 220px;
+	padding-left: 10px;
+	font-style: normal;
+	color: #999;
+	margin-top: 15px;
+}
+
+.floor_file_txt2 {
+	height: 20px;
+	line-height: 20px;
+	float: left;
+	border: 1px solid #BBF0FD;
+	width: 270px;
+}

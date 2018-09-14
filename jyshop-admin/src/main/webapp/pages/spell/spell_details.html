@@ -1,0 +1,72 @@
+<div th:fragment="detail" class="tab-pane" id="bs-tabdrop-pill2" style="width: 100%">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">拼团活动：</label>
+        <div class="col-sm-8">
+            <span th:text="${spell.name}"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">商品名称：</label>
+        <div class="col-sm-8">
+            <span th:text="${spell.goodsTitle}"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">商品图片：</label>
+        <div class="col-sm-8">
+            <img th:src="${spell.image2}" style='width:66px;float:left' class='img-rounded' alt=''/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">商品原价：</label>
+        <div class="col-sm-8">
+            <span th:text="${spell.goodsPrice}"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">拼团价：</label>
+        <div class="col-sm-8">
+            <span th:text="${spell.spellPrice}"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">参团人数：</label>
+        <div class="col-sm-8">
+            <span th:text="${spell.participateNum+'人'}"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">成团人数：</label>
+        <div class="col-sm-8">
+            <span th:text="${spell.completeNum+'人'}"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">开始时间：</label>
+        <div class="col-sm-8">
+            <span th:if="${spell.startDate!=null}" th:text="${#dates.format(spell.startDate, 'yyyy-MM-dd')}"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">结束时间：</label>
+        <div class="col-sm-8">
+            <span th:if="${spell.endDate!=null}" th:text="${#dates.format(spell.endDate, 'yyyy-MM-dd')}"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">成团时间：</label>
+        <div class="col-sm-8">
+            <span th:if="${spell.completeDate!=null}" th:text="${#dates.format(spell.completeDate, 'yyyy-MM-dd')}"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">拼团状态：</label>
+        <div class="col-sm-8" th:switch="${spell.status}">
+            <span th:case="0">未开始</span>
+            <span th:case="1">正在拼团</span>
+            <span th:case="2">拼团成功</span>
+            <span th:case="3">拼团失败</span>
+            <span th:case="4">取消拼团</span>
+        </div>
+    </div>
+</div>

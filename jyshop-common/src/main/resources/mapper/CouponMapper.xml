@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.CouponDao">
+	
+	
+	<select id="selectCouponList" resultType="map">
+		SELECT
+		  t1.`cpn_id` AS cpnId,
+		  t1.`cpn_img` AS cpnImg,
+		  t1.`cpn_name` AS cpnName,
+		  t1.`cpn_sn` AS cpnSn,
+		  t1.`cpn_type` AS cpnType,
+		  t1.`grant_num` AS grantNum,
+		  t1.`grant_type` AS grantType,
+		  t1.`get_begin_time` AS getBeginTime,
+		  t1.`get_end_time` AS getEndTime,
+		  IFNULL(SUM(t2.`is_get`),0) AS hasGetNum,
+		  IFNULL(SUM(t2.`is_use`),0) AS hasUseNum
+		FROM
+		  shop_coupon t1
+		  LEFT JOIN shop_member_coupon t2
+		    ON t1.`cpn_id` = t2.`cpn_id`
+		    WHERE 1=1 
+			<if test="cpnName!=null || cpnName!=''">
+ 	   			and t1.cpn_name like '%${cpnName}%'
+ 	   		</if>
+		   GROUP BY t1.`cpn_id`
+	</select>
+	<select id="selectCouponInfoByCpnId" resultType="map">
+		SELECT
+		  t1.`cpn_id` AS cpnId,
+		  t1.`cpn_name` AS cpnName,
+		  t1.`cpn_type` AS cpnType,
+		  t1.`limit_get` as limitGet,
+		  t1.`discount_price` as discountPrice,
+		  t1.`get_begin_time` as getBeginTime,
+		  t1.`get_end_time` as getEndTime,
+		  t1.`effective_date` as effectiveDate,
+		  t1.`grant_num` AS grantNum,
+		  t1.`grant_type` AS grantType,
+		  t1.`use_type` AS useType,
+		  IFNULL(SUM(t2.`is_get`),0) AS hasGetNum,
+		  IFNULL(SUM(t2.`is_use`),0) AS hasUseNum
+		FROM
+		  shop_coupon t1
+		  LEFT JOIN shop_member_coupon t2
+		    ON t1.`cpn_id` = t2.`cpn_id`
+		    WHERE 1=1 and t1.`cpn_id` = #{cpnId}
+		   GROUP BY t1.`cpn_id`
+	</select>
+	
+	<update id="updateGrantNumByCpnId">
+		update shop_coupon set grant_num = grant_num + #{grantCount}
+		  where `cpn_id` = #{cpnId}
+	</update>
+	
+	<select id="getCouponList" resultType="map">
+		SELECT
+		  cpn_id AS cpnId,
+		  cpn_name AS cpnName,
+		  cpn_sn AS cpnSn,
+		  grant_type AS grantType,
+		  cpn_img AS cpnImg,
+		  discount_price AS discountPrice,
+		  limit_get AS limitGet,
+		  grant_num AS grantNum,
+		  get_begin_time AS getBeginTime,
+		  get_end_time AS getEndTime,
+		  min_amount AS minAmount,
+		  cpn_type AS cpnType,
+		  remark AS remark
+		FROM
+		  shop_coupon
+		WHERE <![CDATA[get_begin_time < NOW()]]> 
+		  AND get_end_time > NOW()
+		  AND grant_type = 0
+	</select>
+	
+	<select id="getCouponGoodsListByCpnId" resultType="map">
+		SELECT
+		  t3.`goods_id`,
+		  t3.`image`,
+		  t3.`name`,
+		  t3.`price`
+		FROM
+		  shop_coupon t1
+		  LEFT JOIN shop_coupon_rel t2
+		    ON t1.`cpn_sn` = t2.`cpn_sn`
+		  INNER JOIN shop_goods t3
+		    <if test="cpnType != null and cpnType == 0">ON t2.`rel_id` = t3.`cat_id`</if>
+		    <if test="cpnType != null and cpnType == 1">ON t2.`rel_id` = t3.`goods_id`</if>
+		    <if test="cpnType != null and cpnType == 2">ON t2.`rel_id` = t3.`com_id`</if>
+		WHERE t1.`cpn_id` = #{cpnId}
+	</select>
+</mapper>

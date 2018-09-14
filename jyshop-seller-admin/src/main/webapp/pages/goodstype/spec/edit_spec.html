@@ -1,0 +1,72 @@
+<form id="submitForm" class="form-horizontal">
+	<input type="hidden"  name="specId" th:value="${spec.specId}" />
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="specName"><font color="red">*</font>规格名称：</label>
+        <div class="col-sm-8">
+			<input class="form-control" type="text" id="specName" name="specName" th:value="${spec.specName}" placeholder="请填写规格名称" />
+            <div id="validation-rolename" class="validate-error help-block"></div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="remark">备注：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="remark" name="remark" th:value="${spec.remark}" />
+            <div id="validation-cname" class="validate-error help-block"></div>
+        </div>
+    </div> 
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="useable">显示类型：</label>
+        <div class="col-sm-8">
+            <div class="radio">
+				<label style="display: inline-block; width: 50px;">
+					<input th:checked="true" value="0" name="showType" type="radio" class="ace"/>文字
+				</label>
+			</div>
+        </div>
+    </div>
+    <div class="form-group">
+    	&nbsp;&nbsp;&nbsp;
+    	<input id="addSpecValues" type="button" class="btn btn-primary" value="添加规格值"></input>
+    </div>
+	<br />
+    <div class="table-info">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>规格值名称</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody >
+				<tr th:if="${specValues!=null}" th:each="specValues:${spec.specValueList}"> 
+					<input type="hidden" name="specValueId" th:value="${specValues.specValueId}" />
+					<td><input class="form-control" type="text" name="specValue" th:value="${specValues.specValue}" style="width:70%;"/></td>
+					<td><input type="button" class="btn btn-primary" value="删除" onClick="delSpec(this)"></input></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	submit = function(){
+		frmValidate();
+		var data = $("#submitForm").serialize();
+		ajaxRequest("/admin/spec/editSpec", data);
+	}
+	var spec_div="<tr> "+
+					"<input type=\"hidden\" name=\"specValueId\" />"+
+					"<td><input class=\"form-control\" type=\"text\" name=\"specValue\" style=\"width:70%;\"/></td>"+
+					"<td><input type=\"button\" class=\"btn btn-primary\" value=\"删除\" onClick=\"delSpec(this)\"></input></td>"+
+				 "</tr>";
+	$("#addSpecValues").click(function(){
+		$("table[class='table table-bordered' ] tbody").append(spec_div);
+	});
+				 
+	function delSpec(obj){
+		$(obj).parents("tr").remove();
+	};
+	/*]]>*/
+</script>

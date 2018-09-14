@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.BargainOrderDao">
+
+	<!-- 查询免单砍价支付总金额 -->
+	<select id="selectPayAmount" resultType="decimal">
+		select
+			ifnull(sum(pay_amount),0)
+		from shop_bargain_order sbo 
+		inner join shop_bargain_order_items sboi on sbo.order_id=sboi.order_id
+		where sbo.parent_id=#{parentId} and order_status>=2 and sboi.bargain_type=2
+	</select>
+	
+	<!-- 根据订单ID获取砍价订单 -->
+	<select id="selectByOrderId" resultMap="baseResultModel">
+		select
+			order_id,
+			order_status,
+			member_id,
+			weight,
+			goods_amount,
+			ship_amount,
+			order_amount
+		from shop_bargain_order sbo
+		where sbo.order_id=#{orderId} 
+	</select>
+
+	<!-- 根据订单ID获取砍价订单 -->
+	<select id="selectMemberOrder" resultMap="baseResultModel">
+		select
+			sbo.order_id,
+			sbo.order_sn,
+			sbo.parent_id,
+			sbo.order_status,
+			sbo.pay_status,
+			sbo.ship_status,
+			sbo.order_amount,
+			sboi.bargain_type,
+			sboi.free_price 
+		from shop_bargain_order sbo 
+		left join shop_bargain_order_items sboi on sbo.order_id=sboi.order_id 
+		where sbo.order_id=#{orderId} and sbo.member_id=#{memberId}
+	</select>
+	
+	<!-- 根据订单父ID获取用户 砍价订单 -->
+	<select id="selectByParentIdAndMemberId" resultMap="baseResultModel">
+		select
+			*
+		from shop_bargain_order
+		where parent_id=#{parentId} and member_id=#{memberId}
+	</select>
+	
+	<!-- 根据订单父ID获取用户 砍价订单 -->
+	<select id="selectByOrderSnAndStatus" resultType="map">
+		select
+			sbo.order_id ,
+			sbo.order_status,
+			sbo.parent_id ,
+			sbo.member_id ,
+			sboi.bargain_type  
+		from shop_bargain_order sbo
+		left join shop_bargain_order_items sboi on sbo.order_id=sboi.order_id 
+		where sbo.order_sn=#{orderSn} and sbo.order_status=#{orderStatus} 
+	</select>
+	
+	<!-- 查询订单详情 -->
+	<select id="selectBargainDetail" resultType="map">
+		select 
+			sbo.order_id as orderId,
+			sbo.order_status as orderStatus,
+			sbo.member_id as memberId,
+			sboi.bargain_id as bargainId,
+	        sboi.bargain_num as bargainNum,
+	        sboi.bargain_prices as bargainPrices,
+	        sboi.bargain_type as bargainType,
+	        sboi.goods_id as goodsId,
+	        sboi.goods_name as goodsName,
+	        sboi.goods_image as goodsImage,
+	        sboi.goods_price as goodsPrice,
+	        sboi.target_price as targetPrice,
+	        sboi.take_date as takeDate,
+	        sbg.details as details,
+	        sbg.share_title as shareTitle,
+	        sbg.share_describe as shareDescribe,
+	        sbg.rule 
+		from shop_bargain_order sbo 
+		inner join shop_bargain_order_items sboi on sbo.order_id=sboi.order_id 
+		left join shop_bargain_goods sbg on sboi.bargain_id=sbg.bargain_id
+		where sbo.order_id=#{orderId} 
+	</select>
+	
+	<!-- 修改用户砍价订单状态 -->
+	<update id="updateOfOrderStatus" >
+		update shop_bargain_order 
+		set order_status=#{orderStatus},order_amount=#{orderAmount}
+		where order_id=#{orderId} and member_id=#{memberId}
+	</update>
+	
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.BargainOrder">
+		<id column="order_id" jdbcType="BIGINT" property="orderId" />
+		<result column="parent_id" jdbcType="BIGINT" property="parentId" />
+		<result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="order_status" jdbcType="TINYINT" property="orderStatus" />
+		<result column="pay_status" jdbcType="TINYINT" property="payStatus" />
+		<result column="ship_status" jdbcType="TINYINT" property="shipStatus" />
+		<result column="payment_id" jdbcType="INTEGER" property="paymentId" />
+		<result column="payment_name" jdbcType="VARCHAR" property="paymentName" />
+		<result column="payment_type" jdbcType="VARCHAR" property="paymentType" />
+		<result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime" />
+  		<result column="weight" jdbcType="DECIMAL" property="weight" />
+		<result column="goods_amount" jdbcType="DECIMAL" property="goodsAmount" />
+		<result column="ship_amount" jdbcType="DECIMAL" property="shipAmount" />
+		<result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+		<result column="pay_amount" jdbcType="DECIMAL" property="payAmount" />
+		<result column="ship_name" jdbcType="VARCHAR" property="shipName" />
+		<result column="ship_addr" jdbcType="VARCHAR" property="shipAddr" />
+		<result column="ship_zip" jdbcType="VARCHAR" property="shipZip" />
+		<result column="ship_email" jdbcType="VARCHAR" property="shipEmail" />
+		<result column="ship_mobile" jdbcType="VARCHAR" property="shipMobile" />
+		<result column="ship_tel" jdbcType="VARCHAR" property="shipTel" />
+		<result column="ship_province_id" jdbcType="VARCHAR" property="shipProvinceId" />
+		<result column="ship_city_id" jdbcType="VARCHAR" property="shipCityId" />
+		<result column="ship_district_id" jdbcType="VARCHAR" property="shipDistrictId" />
+		<result column="ship_province_name" jdbcType="VARCHAR" property="shipProvinceName" />
+		<result column="ship_city_name" jdbcType="VARCHAR" property="shipCityName" />
+		<result column="ship_district_name" jdbcType="VARCHAR" property="shipDistrictName" />
+		<result column="remarks" jdbcType="LONGVARCHAR" property="remarks" />
+		<result column="adminRemarks" jdbcType="LONGVARCHAR" property="remarks" />
+		<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+		<result column="payment_date" jdbcType="TIMESTAMP" property="paymentDate" />
+		<result column="deliver_date" jdbcType="TIMESTAMP" property="deliverDate" />
+		<result column="complete_date" jdbcType="TIMESTAMP" property="completeDate" />
+		<result column="bargain_type" jdbcType="INTEGER" property="bargainType" />
+		<result column="free_price" jdbcType="DECIMAL" property="freePrice" />
+	</resultMap>
+
+	<select id="pageList" resultType="map">
+        SELECT
+        t.order_id orderId,m.weixin_face face,m.nickname name,
+        m.mobile, t.SHIP_ADDRESS adr, o.target_price targetPrice,
+		o.bargain_id,t.ORDER_STATUS,
+		CASE WHEN t.parent_id = 0 then b.cd
+		ELSE (SELECT max(create_date) cd FROM shop_member_bargain where order_id = t.parent_id)
+		end cd
+        FROM shop_bargain_order t
+        JOIN shop_bargain_order_items o
+        ON t.order_id = o.order_id
+        JOIN shop_member m
+        ON t.MEMBER_ID = m.member_id
+        LEFT JOIN
+        (SELECT order_id, max(create_date) cd FROM shop_member_bargain GROUP BY order_id) b
+        ON  t.order_id = b.order_id
+        <![CDATA[ WHERE t.ORDER_STATUS <> 0 ]]>
+        <if test="bargainId!=null and bargainId!=''">
+            AND o.bargain_id = #{bargainId}
+        </if>
+        <if test="createStartTime!=null and createStartTime!=''">
+            <![CDATA[ and b.cd>=#{createStartTime} ]]>
+        </if>
+        <if test="createEndTime!=null and createEndTime!=''">
+            <![CDATA[ and b.cd<=#{createEndTime} ]]>
+        </if>
+			ORDER BY t.CREATE_DATE desc
+	</select>
+
+
+	<!-- 批量删除 -->
+	<delete id="batchDel">
+		delete from shop_bargain_order where
+		<foreach collection="list" item="item" index="index" open="(" separator="or" close=")">
+			order_id=#{item.orderId}
+		</foreach>
+	</delete>
+
+</mapper>

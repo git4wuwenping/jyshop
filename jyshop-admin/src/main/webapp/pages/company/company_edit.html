@@ -1,0 +1,330 @@
+<form id="submitForm" class="form-horizontal">
+	<input name="comId" th:value="${com.comId}" type="text" hidden="hidden" />
+	<input type="radio" id="" name="comType" th:value="${com.comType}"
+		th:checked="true" style="display: inline; vertical-align: middle;" />
+	<p th:text="${com.comType==1}?直营:商户"
+		style="white-space: nowrap; display: inline;"></p>
+	<!-- <input type="radio" id="" name="comType" value="0" th:checked="${com.comType==0}?true:false" th:display="${com.comType==0}?block:none"/>商户 -->
+	<input name="id" th:value="${com.id}" type="text" hidden="hidden" />
+
+	<div class="form-group" id="usernameDiv">
+		<label class="col-sm-3 control-label" for="username">供应商账号：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="username" name="username"
+				th:value="${com.username}" />
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group" id="passwordDiv">
+		<label class="col-sm-3 control-label" for="password">供应商密码：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="password" id="password"
+				name="password" th:value="${com.password}" />
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="comContact">负责人：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="comContact"
+				name="comContact" th:value="${com.comContact}" />
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="password">负责人手机：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="comMobile"
+				name="comMobile" th:value="${com.comMobile}" />
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="email">负责人Email：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="email" name="email"
+				th:value="${com.comEmail}" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="bond">保证金：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="bond" name="bond"
+				th:value="${com.bond}" />
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="bond">生效时间：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="datetime" id="addTime"
+				th:value="${com.addTime}" /> <input class="form-control"
+				type="datetime" id="curentTime" th:value="${com.addTime}" />
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="disabled">状态：</label>
+		<div class="col-sm-8">
+			<div class="radio">
+				<label style="display: inline-block; width: 50px;"> <input
+					value="1" name="useable" type="radio" class="ace"
+					th:checked="${com.useable==1}?true:false" />停用
+				</label> <label style="display: inline-block; width: 50px;"> <input
+					value="0" name="useable" type="radio" class="ace"
+					th:checked="${com.useable==0}?true:false" />启用
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="referee">推荐人：</label>
+		<div class="col-sm-8">
+			<!-- <input class="form-control" type="text" id="parentId" name="parentId" th:value="${com.parentId}"/>-->
+			<input class="form-control" type="hidden" id="referee" th:value="${refereeId}" /> 
+				<select class="form-control" id="selectId" name="parentId" style="width: 250px; Float: left;">
+				<option value="-1">请选择推荐人</option>
+				<option th:each="company:${companys}" th:value="${company.comId}"
+					th:text="${company.comId+ '-' + company.comName}"></option>
+			</select>
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="remark">备注：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="remark" name="remark"
+				th:value="${com.remark}" />
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+	商城店铺信息 <input id="shopStoreId" name="shopStoreId"
+		th:value="${com.shopStoreId}" type="text" hidden="hidden" />
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="shopStoreName">店铺名称：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="shopStoreName"
+				name="shopStoreName" th:value="${com.shopStoreName}" />
+			<div id="validation-username" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="shopStoreInformation">店铺信息：</label>
+		<div class="col-sm-8">
+			<textarea class="form-control" name='shopStoreInformation' cols='100' rows='4' 
+            id="licenseother" onkeypress="count()" onkeyup="count()"  onblur="count();" 
+            	th:text="${com.shopStoreInformation}" 
+            style="width: 303px; height: 125px;resize: none;" onChange="count();"></textarea> 
+            <div id="validation-shopStoreInformation" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="shopStoreLogo">店铺logo：</label>
+		<div class="col-sm-8" id="shopStoreLogo">
+				<input type="file" class="form-control"  multiple="multiple" />
+				<div id='imageDiv1' style='display: inline-block; margin-left: 10px; position: relative'>
+					<img id="imgPrivew1" th:src="${com.shopStoreLogo}" width='120px' height='120px' /> 
+					<input type='hidden' name='shopStoreLogo' th:value="${com.shopStoreLogo}" />
+				</div>
+				<div id="validation-shopStoreLogo" class="validate-error help-block"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="shopStoreTheme">店铺主题：</label>
+		<div class="col-sm-8" id="shopStoreTheme">
+				<input type="file" class="form-control"  multiple="multiple" />
+				<div id='imageDiv2' style='display: inline-block; margin-left: 10px; position: relative'>
+					<img id="imgPrivew2" th:src="${com.shopStoreTheme}" width='120px' height='120px' /> 
+					<input type='hidden' name='shopStoreTheme' th:value="${com.shopStoreTheme}" />
+				</div>
+				<div id="validation-shopStoreTheme" class="validate-error help-block"></div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$("#username").on('blur',function(){
+		var username = $("#username").val();
+        if(typeof username == 'undefined' || username == null || username=='' ){
+        	$(this).val(null)
+			alert('请填写用户名!!');
+        	$(".btn").attr("disabled",true);
+		}else{
+			$(".btn").attr("disabled",false);
+		}
+	})
+	$("#password").on('blur',function(){
+        var password = $("#password").val();
+        if(typeof password == 'undefined' || password == null || password=='' ){
+        	$(this).val(null)
+			alert('请填写密码!!');
+        	$(".btn").attr("disabled",true);
+		}else{
+			$(".btn").attr("disabled",false);
+		}
+	})
+	$("#shopStoreName").on('blur',function(){
+        var shopStoreName = $("#shopStoreName").val();
+        if(typeof shopStoreName == 'undefined' || shopStoreName == null || shopStoreName=='' ){
+        	$(this).val(null)
+			alert('请填写店铺名称!!');
+        	$(".btn").attr("disabled",true);
+		}else{
+			$(".btn").attr("disabled",false);
+		}
+        
+	})
+	
+	 submit = function() {
+		frmValidate();
+		var data = $("#submitForm").serialize();
+		ajaxRequest("/admin/company/editCompany", data);
+	} 
+
+	$(function() {
+		if ($("#username").val() == '') {
+			$("#usernameDiv").hide();
+			$("#passwordDiv").hide();
+		}
+	});
+
+	
+	var refereeId = $("#referee").val();
+	if(refereeId!='' && refereeId!=null && refereeId!=undefined ){
+  	   $("#selectId").find("option[value = '"+refereeId+"']").attr("selected","selected");
+     }
+	
+	/* 手机号校验 */
+	$("#comMobile").on('blur', function() {
+		var phoneNumReg = /^1[3|5|7|8]\d{9}$/;
+		if (!phoneNumReg.test($(this).val())) {
+			$(this).val(null)
+			alert('请填写正确手机号码!!');
+		}
+	})
+	/* 邮箱验证 */
+	$("#email").on('blur',function() {
+		var emailReg = /^([a-zA-Z0-9]+[_|\-|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\-|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/gi;
+		if (!emailReg.test($(this).val())) {
+				$(this).val(null)
+				alert('邮件格式有误，请重新输入！！');
+			}
+	})
+
+	$(function() {
+		$('#shopStoreLogo').fileupload({
+            url: _urlPath + "upload/jqUploadImg",
+            dataType: 'html',
+            // 上传完成后的执行逻辑
+            done: function (e, data) {
+                //$("#image").attr("type","hidden");
+                $('#imageDiv1').remove();
+                $("#shopStoreLogo").append("<div id='imageDiv1' style='display: inline-block; margin-left: 10px;position:relative'>" +
+                    "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>" +
+                    "<i class='fa fa-times' onclick='deleteImg1(this)'></i>" +
+                    "</span> " +
+                    "<img src='"+data.result+"' width='120px' height='120px'/>" +
+                    "<input type='hidden' name='shopStoreLogo' value='"+data.result+"'/>" +
+                    "</div>")
+            }
+        });	
+	}); 
+	function deleteImg1(obj) {
+		//$(obj).parent().find('.imgPrivew').attr("src",""); 
+		$('#imageDiv1').remove();
+		//$("#image1").attr("type","file");
+		//todo 根据名称删除服务器图片$(obj).parent().attr("path")
+	}
+	
+	$(function() {
+		$('#shopStoreTheme').fileupload({
+            url: _urlPath + "upload/jqUploadImg",
+            dataType: 'html',
+            // 上传完成后的执行逻辑
+            done: function (e, data) {
+                //$("#image").attr("type","hidden");
+                $('#imageDiv2').remove();
+                $("#shopStoreTheme").append("<div id='imageDiv2' style='display: inline-block; margin-left: 10px;position:relative'>" +
+                    "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>" +
+                    "<i class='fa fa-times' onclick='deleteImg2(this)'></i>" +
+                    "</span> " +
+                    "<img src='"+data.result+"' width='120px' height='120px'/>" +
+                    "<input type='hidden' name='shopStoreTheme' value='"+data.result+"'/>" +
+                    "</div>")
+            }
+        });	
+	}); 
+	function deleteImg2(obj) {
+		$('#imageDiv2').remove();
+	}
+	/*店铺名称校验*/
+	$("#shopStoreName").on('input',function(){
+		var success = '<font id="fontId" style="color: green;">店铺名可以使用</font>';
+		//var error = '<font id="fontId" style="color: red;">店铺名已存在!!</font>';
+		var error ='';
+		$.ajax({
+			type:"POST",
+			data:{"shopStoreName":$(this).val()},
+			url:_urlPath+"admin/shopStore/checkShopStoreName",
+			success:function(result){	
+				  if(result.retcode==2){
+					error = "<font id='fontId' style='color: red;'>"+result.retmsg+"'</font>'"
+					$("#fontId").remove();
+					$("#shopStoreName").after(error);
+					$("#sumbitBtn").attr("disabled", true); 
+				}else{
+					$("#fontId").remove();
+					$("#shopStoreName").after(success);
+					$("#sumbitBtn").attr("disabled", false);
+				}  
+			}
+		})
+	});
+	/* 店铺介绍校验 */
+	$("#licenseother").on('blur',function(){
+		var error ='';
+		$.ajax({
+			type:"POST",
+			data:{"shopStoreInformation":$(this).val()},
+			url:_urlPath+"admin/shopStore/checkShopStoreInformation",
+			success:function(result){	
+				  if(result.retcode==2){
+					error = "<font id='fontId' style='color: red;'>"+result.retmsg+"'</font>'"
+					$("#fontId").remove();
+					$("#licenseother").after(error);
+					$("#sumbitBtn").attr("disabled", true); 
+				}else{
+					$("#fontId").remove();
+					//$("#shopStoreInformation").after(success);
+					$("#sumbitBtn").attr("disabled", false);
+				}  
+			}
+		})
+	});
+
+	function getStringUTFLength(str) { 
+		 var value = str.replace(/[\u4e00-\u9fa5]/g," ");
+		 //将汉字替换为两个空格
+		 return value.length; 
+		} 
+		function leftUTFString(str,len) { 
+		 if(getStringUTFLength(str)<=len) { 
+		  return str; 
+		 }
+		 var value = str.substring(0,len); 
+		 while(getStringUTFLength(value)>len) { 
+		  value = value.substring(0,value.length-1); 
+		 } 
+		 return value; 
+		} 
+		function count() { 
+		 var len=120;
+		 var value = document.getElementById("licenseother").value; 
+		 if(getStringUTFLength(value)>=len) {  
+		  document.getElementById("licenseother").value = leftUTFString(document.getElementById("licenseother").value,len); 
+		 } 
+		 document.getElementById("result").value = len-getStringUTFLength(document.getElementById("licenseother").value); 
+		} 
+	/*]]>*/
+</script>

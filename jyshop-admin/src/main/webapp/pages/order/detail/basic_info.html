@@ -1,0 +1,162 @@
+<div th:fragment="basic_info" class="tab-pane active" id="bs-tabdrop-pill1" style="width: 100%">
+	<!-- 订单信息 -->
+	<div class="col-sm-2">
+		<div class="panel-group panel-group-info" id="accordion-danger-example">
+			<div class="panel">
+				<div class="panel-heading">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-info-example" href="#orderInfoDiv">
+						订单信息
+					</a>
+				</div> 
+				<div id="orderInfoDiv" class="panel-collapse in">
+					<div class="panel-body">
+						<table class="table-condensed" style="padding: unset; margin: unset">
+		                	<tr class="active" th:switch="${order.orderStatus}">
+		                		<td class="text-right">订单状态：</td>
+		                		<td th:case="-9">己作废</td>
+						  		<td th:case="-8">已换货</td>
+						  		<td th:case="-7">己退款</td>
+						  		<td th:case="-6">已换货</td>
+						  		<td th:case="-5">退货被拒绝</td>
+						  		<td th:case="-4">换货被拒绝</td>	
+						  		<td th:case="-3">申请退款</td>
+						  		<td th:case="-2">申请退货</td>
+						  		<td th:case="-1">申请换货</td>
+						  		<td th:case="0">未付款/新订单</td>	
+						  		<td th:case="1">已付款,待分配</td>
+						  		<td th:case="2">已分配,待确定</td>
+						  		<td th:case="3">配货中</td>
+						  		<td th:case="4">部分发货</td>	
+		                		<td th:case="5">已发货,待收货</td>
+						  		<td th:case="6">已收货</td>
+						  		<td th:case="7">已完成</td>
+						  		<td th:case="8">作废</td>	
+		                	</tr>
+		                    <tr class="active" th:switch="${order.payStatus}">
+		                    	<td class="text-right">支付状态：</td>
+						  		<td th:case="0">未付款</td>
+						  		<td th:case="1">已付款</td>
+						  		<td th:case="2">已退款</td>
+						  		<td th:case="3">部分退款</td>	                    
+		                    </tr>
+		                    <tr class="active"><td class="text-right">支付方式：</td><td th:text="${order.paymentName}"></td></tr>
+		             		<tr class="active"><td class="text-right">支付时间：</td><td th:if="${order.paymentTime!=null}" th:text="${#dates.format(order.paymentTime, 'yyyy-MM-dd')}"></td></tr>
+		             		<tr class="active">
+		             			<td class="text-right">支付时间：</td>
+		             			<td th:if="${order.paymentTime!=null}" th:text="${#dates.format(order.paymentTime, 'yyyy-MM-dd')}" />
+		             			<td th:if="${order.paymentTime==null}" th:text="获取下单时间失败" />
+		             		</tr>
+		             	</table>
+					</div> 
+				</div> 
+			</div>
+		</div>
+	</div>
+	<!-- 订单价格 -->
+	<div class="col-sm-2">
+		<div class="panel-group panel-group-info" id="accordion-danger-example">
+			<div class="panel">
+				<div class="panel-heading">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-info-example" href="#orderAmountDiv">
+						订单价格
+					</a>
+				</div> 
+				<div id="orderAmountDiv" class="panel-collapse in">
+					<div class="panel-body">
+						<table class="table-condensed" style="padding: unset; margin: unset">
+		                	<tr class="active"><td class="text-right">商品总额：</td><td th:text="${order.goodsAmount}"></td></tr>
+		                    <tr class="active"><td class="text-right">优惠金额：</td><td th:text="${order.discount}"></td></tr>
+		                    <tr class="active"><td class="text-right">配送费用：</td><td th:text="${order.shipAmount}"></td></tr>
+		                    <tr class="active"><td class="text-right">订单总额：</td><td th:text="${order.orderAmount}"></td></tr>
+		                    <tr class="active"><td class="text-right">支付金额：</td><td th:text="${order.payMoney}"></td></tr>
+		             	</table>
+					</div> 
+				</div> 
+			</div>
+		</div>
+	</div>
+	<!-- 用户信息 -->
+	<div class="col-sm-2">
+		<div class="panel-group panel-group-info" id="accordion-danger-example" >
+			<div class="panel">
+				<div class="panel-heading">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-info-example" href="#memberInfoDiv">
+						用户信息
+					</a>
+				</div> 
+				<div id="memberInfoDiv" class="panel-collapse in" >
+					<div class="panel-body" th:if="${member!=null}">
+						<table class="table-condensed" style="padding: unset; margin: unset">
+							<tr class="active"><td class="text-right">用户ID：</td><td th:text="${member.memberId}"></td></tr>
+                        	<tr class="active"><td class="text-right">用户名：</td><td th:text="${member.uname}"></td></tr>
+                          	<tr class="active"><td class="text-right">姓　名：</td><td th:text="${member.name}"></td></tr>
+                          	<tr class="active"><td class="text-right">昵称：</td><td th:text="${member.nickname}"></td></tr>
+                            <tr class="active"><td class="text-right">手机号：</td><td th:text="${member.mobile}"></td></tr>
+                            <tr class="active"><td class="text-right">Email：</td><td th:text="${member.email}"></td></tr>
+                            <tr class="active" th:if="${order.orderType==1}"><td class="text-right">真实姓名：</td><td th:text="${order.memberRealName}"></td></tr>
+                            <tr class="active" th:if="${order.orderType==1}"><td class="text-right">身份证：</td><td th:text="${order.memberCardId}"></td></tr>
+                        </table>									
+					</div> 
+				</div> 
+			</div>
+		</div>
+	</div>
+	
+	<!-- 收货人信息 -->					
+	<div class="col-sm-2">
+		<div class="panel-group panel-group-info" id="accordion-danger-example" >
+			<div class="panel">
+				<div class="panel-heading">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-info-example" href="#shipInfoDiv">
+						收货人信息
+					</a>
+				</div> 
+				<div id="shipInfoDiv" class="panel-collapse in">
+					<div class="panel-body">
+						<table class="table-condensed" style="padding: unset; margin: unset">
+		               		<tr class="active"><td class="text-right" >姓名：</td><td th:text="${order.shipName}"></td></tr>
+		                    <tr class="active"><td class="text-right" >电话：</td><td th:text="${order.shipTel}"></td></tr>
+		                    <tr class="active"><td class="text-right">手机号：</td><td th:text="${order.shipMobile}"></td></tr>
+		                    <tr class="active"><td class="text-right">地区：</td><td th:text="${order.shipProvinceName}+'-'+${order.shipCityName}+'-'+${order.shipDistrictName}"></td></tr>
+		                    <tr class="active"><td class="text-right">详细地址：</td><td th:text="${order.shipAddress}"></td></tr>
+		                    <tr class="active"><td class="text-right">邮编：</td><td th:text="${order.shipZip}"></td></tr>
+		             	</table>
+					</div> 
+				</div> 
+			</div>
+		</div>
+	</div>
+	
+	<!-- 商品列表 -->
+	<div class="col-sm-10">
+		<div class="table-info">
+			<div class="table-header">
+				<div class="table-caption">
+					商品列表
+				</div>
+			</div>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>货号</th>
+						<th>商品名称</th>
+						<th>规格</th>
+						<th>价格</th>
+						<th>购买数量</th>
+						<th>合计</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${goodsList!=null}" th:each="goods:${goodsList}">
+						<td th:text="${goods.productSn}"></td>
+						<td ><a target="_blank" th:href="|http://wx.cheertea.com/#/goods/detail?goodsId=${goods.goodsId}|" th:text="${goods.goodsName}"></a></td>
+						<td th:text="${goods.productSpec}"></td>
+						<td th:text="${goods.price}"></td>
+						<td th:text="${goods.buyCount}"></td>
+						<td th:text="${goods.price*goods.buyCount}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

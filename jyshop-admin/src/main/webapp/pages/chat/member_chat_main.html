@@ -1,0 +1,51 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+  <div id="searchForm">
+ 	<div class="col-md-2" style="width: 200px">
+		<input type="text" class="form-control search-query" name="memberId" placeholder="用户ID" />
+	</div>
+	<div class="col-md-2" style="width: 200px">
+		<input type="text" class="form-control search-query" name="nickname" placeholder="昵称" />
+	</div>
+    <div class="col-md-1" style="width: 105px;">
+        <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+    </div>
+  </div>
+</div>
+<div class="openAppGrid">
+	<div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+    $(function (){
+        $("#openAppGrid").sgrid({
+            columns:[
+                {field:"memberId",text:"用户ID", sortColumn:"memberId"},
+                {field:"nickname", text:"用户昵称"},
+                {field:"message", text:"最后咨询内容"},
+                {field:"createTime", text:"最后咨询时间",formatter:function(index, content, data){
+                	if(typeof content!='undefined' && content!=null && content!='')
+                		return new Date(content).toLocaleString();
+                	else
+                		return "<font color='red'>获取最后咨询时间失败</font>";
+                }},
+                {field:"memberId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                	var detailUrl = "/admin/chat/preMemberChatDetails/" + content;
+	                return "<a href='javascript:goPage(\""+detailUrl+"\");' data-original-title='咨询详情' class='btn btn-xs btn-warning add-tooltip'><i class='fa fa-pencil'>咨询详情</i></a>";
+                }},
+            ],
+            cls: "",
+            url: _urlPath + "admin/chat/pageChatAjax",
+            sort:"id",
+            order:"desc",
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+
+
+    });
+
+
+    /*]]>*/
+</script>

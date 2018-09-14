@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.CoinDtlDao">
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.dao.CoinDtlDao">
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="coin_type" jdbcType="SMALLINT" property="coinType" />
+		<result column="coin_num" jdbcType="INTEGER" property="coinNum" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="order_id" jdbcType="BIGINT" property="orderId" />
+	</resultMap>
+	<!-- 已签到日期、金币数量返回 -->
+	<select id="selectSignListById" resultType="map" >
+		select 
+			create_time as createTime
+		from 
+			shop_coin_dtl 
+		where 
+			member_id = #{memberId} 
+		and coin_type = 5 
+		and DATE_FORMAT(create_time,'%Y-%m') = date_format(#{curYear},'%Y-%m'); 
+	</select> 
+	<select id="queryCoinDtlByParam" resultType="map"> 
+		SELECT 
+		  t1.`member_id` AS memberId, 
+		  t1.`nickname`, 
+		  t1.`weixin_face` AS weixinFace, 
+		  t1.`coin`,
+		  SUM(
+		    CASE
+		      WHEN t2.`coin_type` = 2
+		      THEN 0
+		      ELSE IFNULL(t2.`coin_num`,0)
+		    END
+		  ) AS coinSum
+		FROM
+		  shop_member t1
+		  LEFT JOIN shop_coin_dtl t2
+		    ON t1.`member_id` = t2.`member_id`
+		WHERE 1=1
+		<if test="queryValue != null">
+			and (t1.nickname like '%${queryValue}%' or t1.member_id = #{queryValue})
+		</if>
+		GROUP BY t1.`member_id`,
+		  t1.`nickname`,
+		  t1.`weixin_face`
+	</select>
+	
+	<select id="selectCoinDtlByMemberId" resultType="map" >
+		select 
+			member_id as memberId,
+			create_time as createTime
+		from shop_coin_dtl 
+		where member_id = #{memberId} 
+		 and to_days(create_time)=to_days(now()) 
+		 and coin_type = #{coinType} 
+			
+	</select>
+	
+	<select id="queryMemberCoinInfoByMemberId" resultType="map">
+		SELECT
+		  t1.`member_id` AS memberId,
+		  t1.`nickname`,
+		  t1.`weixin_face` AS weixinFace,
+		  t1.`coin`,
+		  SUM(
+		    CASE
+		      WHEN t2.`coin_type` = 2
+		      THEN 0
+		      ELSE IFNULL(t2.`coin_num`,0)
+		    END
+		  ) AS coinSum,
+		  t1.`identity_id` as identityId
+		FROM
+		  shop_member t1
+		  LEFT JOIN shop_coin_dtl t2
+		    ON t1.`member_id` = t2.`member_id`
+		WHERE t1.`member_id` = #{memberId}
+		GROUP BY t1.`member_id`,
+		  t1.`nickname`,
+		  t1.`weixin_face`
+	</select>
+	
+</mapper>

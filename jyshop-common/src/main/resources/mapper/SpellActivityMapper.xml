@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.SpellActivityDao">
+
+    <resultMap id="baseResultModel" type="com.qyy.jyshop.model.SpellActivity" >
+        <id column="activity_id" property="activityId" jdbcType="BIGINT" />
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+        <result column="last_modify" property="lastModify" jdbcType="TIMESTAMP" />
+        <result column="com_id" property="comId" jdbcType="BIGINT" />
+        <result column="shop_store_id" property="shopStoreId" jdbcType="BIGINT" />
+        <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+        <result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+        <result column="cycle" property="cycle" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
+        <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+        <result column="goods_title" property="goodsTitle" jdbcType="VARCHAR" />
+        <result column="spell_type" property="spellType" jdbcType="INTEGER" />
+        <result column="image1" property="image1" jdbcType="VARCHAR" />
+        <result column="image2" property="image2" jdbcType="VARCHAR" />
+        <result column="goods_price" property="goodsPrice" jdbcType="DECIMAL" />
+        <result column="spell_price" property="spellPrice" jdbcType="DECIMAL" />
+        <result column="store" property="store" jdbcType="INTEGER" />
+        <result column="num" property="num" jdbcType="INTEGER" />
+        <result column="goods_describe" property="goodsDescribe" jdbcType="VARCHAR" />
+        <result column="dly_type_id" property="dlyTypeId" jdbcType="BIGINT" />
+        <result column="limited" property="limited" jdbcType="INTEGER" />
+        <result column="share_title" property="shareTitle" jdbcType="VARCHAR" />
+        <result column="share_describe" property="shareDescribe" jdbcType="VARCHAR" />
+        <result column="share_image" property="shareImage" jdbcType="VARCHAR" />
+        <result column="rules" property="rules" jdbcType="VARCHAR" />
+        <result column="already_num" property="alreadyNum" jdbcType="INTEGER" />
+        <result column="real_num" property="realNum" jdbcType="INTEGER" />
+        <result column="complete_num" property="completeNum" jdbcType="INTEGER" />
+        <result column="sort" property="sort" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+    </resultMap>
+
+    <select id="getSpellActivityByParams" resultType="map">
+        SELECT
+        sa.activity_id as activityId,
+        sa.name as name,
+        sa.image2 as image2,
+        sa.goods_name as goodsName,
+        sa.spell_price as spellPrice,
+        sa.store as store,
+        sa.num as num,
+        sa.status as status,
+        sa.sort as sort,
+        sa.real_num as realNum,
+        sa.complete_num as completeNum,
+        sa.spell_type as spellType,
+        sa.start_date as startDate,
+        sa.end_date as endDate,
+        sa.last_modify as lastModify
+        FROM shop_spell_activity sa
+        where 1=1
+        <if test="text != null">
+            and sa.name like '%${text}%' or sa.goods_name like '%${text}%'
+        </if>
+        <if test="status != null">
+            and sa.status=#{status}
+        </if>
+        <if test="spellType != null">
+            and sa.spell_type =#{spellType}
+        </if>
+        <if test="startDate != null">
+        <![CDATA[
+            and sa.end_date > #{startDate}
+        ]]>
+        </if>
+        <if test="endDate != null">
+        <![CDATA[
+            and sa.start_date < #{endDate}
+        ]]>
+        </if>
+        order by sa.sort asc,sa.create_date desc
+    </select>
+
+    <select id="getSpellActivityByActivityId" resultType="map">
+        select
+          sa.activity_id as activityId,
+          sa.start_date as startDate,
+          sa.end_date as endDate,
+          sa.name as name,
+          sa.goods_id as goodsId,
+          sa.goods_name as goodsName,
+          sa.goods_title as goodsTitle,
+          sa.spell_type as spellType,
+          sa.image1 as image,
+          sa.goods_price as goodsPrice,
+          sa.spell_price as spellPrice,
+          sa.store as store,
+          sa.num as num,
+          sa.already_num as alreadyNum,
+          sa.goods_describe as goodsDescribe,
+          sa.rules as rules,
+          g.intro as goodsIntro,
+          sc.bond as bond,
+          sa.limited as limited,
+          sa.com_id as comId,
+          sc.com_name as comName,
+          ss.shop_store_id as shopStoreId,
+          ss.shop_store_name as shopStoreName,
+          ss.shop_store_logo as shopStoreLogo,
+          sa.share_title as shareTitle,
+          sa.share_describe as shareDescribe,
+          sa.share_image as shareImage
+        from shop_spell_activity sa
+        left join shop_goods g on g.goods_id = sa.goods_id
+        left join shop_store ss on ss.shop_store_id = g.shop_store_id
+        left join shop_company sc on sc.com_id = sa.com_id
+        where sa.activity_id = #{activityId}
+    </select>
+
+    <select id="findByActivityId" resultMap="baseResultModel">
+        select * from shop_spell_activity where activity_id=#{activityId}
+    </select>
+
+    <select id="getSpellActivityByShopStoreId" resultType="map">
+        select
+          sa.activity_id as activityId,
+          sa.image2 as image,
+          sa.spell_price as spellPrice
+        from shop_spell_activity sa
+        where shop_store_id = #{shopStoreId}
+    </select>
+
+    <select id="getSpellActivityByRecommended" resultType="map">
+        select
+        sa.activity_id as activityId,
+        sa.image2 as image,
+        sa.spell_price as spellPrice
+        from shop_spell_activity sa
+        where recommended = true
+        and status = 1
+    </select>
+
+    <select id="getSpellActivityList" resultType="map">
+        select
+          s.activity_id as activityId,
+          s.name as name,
+          s.image1 as image,
+          s.goods_title as goodsTitle,
+          s.goods_name as goodsName,
+          s.already_num + s.real_num as alreadyNum,
+          s.spell_price as spellPrice
+        from shop_spell_activity s
+        where s.status = 1
+        <if test="sortType == 0">
+            order by s.sort
+        </if>
+        <if test="sortType == 1">
+            order by s.spell_price
+        </if>
+        <if test="sortType == 2">
+            order by s.start_date
+        </if>
+        <if test="sortType == 3">
+            order by s.already_num + real_num
+        </if>
+        <if test="sortWay == 0">
+            asc
+        </if>
+        <if test="sortWay == 1">
+            desc
+        </if>
+    </select>
+</mapper>

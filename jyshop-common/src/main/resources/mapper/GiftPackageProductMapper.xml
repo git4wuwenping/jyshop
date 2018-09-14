@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.GiftPackageProductDao" >
+  <resultMap id="BaseResultMap" type="com.qyy.jyshop.model.GiftPackageProduct" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="gp_product_id" property="gpProductId" jdbcType="BIGINT" />
+    <result column="gp_id" property="gpId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="sn" property="sn" jdbcType="VARCHAR" />
+    <result column="store" property="store" jdbcType="INTEGER" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="cost" property="cost" jdbcType="DECIMAL" />
+    <result column="weight" property="weight" jdbcType="DECIMAL" />
+    <result column="alarm_num" property="alarmNum" jdbcType="SMALLINT" />
+    <result column="is_usable" property="isUsable" jdbcType="TINYINT" />
+    <result column="specs" property="specs" jdbcType="LONGVARCHAR" />
+    <result column="spec_ids" property="specIds" jdbcType="LONGVARCHAR" />
+    <result column="spec_value_ids" property="specValueIds" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  
+  <select id="selectOfGpProductId" resultType="long">
+		select 
+			 gp_product_id 
+		from shop_giftpackage_product 
+		where gp_id=#{gpId}
+	</select>
+	
+  <select id="selectByGpId" resultType="map">
+      SELECT
+      p.gp_product_id AS gpProductId,
+      p.gp_id AS gpId,
+      p.name,
+      p.sn,
+      p.store,
+      p.price,
+      p.specs,
+      p.cost,
+      p.spec_ids AS specIds,
+      p.spec_value_ids AS specValueIds,
+      p.weight
+      FROM shop_giftpackage_product p
+      WHERE p.gp_id = #{gpId}
+    </select>
+    
+
+    <!-- 获取某个货品信息 -->
+	<select id="selectByGpProductId" resultType="map">
+		SELECT  
+        	sp.gp_id AS goodsId, 
+            sp.gp_product_id AS productId, 
+            sp.sn, 
+            sp.name,
+            sp.cost, 
+            sp.price, 
+            sp.store, 
+            sp.specs, 
+            sp.weight,
+            sg.image,
+            sg.com_id as comId,
+            sg.unit as unit 
+     	FROM shop_giftpackage sg 
+     	INNER JOIN shop_giftpackage_product sp ON sg.gp_id=sp.gp_id 
+       	where sg.market_enable=#{marketEnable}
+              and sp.is_usable=1
+              and sp.gp_product_id=#{productId}
+	</select>
+
+    <select id="selectGiftPackageProductByGpProductId" resultType="map"  >
+    	select
+    		  gp_product_id as gpProductId,
+    		  gp_id as gpId,
+    		  name,
+    		  sn,
+    		  store,
+    		  price,
+    		  specs,
+    		  cost,
+    		  weight,
+    		  spec_ids as specIds,
+    		  spec_value_ids as specValueIds
+    	  from shop_giftpackage_product where gp_id = #{gpId} and is_usable = 1
+    </select>
+
+	<delete id="deleteByGpProductIds" >
+		delete from shop_giftpackage_product where gp_product_id in  
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+		 	#{item}  
+		</foreach>  
+	</delete>
+</mapper>

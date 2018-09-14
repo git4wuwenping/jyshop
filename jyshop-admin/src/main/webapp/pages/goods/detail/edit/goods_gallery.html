@@ -1,0 +1,20 @@
+<div th:fragment="goods_gallery" class="tab-pane" id="bs-tabdrop-pill2">
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="name"><a
+			href="javascript:void(0)" class="btn btn-info" id="uploadImage">上传图片</a></label>
+		<div class="col-sm-8">
+			<script type="text/plain" id="goodsGalleryEditor"></script>
+			<div class="imgPrivew" id="imgPrivew">
+				<div th:each="goodsGallery : ${goodsGalleryList}"
+					style='display: inline-block; margin-left: 10px; position: relative'>
+					<span class='deleteImg'
+						style='position: absolute; right: 3px; top: 3px'
+						th:path='${goodsGallery.image}'> <i class='fa fa-times'
+						onclick='deleteImg(this)'></i>
+					</span> <img th:src='${goodsGallery.image}' width='120px' height='120px' />
+					<input type='hidden' name='img' th:value='${goodsGallery.image}' />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

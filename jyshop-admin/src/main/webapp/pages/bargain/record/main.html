@@ -1,0 +1,130 @@
+<div class="page-header" style="padding:10px 20px;margin:-18px 0px 0px">
+    <input name="bargainId" type="hidden" th:value="${bargainId}"/>
+    <div id="searchForm">
+        <!--<div class="col-md-2" style="padding-bottom: 0px; width: 200px;">-->
+            <!--<select class="form-control" name="state" onchange="javascript:formSubmit();">-->
+                <!--<option value="">全部类型</option>-->
+                <!--<option value="进行中">常规砍价</option>-->
+                <!--<option value="已关闭">共享砍价</option>-->
+                <!--<option value="已结束">免单砍价</option>-->
+            <!--</select>-->
+        <!--</div>-->
+        <div class="col-md-2" style="padding-bottom: 0px; width: 200px;">
+            <select class="form-control" name="status" onchange="javascript:formSubmit();">
+                <option value="">全部状态</option>
+                <option value="砍价成功">砍价成功</option>
+                <option value="正在砍价">正在砍价</option>
+                <option value="砍价失败">砍价失败</option>
+            </select>
+        </div>
+        <!--<div class="col-md-2" style="width: 200px">-->
+            <!--<input type="text" class="form-control search-query"-->
+                   <!--name="queryValue" placeholder="请输入查询条件" />-->
+        <!--</div>-->
+        <div class='col-sm-2' style="width: 220px">
+            <div class="form-group">
+                <div class='input-group date'>
+                    <input id="startTime" type='text' class="form-control" name="createStartTime" placeholder="活动截至开始" />
+                    <span class="input-group-addon">
+               		<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+                </div>
+            </div>
+        </div>
+        <div class='col-sm-2' style="width: 220px">
+            <div class="form-group">
+                <div class='input-group date'>
+                    <input type='text' class="form-control" name="createEndTime" placeholder="活动截至结束" />
+                    <span class="input-group-addon">
+               		<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1" style="width: 105px;">
+            <button id="searchBtn" class="btn btn-labeled btn-info" onclick="javascript:formSubmit();" ><span class="btn-label icon fa fa-search"></span>搜索</button>
+        </div>
+    </div>
+</div>
+<div class="openAppGrid">
+    <div id="openAppGrid"></div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(function (){
+        var bargainId = [[${bargainId}]];
+        $("#openAppGrid").sgrid({
+            columns:[
+                // {field:"checkbox",name:"",value:"bargainId",event:""},
+                {field:"image",text:"活动图",formatter:function(index, content, data){
+                        return "<img src='"+data.image+"' width='50' height='50' >";
+                    }},
+                {field:"title", text:"商品名称", sortColumn:"title",formatter:function(index, content, data){
+                        if(content.length>15)
+                            return content.substr(0,15)+".";
+                        else
+                            return content;
+                    }},
+                {field:"bargainType", text:"砍价类型", sortColumn:"bargainType",formatter:function(index, content, data){
+                        if(content==0)
+                            return "<font>常规砍价</font>";
+                        else if(content==1)
+                            return "<font>共享砍价</font>";
+                        else if(content==2)
+                            return "<font>免单砍价</font>";
+                    }},
+                {field:"goodsPrice", text:"市场价", sortColumn:"goodsPrice"},
+                {field:"targetPrice", text:"标靶价", sortColumn:"targetPrice"},
+                {field:"price", text:"已砍至价格", sortColumn:"price"},
+                {field:"createTime", text:"发起砍价时间", sortColumn:"createTime",formatter:function(index, content, data){
+                        if(typeof content!=null)
+                            return new Date(content).toLocaleString();
+                        else
+                            return "<font color='red'>获取下单时间失败</font>";
+                    }},
+                {field:"num", text:"参与人数", sortColumn:"num"},
+                {field:"face",text:"头像",formatter:function(index, content, data){
+                    if(content==null||content==''){
+                        return "<img src='/images/user-head-default.png' width='50' height='50' >";
+                    }else
+                        return "<img src='"+content+"' width='50' height='50' >";
+                    }},
+                {field:"nickname", text:"发起人"},
+                {field:"status", text:"活动状态", sortColumn:"status"},
+                {field:"orderId", text:"操作",width:80, style:"text-align:center", formatter:function(index, content, data){
+                    var detailUrl = "/admin/bargain/order/detail/" + content;
+                    var joinUrl = "/admin/bargain/record/join/"+ content+"?status="+data.status;
+                    var detail = "<a href='javascript:goPage(\""+detailUrl+"\");' data-original-title='砍价订单' class='btn btn-xs btn-default add-tooltip'><i class='fa fa-file'>订单</i></a>";
+                    var join = "<a href='javascript:showModal(\"查看详情\", \""+joinUrl+"\",\"800px\");' data-original-title='参与记录' class='btn btn-xs btn-success add-tooltip'><i class='fa fa-list'>参与记录</i></a>";
+                    if(data.status=="砍价成功"){
+                        return  detail+"&nbsp;"+join;
+                    }
+                    else if(data.status=='正在砍价'){
+                        return join;
+                    }
+                    else if(data.status=='砍价失败'){
+                        return join;
+                    }
+                 }}
+            ],
+            url: _urlPath + "admin/bargain/record/page?bargainId="+bargainId,
+            pagination:true,
+            onLoad:function(){
+                $(".add-tooltip").tooltip();
+            }
+        });
+
+        $('.date').datetimepicker({
+            language: 'zh-CN',
+            monthsShort: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 0, //是否显示上下午
+            initialDate: new Date()
+        });
+    });
+    /*]]>*/
+</script>

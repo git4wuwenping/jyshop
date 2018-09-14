@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.BargainDeliveryDao">
+	<select id="selectLogiByOrderId" resultType="com.qyy.jyshop.model.BargainDelivery" >
+		select
+			  a.DELIVERY_ID as deliveryId,
+			  a.TYPE as type,
+			  a.ORDER_SN as orderSn,
+			  a.MONEY as money,
+			  a.SHIP_TYPE as shipType,
+			  a.LOGI_CODE as logiCode,
+			  a.LOGI_NAME as logiName,
+			  a.LOGI_NO as logiNo,
+			  a.SHIP_NAME as shipName 
+	    from shop_bargain_delivery a where a.ORDER_ID = #{orderId}
+	</select>
+</mapper>

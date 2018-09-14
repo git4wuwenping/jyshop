@@ -1,0 +1,206 @@
+<form id="submitForm" class="form-horizontal" style="width: 50%;" >
+     <div class="form-group">
+    	<label class="col-sm-3 control-label" for="shopStoreName">店铺名称：</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="shopStoreName" name="shopStoreName" />
+            <div id="validation-shopStoreName" class="validate-error help-block"></div>
+        </div>
+    </div>
+    <div class="form-group">
+    	<label class="col-sm-3 control-label" for="shopStoreInformation">店铺介绍：</label>
+        <div class="col-sm-8">
+            <!-- <input class="form-control" type="text" id="shopStoreInformation" name="shopStoreInformation" /> -->
+            <textarea class="form-control" name='shopStoreInformation' cols='100' rows='4' 
+            id="licenseother" onkeypress="count()" onkeyup="count()"  onblur="count();" 
+            style="width: 424px; height: 125px;resize: none;" onChange="count();"></textarea> 
+            <div id="validation-shopStoreInformation" class="validate-error help-block"></div>
+        </div>
+    </div>
+        <font style="text-align: right;float: right;" size="1px">剩余字符数：
+    		<input readonly="readonly" type="text" size="3" id="result" value="120" style="border:none" /> 
+    	</font>
+    	
+  	 
+    <div class="form-group">
+    	<label class="col-sm-3 control-label" for="shopStoreLogo">店铺logo：</label>
+        <div class="col-sm-8" >
+        <div class="imgPrivew" id="imgPrivew1">
+            <input type="file" class="form-control" id="shopStoreLogo"  multiple="multiple"/>
+            <div id="validation-shopStoreLogo" class="validate-error help-block"></div>
+            </div>
+	    </div>
+    </div>
+    <div class="form-group">
+    	<label class="col-sm-3 control-label" for="shopStoreTheme">店铺主题：</label>
+        <div class="col-sm-8">
+        <div class="imgPrivew" id="imgPrivew2">
+            <input type="file" class="form-control"  id="shopStoreTheme"  multiple="multiple"  />
+            <div id="validation-shopStoreTheme" class="validate-error help-block"></div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group1">
+        <label class="col-sm-3 control-label" for="state">状态：</label>
+        <div class="col-sm-8">
+            <div class="radio">
+				<label style="display: inline-block; width: 50px;">
+					<input value="0" name="state" type="radio" class="ace" checked="checked"  />启用
+				</label>
+				<label style="display: inline-block; width: 50px;">
+					<input value="1" name="state" type="radio" class="ace" />停用
+				</label>
+			</div>
+        </div>
+    </div>
+   
+    <div align="center">
+		<input id="sumbitBtn" type="button" class="btn btn-primary" value="提交"></input>
+		<input id ="resetId" type="reset" style="display:none;" />  
+	</div>
+	<input type="reset" name="reset" style="display: none;" />
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$("#sumbitBtn").click(function(){
+        var shopStoreName = $("#shopStoreName").val();
+        if(typeof shopStoreName == 'undefined' || shopStoreName == null || shopStoreName=='' ){
+        	$.Mod.Close("请填写店铺名称",'warning');
+            return;
+		}  
+        $("#sumbitBtn").attr("disabled",true);
+        //$("#intro").val(UE.getEditor('content').getContent());
+        $.ajax({
+            url: _urlPath +'admin/shopStore/addShopStore',
+            method: "POST",
+            data:$('#submitForm').serialize(),
+            dataType:"json",
+            success:function(reslut) {
+                if (reslut.retcode == 0) {
+                    $.growl.notice({title:'操作成功', message: reslut.retmsg });
+                    goPage('/admin/shopStore/shopStoreMain');
+                }else {
+                    $("#sumbitBtn").attr("disabled",false);
+                    $.Err(reslut.retmsg);
+                }
+            }
+        });
+	}) 
+	
+	/* 图片上传 */
+	$(function() {
+		$('#shopStoreLogo').fileupload({
+            url: _urlPath + "upload/jqUploadImg",
+            dataType: 'html',
+            // 上传完成后的执行逻辑
+            done: function (e, data) {
+                $("#shopStoreLogo").attr("type","hidden");
+                $("#imgPrivew1").append("<div style='display: inline-block; margin-left: 10px;position:relative'>" +
+                    "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>" +
+                    "<i class='fa fa-times' onclick='deleteImg1(this)'></i>" +
+                    "</span> " +
+                    "<img src='"+data.result+"' width='120px' height='120px'/>" +
+                    "<input type='hidden' name='shopStoreLogo' value='"+data.result+"'/>" +
+                    "</div>")
+            }
+        });	
+	});
+	$(function() {
+		$('#shopStoreTheme').fileupload({
+            url: _urlPath + "upload/jqUploadImg",
+            dataType: 'html',
+            // 上传完成后的执行逻辑
+            done: function (e, data) {
+                $("#shopStoreTheme").attr("type","hidden");
+                $("#imgPrivew2").append("<div style='display: inline-block; margin-left: 10px;position:relative'>" +
+                    "<span class='deleteImg' style='position: absolute; right:3px; top: 3px' path='"+data.result+"'>" +
+                    "<i class='fa fa-times' onclick='deleteImg2(this)'></i>" +
+                    "</span> " +
+                    "<img src='"+data.result+"' width='120px' height='120px'/>" +
+                    "<input type='hidden' name='shopStoreTheme' value='"+data.result+"'/>" +
+                    "</div>")
+            }
+        });	
+	});
+	 
+	function deleteImg2(obj) {
+		$(obj).parent().parent().remove();
+		$("#shopStoreTheme").attr("type","file");
+		//todo 根据名称删除服务器图片$(obj).parent().attr("path")
+	} 
+	function deleteImg1(obj) {
+		$(obj).parent().parent().remove();
+		$("#shopStoreLogo").attr("type","file");
+		//todo 根据名称删除服务器图片$(obj).parent().attr("path")
+	} 
+	
+	/*店铺名称校验*/
+	$("#shopStoreName").on('blur',function(){
+		var success = '<font id="fontId" style="color: green;">店铺名可以使用</font>';
+		//var error = '<font id="fontId" style="color: red;">店铺名已存在!!</font>';
+		var error ='';
+		$.ajax({
+			type:"POST",
+			data:{"shopStoreName":$(this).val()},
+			url:_urlPath+"admin/shopStore/checkShopStoreName",
+			success:function(result){	
+				  if(result.retcode==2){
+					error = "<font id='fontId' style='color: red;'>"+result.retmsg+"'</font>'"
+					$("#fontId").remove();
+					$("#shopStoreName").after(error);
+					$("#sumbitBtn").attr("disabled", true); 
+				}else{
+					$("#fontId").remove();
+					$("#shopStoreName").after(success);
+					$("#sumbitBtn").attr("disabled", false);
+				}  
+			}
+		})
+	});
+	/* 店铺介绍校验 */
+	$("#licenseother").on('blur',function(){
+		var error ='';
+		$.ajax({
+			type:"POST",
+			data:{"shopStoreInformation":$(this).val()},
+			url:_urlPath+"admin/shopStore/checkShopStoreInformation",
+			success:function(result){	
+				  if(result.retcode==2){
+					error = "<font id='fontId' style='color: red;'>"+result.retmsg+"'</font>'"
+					$("#fontId").remove();
+					$("#licenseother").after(error);
+					$("#sumbitBtn").attr("disabled", true); 
+				}else{
+					$("#fontId").remove();
+					//$("#shopStoreInformation").after(success);
+					$("#sumbitBtn").attr("disabled", false);
+				}  
+			}
+		})
+	});
+	
+	function getStringUTFLength(str) { 
+		 var value = str.replace(/[\u4e00-\u9fa5]/g," ");
+		 //将汉字替换为两个空格
+		 return value.length; 
+		} 
+		function leftUTFString(str,len) { 
+		 if(getStringUTFLength(str)<=len) { 
+		  return str; 
+		 }
+		 var value = str.substring(0,len); 
+		 while(getStringUTFLength(value)>len) { 
+		  value = value.substring(0,value.length-1); 
+		 } 
+		 return value; 
+		} 
+		function count() { 
+		 var len=120;
+		 var value = document.getElementById("licenseother").value; 
+		 if(getStringUTFLength(value)>=len) {  
+		  document.getElementById("licenseother").value = leftUTFString(document.getElementById("licenseother").value,len); 
+		 } 
+		 document.getElementById("result").value = len-getStringUTFLength(document.getElementById("licenseother").value); 
+		} 
+	
+	/*]]>*/
+</script>

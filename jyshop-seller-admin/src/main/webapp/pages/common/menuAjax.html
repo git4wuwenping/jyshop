@@ -1,0 +1,11 @@
+<li class="mm-dropdown" th:each="authAction:${authActionList}" th:attr="opCode=${authAction.opCode}" >
+	<a href="#"><i th:class="'menu-icon fa '+${authAction.icon}"></i><span class="mm-text" th:text="${authAction.opName}" /></a>
+	<ul>
+		<li th:each="childAuthAction:${authAction.authActionList}" th:attr="opCode=${childAuthAction.opCode}" >
+			<a tabindex="-1" th:href="'javascript:goPage(\''+${childAuthAction.opHref}+'\')'">
+		    	<i th:class="'menu-icon fa '+${childAuthAction.icon}"></i>
+		        <span class="mm-text" th:text="${childAuthAction.opName}" />
+		    </a>
+		</li>
+	</ul>
+</li>

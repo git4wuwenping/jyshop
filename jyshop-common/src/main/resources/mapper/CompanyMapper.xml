@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.CompanyDao">
+
+	<resultMap id="baseResultModel" type="com.qyy.jyshop.model.Company">
+		<id column="com_id" jdbcType="INTEGER" property="comId" />
+		<result column="com_name" jdbcType="VARCHAR" property="comName" />
+		<result column="com_type" jdbcType="INTEGER" property="comType" />
+		<result column="com_address" jdbcType="VARCHAR" property="comAddress" />
+		<result column="com_contact" jdbcType="VARCHAR" property="comContact" />
+		<result column="com_mobile" jdbcType="VARCHAR" property="comMobile" />
+		<result column="com_tel" jdbcType="VARCHAR" property="comTel" />
+		<result column="com_email" jdbcType="VARCHAR" property="comEmail" />
+		<result column="disabled" jdbcType="INTEGER" property="disabled" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+		<result column="city_id" jdbcType="VARCHAR" property="cityId" />
+		<result column="region_id" jdbcType="VARCHAR" property="regionId" />
+		<result column="province" jdbcType="VARCHAR" property="province" />
+		<result column="city" jdbcType="VARCHAR" property="city" />
+		<result column="region" jdbcType="VARCHAR" property="region" />
+		<result column="bond" jdbcType="INTEGER" property="bond" />
+		<result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+		<result column="parent_id" jdbcType="INTEGER" property="parentId" />
+	</resultMap>
+	
+	
+ 	<select id="queryComByParentId" resultMap="baseResultModel" >
+		select * from shop_company where parent_id = #{parentId} and com_id = #{comId}
+	</select> 
+	
+		<!-- 根据供应商ID获取供应商名称 -->
+	<select id="selectComName" resultType="string">
+		select 
+        	com_name
+		from shop_company where  com_id=#{comId}
+	</select>
+	
+	<!-- 根据供应商ID获取商铺名称 -->
+	<select id="selectStoreName" resultType="string">
+		select 
+        	store_name
+		from shop_company where  com_id=#{comId}
+	</select>
+
+	<!-- 根据供应商Id获取供应商编码 -->
+	<select id="selectOfComCode" resultType="string">
+		select 
+        	com_code
+		from shop_company where com_id=#{comId}
+	</select>
+	
+	<select id="queryComById" resultType="map">
+		select 
+			 a.com_id as comId,
+			 a.com_name as comName,
+			 a.com_type as comType,
+			 a.com_address as comAddress,
+			 a.com_contact as comContact,
+			 a.com_mobile as comMobile, 
+			 a.com_tel as comTel,
+			 a.com_email as comEmail,
+			 a.add_time as addTime,
+			 b.useable,
+			 a.remark as remark,
+			 a.province_id as provinceId,
+			 a.city_id as cityId,
+			 a.region_id as regionId,
+			 a.province as province,
+			 a.city as city,
+			 a.region as region,
+			 a.bond,
+			 a.parent_id as parentId,
+			 b.id,
+			 b.username,
+			 b.password,
+			 c.shop_store_id as shopStoreId,
+			 c.shop_store_name as shopStoreName,
+			 c.shop_store_information as shopStoreInformation,
+			 c.shop_store_logo as shopStoreLogo,
+			 c.shop_store_theme as shopStoreTheme 
+		from shop_company a,shop_store c,shop_depot d
+		LEFT JOIN sys_auth_user b on d.com_id = b.com_id 
+		where 1=1
+		  and c.com_id = a.com_id
+		  and a.com_id = d.com_id 
+		  and a.com_id = #{comId}
+	</select>
+	<!-- 分页查询供应商 -->
+	<select id="selectComsByParams" resultType="map" >
+	
+	  select a.com_id as comId,
+			 b.username,
+			 a.com_name as comName,
+			 a.com_contact as comContact,
+			 a.parent_id as parentId,
+			 a.com_mobile as comMobile,
+			 a.bond,
+			 a.add_time as addTime,
+			 b.id,
+			 a.com_code as comCode,
+			 b.useable,
+			 a.remark,
+			 a.com_type as comType
+ 	    from shop_company a LEFT JOIN sys_auth_user b on a.com_id = b.com_id 
+ 	    <!-- <if test="minAmount !=null and maxAmount != null">
+ 	    left join shop_order c on b.com_id = c.com_id 
+ 	    </if> -->
+ 	   where
+ 	   		 <![CDATA[
+ 	   		a.com_id <> 0 ]]>
+ 	   		<if test="comName != null">
+	 	   	 and com_name like '%${comName}%'
+ 	   		</if>
+ 	   		<if test="username!=null">
+ 	   			and b.username = #{username}
+ 	   		</if>
+ 	   		<if test="minAddTime!=null and maxAddTime != null">
+ 	   		<![CDATA[
+ 	   			and b.add_time >=  #{minAddTime} and b.add_time < #{maxAddTime}
+ 	   			]]>
+ 	   		</if>
+ 	   		<!-- <if test="minAmount !=null and maxAmount != null">
+ 	   		<![CDATA[
+ 	   			and c.ORDER_AMOUNT >=  #{minAmount} and c.ORDER_AMOUNT <#{maxAmount}
+ 	   			 ]]>
+ 	   			and c.order_status in()
+ 	   		</if> -->
+ 	   order by a.add_time DESC
+ 	      
+	</select>
+	
+	
+	
+	<!-- 分页查询供应商jquery-datatable -->
+	<select id="selectDataTableCom" resultType="map" >
+	  select a.com_id as com_id,
+			 a.com_name as comName,
+			 a.store_name as storeName,
+			 a.com_contact as comContact,
+			 a.com_code as comCode
+ 	    from shop_company a
+ 	   where 1=1
+ 	   		<if test="comName != null">
+	 	   	 and a.com_name like '%${comName}%'
+ 	   		</if>
+ 	   		<if test="storeName!=null">
+ 	   			and a.store_name like '%${storeName}%'
+ 	   		</if>
+ 	   order by a.add_time DESC
+	</select>
+	
+	
+	<!-- 查询供应商名称是否重复 -->
+	<select id="selectComByName" resultType="Integer" >
+		select count(1) from shop_company where com_name = #{comName}
+	</select>
+	<update id="isDisabledExamine" >
+		update sys_auth_user   set useable = #{useable} where com_id = #{comId}
+	</update>
+	<insert id="insertCompany" parameterType="com.qyy.jyshop.model.Company"  useGeneratedKeys="true" keyColumn="com_id" keyProperty="comId">
+		insert into shop_company 
+		(store_name,com_name,com_contact,com_type,com_mobile,com_email,bond,disabled,remark,parent_id,com_code)
+		values
+		(#{storeName},#{comName},#{comContact},#{comType},#{comMobile},#{comEmail},#{bond},#{disabled},#{remark},#{parentId},#{comCode})
+	</insert>
+</mapper>

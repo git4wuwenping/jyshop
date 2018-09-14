@@ -1,0 +1,166 @@
+<form id="submitForm" class="form-horizontal">
+	<label class="col-sm-12 control-label" for="name" style="background-color: #66CCCC;text-align: left;">基本信息</label><br/> 
+	<!-- <font style="font-size: large;background-color: #66CCCC;">基本信息</font> -->
+	<input name = "goodsId" th:value="${examineDetials.goodsId}" hidden="true"  />
+	<div class="col-sm-8" >
+		<div class="form-group">
+		<label class="col-sm-3 control-label" for="name">商品分类：</label> 
+		<div class="col-sm-8">
+			<label id="catName" th:text="${goods.catName}"></label>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="name">商品名称：</label>
+		<div class="col-sm-8" th:text="${goods.name}">
+		</div>
+	</div>
+
+	
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="store">库存：</label>
+		<div class="col-sm-8" th:text="${goods.store}">
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="intro">详情：</label>
+		<div class="col-sm-8">
+			<script type="text/plain" id="content"></script>
+			<textarea style="visibility:hidden;" th:text="${goods.intro}" id="intro" readonly="readonly"></textarea>
+		</div>
+	</div>
+	</div>
+	<label class="col-sm-12 control-label" for="name" style="background-color: #66CCCC;text-align: left;">相册</label><br/>
+	<div class="form-group">
+		<div class="col-sm-8">
+			<div class="imgPrivew" id="imgPrivew">
+				<div th:each="goodsGallery : ${goodsGalleryList}" style='display: inline-block; margin-left: 10px; position: relative'>
+					<img th:src='${goodsGallery.image}' width='120px' height='120px' />
+				</div>
+			</div>
+		</div>
+	</div>
+	<label class="col-sm-12 control-label" for="name" style="background-color: #66CCCC;text-align: left;">商品规格</label><br/>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="name">市场价格：</label>
+		<div class="col-sm-8" th:text="${goods.mktprice}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="cost">成本价格：</label>
+		<div class="col-sm-8" th:text="${goods.cost}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="price">销售价格：</label>
+		<div class="col-sm-8" th:text="${goods.price}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="weight">重量：</label>
+		<div class="col-sm-8" th:text="${goods.weight}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="unit">单位：</label>
+		<div class="col-sm-8" th:text="${goods.unit}">
+		</div>
+	</div>
+	<HR style="border:3;double #987cb9" width="80%" color="#987cb9" SIZE="3" />
+	
+	<label class="col-sm-12 control-label"  style="background-color: #66CCCC;text-align: left;">审核</label><br/>
+	<input name="examineId" th:value="${examineDetials.examineId}" hidden="true" />
+	<input name="userId" th:value="${examineDetials.userId}" hidden="true" />
+	<div class="form-group" style='text-align:left;margin-left:150px'>
+		<div style="width: 45%;display: inline-block;">
+			<label   for="username"  >经办人：</label>
+			<div th:text="${examineDetials.username}"  style="display: inline-block;">
+			</div>
+		</div>
+		<div style="width: 45%;display: inline-block;margin-left:100px">
+			<label   for="operateTime">经办时间：</label>
+			<div  th:text="${examineDetials.operateTime}"  style="display: inline-block;">
+			</div>
+		</div>
+	</div>
+	<HR style="border:3;double #987cb9" width="80%" color="#987cb9" SIZE="3" />
+	<div class="form-group" style='text-align:left;margin-left:150px'>
+		<div style="width: 45%;display: inline-block;">
+			<label for="dismissal" style='vertical-align: top'>驳回原因：</label>
+			<div style="display: inline-block;">
+				<!-- <input type="text" name = "dismissal" th:value="${examineDetials.dismissal}"  /> -->
+				<textarea rows="5" cols="10" name = "dismissal" 
+				 style="width: 245px; height: 109px;resize: none;" th:text="${examineDetials.dismissal}" />
+			</div>
+		</div>
+		<div style="width: 45%;display: inline-block;text-align: center;">
+			<label for="suggestion" style='vertical-align: top'>处理意见：</label>
+			<div style="display: inline-block;" >
+				<!-- <input type="text" name = "suggestion" th:value="${examineDetials.suggestion}" /> -->
+				<textarea rows="5" cols="10" name = "suggestion" 
+				 style="width: 245px; height: 109px;resize: none" th:text="${examineDetials.suggestion}" />
+			</div>
+		</div>
+	</div>
+	<HR style="border:3;double #987cb9" width="80%" color="#987cb9" SIZE="3" />
+	<div class="form-group" style='display:flex;justify-content: space-between;'>
+		<div style="width: 45%;margin-left:150px;">
+			<label  for="state">审核状态：</label>
+			<div style="display: inline-block;">
+				<div class="radio">
+					<label style="display: inline-block; width: 50px;"> <input
+						value="0" name="state" type="radio" class="ace"
+						th:checked="${examineDetials.state==0}?true:false" />通过
+					</label> <label style="display: inline-block; width: 50px;"> <input
+						value="1" name="state" type="radio" class="ace"
+						th:checked="${examineDetials.state==1}?true:false" />驳回
+					</label>
+				</div>
+			</div>
+		</div>
+		<div style="width: 45%;display: inline-block;margin-left:150px;">
+			<label  for="remarks">备注：</label>
+			<div  style="display: inline-block;">
+				<input type="text" name = "remarks" th:value="${examineDetials.remarks}" />
+			</div>
+		</div>
+	</div>
+	<HR style="border:3;double #987cb9" width="80%" color="#987cb9" SIZE="3" />
+	<div align="center">
+		<button id="closeBtn"  data-dismiss="modal" aria-hidden="true" >关闭</button>
+		<input id="sumbitBtn" type="button" class="btn btn-primary" value="保存"></input>
+	</div>
+</form>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		
+		$("#sumbitBtn").click(function(){
+        	var data = $("#submitForm").serialize();
+    		//ajaxRequest("/admin/examine/editExamineDetials", data);
+    		$.ajax({
+    	        url: _urlPath+"admin/examine/editExamineDetials",
+    	        data: data,
+    	        type: "post",
+    	        dataType:"json",
+    	        success: function (req){
+    	            if (req.retcode == 0) {
+    	                goPage('/admin/examine/examineMain');
+    	                $.Mod.Close(req.retmsg);
+    	            } else {
+    	                modalErr(req.retmsg);
+    	            }
+    	        }
+    	    });
+		})
+		$("#closeBtn").click(function(){
+			$.Mod.Close();
+		})
+		initUeditor("content");
+		var introUE = UE.getEditor("content");
+		introUE.ready(function(){
+			var intro = $("#intro").text();
+			introUE.setContent(intro);
+		});
+	/*]]>*/
+</script>

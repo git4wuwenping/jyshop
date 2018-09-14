@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.jyshop.dao.MemberPointExtDao">
+	<select id="selectRedPointDrawApplyList" resultType="map">
+		SELECT
+		smpe.id,
+		smpe.bill_no AS billNo,
+		sm.identity_id as identityId,
+		sm.face,
+		sm.weixin_face as weixinFace,
+		sm.nickname,
+		sm.member_id as memberId,
+		smpe.account_no as accountNo,
+		sm.name,
+		smpe.amount,
+		smpe.create_time as createTime,
+		smpe.`status`
+		FROM
+		shop_member_point_ext smpe
+		LEFT JOIN shop_member_point smp ON smp.id = smpe.mp_id
+		LEFT JOIN
+		shop_member sm on sm.member_id=smpe.member_id
+		WHERE
+		smp.point_type = 2
+		<if test="memberPointExtVo.billNo != null ">
+			and smpe.bill_no LIKE '%${memberPointExtVo.billNo}%'
+		</if>
+		<if test="memberPointExtVo.memberNo != null ">
+			and smpe.member_id LIKE '%${memberPointExtVo.memberNo}%'
+		</if>
+		<if test="memberPointExtVo.phone != null ">
+			and sm.mobile LIKE '%${memberPointExtVo.phone}%'
+		</if>
+		<if test="status != null ">
+			and smpe.status = #{status}
+		</if>
+		<if test="style != null ">
+			and smpe.style=#{style}
+		</if>
+		<if test="createTimeBegin != null ">
+			<![CDATA[and smpe.create_time >= #{createTimeBegin}]]>
+		</if>
+		<if test="createTimeEnd != null ">
+			<![CDATA[and smpe.create_time <= #{createTimeEnd}]]>
+		</if>
+	</select>
+
+	<select id="getMemberRedPointDrawList" resultType="map">
+		SELECT
+			smpe.id,
+			smpe.member_id as memberId,
+			smpe.bill_no as billNo,
+			smpe.style,
+			smpe.open_bank as openBank,
+			smpe.open_bank_city as openBankCity,
+			smpe.branch_name as branchName,
+			smpe.account_name as accountName,
+			smpe.account_no as accountNo,
+			smpe.amount,
+			smpe.status,
+			smpe.mark,
+			smpe.create_time as createTime,
+			smpe.audit_time as auditTime,
+			smpe.remit_time as remitTime,
+			smpe.account_time as accountTime,
+			smp.point
+		FROM
+			shop_member_point_ext smpe
+		LEFT JOIN shop_member_point smp ON smp.id = smpe.mp_id
+		WHERE
+			 smp.point_type = 2
+		 and smp.type = 2 
+		 and smp.member_id=#{memberId}
+		 <if test="status!=null and status==0">
+		 and smpe.status IN(0,1)
+		 </if>
+		 <if test="status!=null and status==2">
+		 and smpe.status IN(2,3)
+		 </if>
+		 
+	</select>
+
+</mapper>

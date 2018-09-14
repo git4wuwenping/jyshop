@@ -1,0 +1,11 @@
+<div th:fragment="goods_gallery" class="tab-pane" id="bs-tabdrop-pill2">
+	<div class="form-group">
+		<div class="col-sm-8">
+			<div class="imgPrivew" id="imgPrivew">
+				<div th:each="goodsGallery : ${goodsGalleryList}" style='display: inline-block; margin-left: 10px; position: relative'>
+					<img th:src='${goodsGallery.image}' width='120px' height='120px' />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

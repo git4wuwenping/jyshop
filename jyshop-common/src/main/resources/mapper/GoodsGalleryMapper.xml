@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qyy.jyshop.dao.GoodsGalleryDao" >
+
+  <resultMap id="baseResultModel" type="com.qyy.jyshop.model.GoodsGallery" >
+    <id column="img_id" property="imgId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="isdefault" property="isdefault" jdbcType="INTEGER" />
+  </resultMap>
+  
+  	<delete id="deleteByGoodsId">
+		delete from shop_goods_gallery where goods_id=#{goodsId}
+	</delete>
+</mapper>
